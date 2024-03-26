@@ -1,4 +1,4 @@
-package com.matin.happystore
+package com.matin.happystore.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
