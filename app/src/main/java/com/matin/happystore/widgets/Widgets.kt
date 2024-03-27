@@ -18,8 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,15 +38,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.matin.happystore.domain.model.Product
+import com.matin.happystore.utils.clipIfLengthy
+import java.math.BigDecimal
 
 
+val product = Product(12, "tewt", BigDecimal("23.2"), "afsd", "adf", "http://image.com")
+
+@Preview
 @Composable
-fun ProductItem(item: Product) {
-    Surface(
+fun ProductItem(item: Product = product) {
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .height(170.dp),
-        shape = RoundedCornerShape(16.dp)
+            .height(170.dp)
+            .padding(6.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        colors = CardDefaults.cardColors(
+            contentColor = MaterialTheme.colorScheme.onBackground
+        )
     ) {
         Row {
             Surface(
@@ -82,7 +96,7 @@ fun ProductItem(item: Product) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.padding(top = 12.dp)) {
-                    Text(text = item.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = item.title.clipIfLengthy(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Text(text = item.category)
                 }
 
