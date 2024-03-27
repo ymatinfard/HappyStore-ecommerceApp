@@ -27,9 +27,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     when (products.value) {
-                        is ProductUIState.Success -> MainScreen((products.value as ProductUIState.Success).data)
-                        is ProductUIState.Error -> Text(text = "Error" + (products.value as ProductUIState.Error).exception)
-                        is ProductUIState.Loading -> MainProgressBar()
+                        is ProductsUIState.Success -> MainScreen((products.value as ProductsUIState.Success).data)
+                        is ProductsUIState.Error -> Text(text = "Error" + (products.value as ProductsUIState.Error).exception)
+                        is ProductsUIState.Loading -> MainProgressBar()
                     }
                 }
             }
