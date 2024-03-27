@@ -1,5 +1,12 @@
 package com.matin.happystore.widgets
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,90 +40,101 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.matin.happystore.domain.model.Product
-import com.matin.happystore.ui.UiProduct
+import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.utils.clipIfLengthy
-import java.math.BigDecimal
 
 
 @Composable
-fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
-    ElevatedCard(
+fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit, onProductClicked: (Int) -> Unit) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(170.dp)
-            .padding(6.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        colors = CardDefaults.cardColors(
-            contentColor = MaterialTheme.colorScheme.onBackground
-        )
+            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
     ) {
-        Row {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(170.dp)
-            ) {
-                AsyncImage(
-                    model = item.product.image,
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = null
-                )
-                Row(
+        ElevatedCard(
+            modifier = Modifier
+                .height(170.dp)
+                .clickable {
+                    onProductClicked(item.product.id)
+                },
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            colors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onBackground
+            )
+        ) {
+            Row {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp),
-                    horizontalArrangement = Arrangement.End
+                        .padding(8.dp)
+                        .size(170.dp)
                 ) {
-                    Image(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
+                    AsyncImage(
+                        model = item.product.image,
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = null
+                    )
+                    Row(
                         modifier = Modifier
-                            .clip(
-                                CircleShape
-                            )
-                            .background(color = Color.LightGray)
-                            .padding(2.dp).clickable { onFavoriteClick(item.product.id) },
-                        colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
-                    )
-                }
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Image(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(
+                                    CircleShape
+                                )
+                                .background(color = Color.LightGray)
+                                .padding(2.dp)
+                                .clickable { onFavoriteClick(item.product.id) },
+                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
+                        )
+                    }
 
-            }
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(modifier = Modifier.padding(top = 12.dp)) {
-                    Text(
-                        text = item.product.title.clipIfLengthy(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
-                    Text(text = item.product.category)
                 }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("${item.product.price}$", fontSize = 16.sp)
-                    Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 8.dp)) {
-                        Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = null)
+                    Column(modifier = Modifier.padding(top = 12.dp)) {
+                        Text(
+                            text = item.product.title.clipIfLengthy(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                        Text(text = item.product.category)
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${item.product.price}$", fontSize = 16.sp)
+                        Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 8.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }
         }
+        DescriptionText(description = item.product.description, visible = item.isExpended)
     }
 }
 
@@ -125,5 +143,23 @@ fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
 fun MainProgressBar() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(modifier = Modifier.size(60.dp))
+    }
+}
+
+@Composable
+fun DescriptionText(description: String, visible: Boolean) {
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically {
+            with(density) { -40.dp.roundToPx() }
+        } + expandVertically(
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            initialAlpha = 0.3f
+        ),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut()
+    ) {
+        Text(text = description, modifier = Modifier.padding(6.dp))
     }
 }

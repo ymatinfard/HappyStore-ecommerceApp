@@ -38,13 +38,25 @@ class HappyStoreViewModel @Inject constructor(
     fun updateFavoriteIds(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                val favIds = appState.favoriteProductId
-                val newFavoriteIds = if (favIds.contains(id)) {
-                    favIds - id
+                val updateFavIds = if (appState.favoriteProductId.contains(id)) {
+                    appState.favoriteProductId - id
                 } else {
-                    favIds + id
+                    appState.favoriteProductId + id
                 }
-                appState.copy(favoriteProductId = newFavoriteIds)
+                appState.copy(favoriteProductId = updateFavIds)
+            }
+        }
+    }
+
+    fun updateProductExpand(id: Int) {
+        viewModelScope.launch {
+            store.update { appState ->
+                val updatedExpandedProductIds = if (appState.expandedProductIds.contains(id)) {
+                    appState.expandedProductIds - id
+                } else {
+                    appState.expandedProductIds + id
+                }
+                appState.copy(expandedProductIds = updatedExpandedProductIds)
             }
         }
     }
