@@ -10,12 +10,12 @@ import com.matin.happystore.domain.model.Product
 import com.matin.happystore.widgets.ProductItem
 
 @Composable
-fun MainScreen(products: List<Product>) {
+fun MainScreen(products: List<UiProduct>, onFavoriteClick: (Int) -> Unit) {
 
     Surface(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             items(products) { product ->
-                ProductItem(product)
+                ProductItem(product, onFavoriteClick)
             }
         }
     }

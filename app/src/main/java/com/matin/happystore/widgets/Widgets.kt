@@ -2,6 +2,7 @@ package com.matin.happystore.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,12 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.matin.happystore.domain.model.Product
+import com.matin.happystore.ui.UiProduct
 import com.matin.happystore.utils.clipIfLengthy
 import java.math.BigDecimal
 
 
 @Composable
-fun ProductItem(item: Product) {
+fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +66,7 @@ fun ProductItem(item: Product) {
                     .size(170.dp)
             ) {
                 AsyncImage(
-                    model = item.image,
+                    model = item.product.image,
                     contentScale = ContentScale.FillBounds,
                     contentDescription = null
                 )
@@ -82,8 +84,8 @@ fun ProductItem(item: Product) {
                                 CircleShape
                             )
                             .background(color = Color.LightGray)
-                            .padding(2.dp),
-                        colorFilter = ColorFilter.tint(Color.Red)
+                            .padding(2.dp).clickable { onFavoriteClick(item.product.id) },
+                        colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
                     )
                 }
 
@@ -94,11 +96,11 @@ fun ProductItem(item: Product) {
             ) {
                 Column(modifier = Modifier.padding(top = 12.dp)) {
                     Text(
-                        text = item.title.clipIfLengthy(),
+                        text = item.product.title.clipIfLengthy(),
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
-                    Text(text = item.category)
+                    Text(text = item.product.category)
                 }
 
                 Row(
@@ -108,7 +110,7 @@ fun ProductItem(item: Product) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("${item.price}$", fontSize = 16.sp)
+                    Text("${item.product.price}$", fontSize = 16.sp)
                     Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 8.dp)) {
                         Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = null)
                     }

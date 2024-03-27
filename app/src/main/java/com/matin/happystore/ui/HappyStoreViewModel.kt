@@ -13,7 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HappyStoreViewModel @Inject constructor(
     val store: Store<ApplicationState>,
-    private val repository: HappyStoreRepository) :
+    private val repository: HappyStoreRepository,
+) :
     ViewModel() {
 
     init {
@@ -25,10 +26,25 @@ class HappyStoreViewModel @Inject constructor(
             when (val result = repository.getProducts()) {
                 is Result.Success -> {
                     store.update { applicationState ->
-                       return@update applicationState.copy(products = result.data)
+                        return@update applicationState.copy(products = result.data)
                     }
                 }
+
                 is Result.Error -> TODO()
+            }
+        }
+    }
+
+    fun updateFavoriteIds(id: Int) {
+        viewModelScope.launch {
+            store.update { appState ->
+                val favIds = appState.favoriteProductId
+                val newFavoriteIds = if (favIds.contains(id)) {
+                    favIds - id
+                } else {
+                    favIds + id
+                }
+                appState.copy(favoriteProductId = newFavoriteIds)
             }
         }
     }
