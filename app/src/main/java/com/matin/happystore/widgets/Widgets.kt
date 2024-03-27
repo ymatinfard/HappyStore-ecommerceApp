@@ -26,16 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.matin.happystore.R
+import coil.compose.AsyncImage
+import com.matin.happystore.domain.model.Product
 
-@Preview
+
 @Composable
-fun ProductItem() {
+fun ProductItem(item: Product) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,8 +48,8 @@ fun ProductItem() {
                     .padding(8.dp)
                     .size(170.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.warrier),
+                AsyncImage(
+                    model = item.image,
                     contentScale = ContentScale.FillBounds,
                     contentDescription = null
                 )
@@ -79,8 +78,8 @@ fun ProductItem() {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.padding(top = 12.dp)) {
-                    Text(text = "Bold text first", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Text(text = "small text goes here")
+                    Text(text = item.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = item.category)
                 }
 
                 Row(
@@ -90,7 +89,7 @@ fun ProductItem() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("$109.10", fontSize = 16.sp)
+                    Text("${item.price}$", fontSize = 16.sp)
                     Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 8.dp)) {
                         Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = null)
                     }
