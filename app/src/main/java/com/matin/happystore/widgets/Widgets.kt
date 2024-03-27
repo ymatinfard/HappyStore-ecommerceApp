@@ -42,11 +42,8 @@ import com.matin.happystore.utils.clipIfLengthy
 import java.math.BigDecimal
 
 
-val product = Product(12, "tewt", BigDecimal("23.2"), "afsd", "adf", "http://image.com")
-
-@Preview
 @Composable
-fun ProductItem(item: Product = product) {
+fun ProductItem(item: Product) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +93,11 @@ fun ProductItem(item: Product = product) {
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.padding(top = 12.dp)) {
-                    Text(text = item.title.clipIfLengthy(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(
+                        text = item.title.clipIfLengthy(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
                     Text(text = item.category)
                 }
 
