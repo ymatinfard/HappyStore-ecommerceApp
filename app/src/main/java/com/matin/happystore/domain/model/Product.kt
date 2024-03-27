@@ -2,7 +2,7 @@ package com.matin.happystore.domain.model
 
 import java.math.BigDecimal
 
-class Product(
+data class Product(
     val id: Int,
     val title: String,
     val price: BigDecimal,
