@@ -29,13 +29,15 @@ class MainActivity : ComponentActivity() {
                     viewModel.store.state.map { it.favoriteProductId },
                     viewModel.store.state.map { it.expandedProductIds },
                     viewModel.store.state.map { it.productFilterInfo }) { products, favorites, expandeds, filterInfo ->
-                    val uiProducts = products.map {
-                        UiProduct(
-                            it,
-                            favorites.contains(it.id),
-                            expandeds.contains(it.id)
-                        )
-                    }
+                    val uiProducts =
+                        products.filter { filterInfo.selectedFilter == null || it.category == filterInfo.selectedFilter.displayText }
+                            .map {
+                                UiProduct(
+                                    it,
+                                    favorites.contains(it.id),
+                                    expandeds.contains(it.id)
+                                )
+                            }
                     val filters = filterInfo.filters.map { filter ->
                         UiFilter(filter, filter == filterInfo.selectedFilter)
                     }
@@ -55,7 +57,7 @@ class MainActivity : ComponentActivity() {
                             viewModel.updateFavoriteIds(productId)
                         }, onProductClick = { productId ->
                             viewModel.updateProductExpand(productId)
-                        }, onFilterClick = {filter ->
+                        }, onFilterClick = { filter ->
                             viewModel.updateFilterSelection(filter)
                         })
                 }

@@ -74,7 +74,8 @@ class HappyStoreViewModel @Inject constructor(
     fun updateFilterSelection(filter: Filter) {
         viewModelScope.launch {
             store.update { appState ->
-                appState.copy(productFilterInfo = appState.productFilterInfo.copy(selectedFilter = filter))
+                val currentFilter = appState.productFilterInfo.selectedFilter
+                appState.copy(productFilterInfo = appState.productFilterInfo.copy(selectedFilter = if (currentFilter != filter) filter else null))
             }
         }
     }
