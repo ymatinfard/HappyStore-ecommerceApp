@@ -27,15 +27,13 @@ class HappyStoreViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = repository.getProducts()) {
                 is Result.Success -> {
+                    val filters = result.data.groupBy { it.category }.map { entry ->
+                        Filter(entry.key, "${entry.key} (${entry.value.size})")
+                    }.toSet()
                     store.update { applicationState ->
                         return@update applicationState.copy(
                             products = result.data,
-                            productFilterInfo = ProductFilterInfo(filters = result.data.map {
-                                Filter(
-                                    it.category,
-                                    it.category
-                                )
-                            }.toSet())
+                            productFilterInfo = ProductFilterInfo(filters = filters)
                         )
                     }
                 }
