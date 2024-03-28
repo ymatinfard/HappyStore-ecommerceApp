@@ -3,7 +3,9 @@ package com.matin.happystore.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.domain.HappyStoreRepository
+import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
+import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
 import com.matin.happystore.ui.redux.Store
 import com.matin.happystore.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +28,15 @@ class HappyStoreViewModel @Inject constructor(
             when (val result = repository.getProducts()) {
                 is Result.Success -> {
                     store.update { applicationState ->
-                        return@update applicationState.copy(products = result.data)
+                        return@update applicationState.copy(
+                            products = result.data,
+                            productFilterInfo = ProductFilterInfo(filters = result.data.map {
+                                Filter(
+                                    it.category,
+                                    it.category
+                                )
+                            }.toSet())
+                        )
                     }
                 }
 
@@ -57,6 +67,14 @@ class HappyStoreViewModel @Inject constructor(
                     appState.expandedProductIds + id
                 }
                 appState.copy(expandedProductIds = updatedExpandedProductIds)
+            }
+        }
+    }
+
+    fun updateFilterSelection(filter: Filter) {
+        viewModelScope.launch {
+            store.update { appState ->
+                appState.copy(productFilterInfo = appState.productFilterInfo.copy(selectedFilter = filter))
             }
         }
     }
