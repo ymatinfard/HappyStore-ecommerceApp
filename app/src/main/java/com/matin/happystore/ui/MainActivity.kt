@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     viewModel.store.state.map { it.expandedProductIds },
                     viewModel.store.state.map { it.productFilterInfo }) { products, favorites, expandeds, filterInfo ->
                     val uiProducts =
-                        products.filter { filterInfo.selectedFilter == null || it.category == filterInfo.selectedFilter.displayText }
+                        products.filter { filterInfo.selectedFilter == null || it.category == filterInfo.selectedFilter.value }
                             .map {
                                 UiProduct(
                                     it,

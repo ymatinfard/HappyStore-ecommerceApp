@@ -40,10 +40,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -178,10 +174,10 @@ fun DescriptionText(description: String, visible: Boolean) {
 
 @Composable
 fun CategoryFilterChips(filters: List<UiFilter>, onFilterClick: (Filter) -> Unit) {
-    LazyRow(contentPadding = PaddingValues(start = 6.dp, end = 6.dp)) {
+    LazyRow(contentPadding = PaddingValues(start = 8.dp, end = 8.dp)) {
         items(filters) { item ->
             FilterChip(
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier.padding(end = 8.dp),
                 onClick = { onFilterClick(item.filter) },
                 label = {
                     Text(text = item.filter.displayText)
