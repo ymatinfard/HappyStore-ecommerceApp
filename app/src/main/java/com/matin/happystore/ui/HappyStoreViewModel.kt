@@ -3,6 +3,7 @@ package com.matin.happystore.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.domain.HappyStoreRepository
+import com.matin.happystore.domain.ProductCategoryFilterGeneratorUseCase
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
@@ -16,8 +17,8 @@ import javax.inject.Inject
 class HappyStoreViewModel @Inject constructor(
     val store: Store<ApplicationState>,
     private val repository: HappyStoreRepository,
-) :
-    ViewModel() {
+    private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase
+) : ViewModel() {
 
     init {
         getProducts()
@@ -27,13 +28,10 @@ class HappyStoreViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = repository.getProducts()) {
                 is Result.Success -> {
-                    val filters = result.data.groupBy { it.category }.map { entry ->
-                        Filter(entry.key, "${entry.key} (${entry.value.size})")
-                    }.toSet()
                     store.update { applicationState ->
                         return@update applicationState.copy(
                             products = result.data,
-                            productFilterInfo = ProductFilterInfo(filters = filters)
+                            productFilterInfo = ProductFilterInfo(filters = categoryFilterGeneratorUseCase(result.data))
                         )
                     }
                 }
