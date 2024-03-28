@@ -37,9 +37,12 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,8 +54,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.matin.happystore.domain.model.Filter
+import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.utils.clipIfLengthy
@@ -194,6 +199,33 @@ fun CategoryFilterChips(filters: List<UiFilter>, onFilterClick: (Filter) -> Unit
                 } else {
                     null
                 },
+            )
+        }
+    }
+}
+
+@Composable
+fun HappyStoreBottomNavigation(
+    navController: NavController,
+    selectedTabIndex: MutableState<Int>,
+    bottomNavItems: List<BottomNavigationScreens> = listOf(
+        BottomNavigationScreens.Home,
+        BottomNavigationScreens.Products
+    ),
+) {
+    NavigationBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+    ) {
+        bottomNavItems.forEachIndexed { index, bottomNavItem ->
+            NavigationBarItem(
+                selected = selectedTabIndex.value == index,
+                onClick = {
+                    selectedTabIndex.value = index
+                    navController.navigate(bottomNavItem.route)
+                },
+                icon = { Icon(imageVector = bottomNavItem.icon, contentDescription = null) },
             )
         }
     }
