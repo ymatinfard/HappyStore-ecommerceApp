@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -38,6 +39,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -271,6 +273,92 @@ fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
                     .background(color = Color.White),
                 tint = Color.Green,
                 contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
+fun CartItem(
+    item: UiProduct,
+    onFavoriteClick: (Int) -> Unit = {},
+    onDeleteClick: (Int) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .height(170.dp),
+        ) {
+            Row {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(170.dp)
+                ) {
+                    AsyncImage(
+                        model = item.product.image,
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = null
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Image(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(
+                                    CircleShape
+                                )
+                                .background(color = Color.LightGray)
+                                .padding(2.dp)
+                                .clickable { onFavoriteClick(item.product.id) },
+                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
+                        )
+                    }
+
+                }
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = item.product.title.clipIfLengthy(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 10.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = Color.Red,
+                            modifier = Modifier.clickable {
+                                onDeleteClick(item.product.id)
+                            }
+                        )
+                    }
+                }
+            }
+            HorizontalDivider(
+                modifier = Modifier
+                    .height(3.dp)
+                    .padding(start = 8.dp, end = 8.dp),
+                color = Color.Gray
             )
         }
     }
