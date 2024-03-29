@@ -27,27 +27,40 @@ fun CartScreen(viewModel: HappyStoreViewModel) {
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
-        HandleCartScreen(inCartProductsState.value, onDeleteClick = { deletedItemId ->
+        HandleCartScreen(inCartProductsState.value, onFavoriteClick = { favoriteItemId ->
+            viewModel.updateFavoriteIds(favoriteItemId)
+        }, onDeleteClick = { deletedItemId ->
             viewModel.updateInCartIds(deletedItemId)
         })
     }
 }
 
 @Composable
-fun HandleCartScreen(inCartProductsState: CartScreenUiState, onDeleteClick: (Int) -> Unit) {
+fun HandleCartScreen(
+    inCartProductsState: CartScreenUiState,
+    onFavoriteClick: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit,
+) {
     when (inCartProductsState) {
-        is CartScreenUiState.Data -> ShowCartItems(inCartProductsState.data, onDeleteClick)
+        is CartScreenUiState.Data -> ShowCartItems(
+            inCartProductsState.data,
+            onFavoriteClick,
+            onDeleteClick
+        )
+
         is CartScreenUiState.Empty -> Text("No item in cart")
     }
 }
 
 @Composable
-fun ShowCartItems(cartItems: List<UiProduct>, onDeleteClick: (Int) -> Unit) {
+fun ShowCartItems(
+    cartItems: List<UiProduct>,
+    onFavoriteClick: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit,
+) {
     LazyColumn {
         items(cartItems) { item ->
-            CartItem(item = item, onDeleteClick = {
-                onDeleteClick(item.product.id)
-            })
+            CartItem(item = item, onFavoriteClick = onFavoriteClick, onDeleteClick = onDeleteClick)
         }
     }
 }
