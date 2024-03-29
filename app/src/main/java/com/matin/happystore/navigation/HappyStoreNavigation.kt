@@ -20,7 +20,7 @@ fun HappyStoreNavigation(navController: NavHostController) {
         
         composable(HappyStoreScreens.ProductsScreen.name) {
             val viewModel = hiltViewModel<HappyStoreViewModel>()
-            ProductsScreen(viewModel, navController)
+            ProductsScreen(viewModel)
         }
     }
 }
