@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.domain.HappyStoreRepository
 import com.matin.happystore.domain.ProductCategoryFilterGeneratorUseCase
+import com.matin.happystore.domain.ProductListReducerUseCase
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class HappyStoreViewModel @Inject constructor(
     val store: Store<ApplicationState>,
     private val repository: HappyStoreRepository,
-    private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase
+    private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
+    val productListReducerUseCase: ProductListReducerUseCase,
 ) : ViewModel() {
 
     init {
