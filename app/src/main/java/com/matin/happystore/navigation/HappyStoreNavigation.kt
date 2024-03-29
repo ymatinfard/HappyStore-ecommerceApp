@@ -12,9 +12,9 @@ import com.matin.happystore.ui.ProductsScreen
 @Composable
 fun HappyStoreNavigation(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = HappyStoreScreens.HomeScreen.name) {
+    NavHost(navController = navController, startDestination = HappyStoreScreens.ProductsScreen.name) {
         
-        composable(HappyStoreScreens.HomeScreen.name) {
+        composable(HappyStoreScreens.Profile.name) {
             HomeScreen()
         }
         
