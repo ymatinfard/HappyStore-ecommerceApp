@@ -28,7 +28,8 @@ fun HappyStoreNavigation(navController: NavHostController) {
         }
 
         composable(HappyStoreScreens.CartScreen.name) {
-            CartScreen()
+            val viewModel = hiltViewModel<HappyStoreViewModel>()
+            CartScreen(viewModel)
         }
     }
 }
