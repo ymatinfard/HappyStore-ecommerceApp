@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.domain.HappyStoreRepository
 import com.matin.happystore.domain.ProductCategoryFilterGeneratorUseCase
+import com.matin.happystore.domain.ProductExpandUpdaterUseCase
+import com.matin.happystore.domain.ProductFavoriteUpdaterUseCase
+import com.matin.happystore.domain.ProductFilterSelectionUpdater
+import com.matin.happystore.domain.ProductInCartItemUpdater
 import com.matin.happystore.domain.ProductListReducerUseCase
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
@@ -20,6 +24,10 @@ class HappyStoreViewModel @Inject constructor(
     private val repository: HappyStoreRepository,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
     val productListReducerUseCase: ProductListReducerUseCase,
+    private val productFavoriteUpdaterUseCase: ProductFavoriteUpdaterUseCase,
+    private val productExpandUpdaterUseCase: ProductExpandUpdaterUseCase,
+    private val productFilterSelectionUpdater: ProductFilterSelectionUpdater,
+    private val productInCartItemUpdater: ProductInCartItemUpdater,
 ) : ViewModel() {
 
     init {
@@ -33,7 +41,11 @@ class HappyStoreViewModel @Inject constructor(
                     store.update { applicationState ->
                         return@update applicationState.copy(
                             products = result.data,
-                            productFilterInfo = ProductFilterInfo(filters = categoryFilterGeneratorUseCase(result.data))
+                            productFilterInfo = ProductFilterInfo(
+                                filters = categoryFilterGeneratorUseCase(
+                                    result.data
+                                )
+                            )
                         )
                     }
                 }
@@ -46,12 +58,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateFavoriteIds(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                val updateFavIds = if (appState.favoriteProductId.contains(id)) {
-                    appState.favoriteProductId - id
-                } else {
-                    appState.favoriteProductId + id
-                }
-                appState.copy(favoriteProductId = updateFavIds)
+                productFavoriteUpdaterUseCase(id, appState)
             }
         }
     }
@@ -59,12 +66,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateProductExpand(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                val updatedExpandedProductIds = if (appState.expandedProductIds.contains(id)) {
-                    appState.expandedProductIds - id
-                } else {
-                    appState.expandedProductIds + id
-                }
-                appState.copy(expandedProductIds = updatedExpandedProductIds)
+                productExpandUpdaterUseCase(id, appState)
             }
         }
     }
@@ -72,8 +74,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateFilterSelection(filter: Filter) {
         viewModelScope.launch {
             store.update { appState ->
-                val currentFilter = appState.productFilterInfo.selectedFilter
-                appState.copy(productFilterInfo = appState.productFilterInfo.copy(selectedFilter = if (currentFilter != filter) filter else null))
+                productFilterSelectionUpdater(filter, appState)
             }
         }
     }
@@ -81,14 +82,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateInCartIds(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                val currentInCartProducts = appState.inCartProductIds
-                appState.copy(
-                    inCartProductIds = if (currentInCartProducts.contains(id)) {
-                        currentInCartProducts - id
-                    } else {
-                        currentInCartProducts + id
-                    }
-                )
+                productInCartItemUpdater(id, appState)
             }
         }
     }
