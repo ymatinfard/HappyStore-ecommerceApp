@@ -15,3 +15,8 @@
 local.properties
 /.idea/compiler.xml
 /.idea/inspectionProfiles/Project_Default.xml
+/.idea/gradle.xml
+/.idea/kotlinc.xml
+/.idea/migrations.xml
+/.idea/misc.xml
+/.idea/vcs.xml
