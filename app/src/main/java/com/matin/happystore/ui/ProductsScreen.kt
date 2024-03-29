@@ -26,12 +26,13 @@ import kotlinx.coroutines.flow.map
 
 
 @Composable
-fun ProductsScreen(viewModel: HappyStoreViewModel, navController: NavController) {
+fun ProductsScreen(viewModel: HappyStoreViewModel) {
     val uiProductState = combine(
         viewModel.store.state.map { it.products },
         viewModel.store.state.map { it.favoriteProductId },
         viewModel.store.state.map { it.expandedProductIds },
-        viewModel.store.state.map { it.productFilterInfo }) { products, favorites, expandeds, filterInfo ->
+        viewModel.store.state.map { it.productFilterInfo },
+        viewModel.store.state.map { it.inCartProductIds }) { products, favorites, expandeds, filterInfo, inCartProducts ->
 
         if (products.isEmpty()) return@combine ProductListScreenUiState.Loading
 
@@ -41,7 +42,8 @@ fun ProductsScreen(viewModel: HappyStoreViewModel, navController: NavController)
                     UiProduct(
                         it,
                         favorites.contains(it.id),
-                        expandeds.contains(it.id)
+                        expandeds.contains(it.id),
+                        inCartProducts.contains(it.id)
                     )
                 }
         val filters = filterInfo.filters.map { filter ->
@@ -64,6 +66,9 @@ fun ProductsScreen(viewModel: HappyStoreViewModel, navController: NavController)
                 viewModel.updateProductExpand(productId)
             }, onFilterClick = { filter ->
                 viewModel.updateFilterSelection(filter)
+            },
+            onAddToCartClick = { productId ->
+                viewModel.updateInCartIds(productId)
             })
     }
 }
@@ -74,13 +79,15 @@ fun ShowProductList(
     onFavoriteClick: (Int) -> Unit,
     onProductClick: (Int) -> Unit,
     onFilterClick: (Filter) -> Unit,
+    onAddToCartClick: (Int) -> Unit,
 ) {
     when (uiProductState) {
         is ProductListScreenUiState.Success -> ShowProductList(
             uiProductState = uiProductState.data,
             onFavoriteClick = onFavoriteClick,
             onProductClick = onProductClick,
-            onFilterClick = onFilterClick
+            onFilterClick = onFilterClick,
+            onAddToCartClick = onAddToCartClick
         )
 
         is ProductListScreenUiState.Loading -> ShowLoading()
@@ -101,13 +108,14 @@ fun ShowProductList(
     onFavoriteClick: (Int) -> Unit,
     onProductClick: (Int) -> Unit,
     onFilterClick: (Filter) -> Unit,
+    onAddToCartClick: (Int) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column {
             CategoryFilterChips(filters = uiProductState.filters, onFilterClick)
             LazyColumn {
                 items(uiProductState.products) { product ->
-                    ProductItem(product, onFavoriteClick, onProductClick)
+                    ProductItem(product, onFavoriteClick, onProductClick, onAddToCartClick)
                 }
             }
         }

@@ -75,4 +75,19 @@ class HappyStoreViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateInCartIds(id: Int) {
+        viewModelScope.launch {
+            store.update { appState ->
+                val currentInCartProducts = appState.inCartProductIds
+                appState.copy(
+                    inCartProductIds = if (currentInCartProducts.contains(id)) {
+                        currentInCartProducts - id
+                    } else {
+                        currentInCartProducts + id
+                    }
+                )
+            }
+        }
+    }
 }

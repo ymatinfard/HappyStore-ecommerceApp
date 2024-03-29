@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,7 +69,12 @@ import com.matin.happystore.utils.clipIfLengthy
 
 
 @Composable
-fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit, onProductClicked: (Int) -> Unit) {
+fun ProductItem(
+    item: UiProduct,
+    onFavoriteClick: (Int) -> Unit,
+    onProductClicked: (Int) -> Unit,
+    onAddToCartClick: (Int) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,7 +147,10 @@ fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit, onProductClicke
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("${item.product.price}$", fontSize = 16.sp)
-                        ShoppingButton(onClick = { /*TODO*/ }, badgeIsVisible = true)
+                        ShoppingButton(
+                            onClick = { onAddToCartClick(item.product.id) },
+                            badgeIsVisible = item.isInCart
+                        )
                     }
                 }
             }
@@ -206,10 +216,8 @@ fun CategoryFilterChips(filters: List<UiFilter>, onFilterClick: (Filter) -> Unit
 fun HappyStoreBottomNavigation(
     navController: NavController,
     selectedTabIndex: MutableState<Int>,
-    bottomNavItems: List<BottomNavigationScreens> = listOf(
-        BottomNavigationScreens.Profile,
-        BottomNavigationScreens.Products
-    ),
+    bottomNavItems: List<BottomNavigationScreens>,
+    inCartProductsCount: Int,
 ) {
     NavigationBar(
         modifier = Modifier
@@ -223,7 +231,21 @@ fun HappyStoreBottomNavigation(
                     selectedTabIndex.value = index
                     navController.navigate(bottomNavItem.route)
                 },
-                icon = { Icon(imageVector = bottomNavItem.icon, contentDescription = null) },
+                icon = {
+                    when {
+                        (inCartProductsCount > 0) && bottomNavItem is BottomNavigationScreens.ShoppingCart -> {
+                            BadgedBox(badge = {
+                                Badge {
+                                    Text(text = "$inCartProductsCount")
+                                }
+                            }) {
+                                Icon(imageVector = bottomNavItem.icon, contentDescription = null)
+                            }
+                        }
+
+                        else -> Icon(imageVector = bottomNavItem.icon, contentDescription = null)
+                    }
+                }
             )
         }
     }
