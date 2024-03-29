@@ -23,7 +23,7 @@ fun MainScreen() {
 
     val bottomNavItems = listOf(
         BottomNavigationScreens.Products,
-        BottomNavigationScreens.ShoppingCart,
+        BottomNavigationScreens.Cart,
         BottomNavigationScreens.Profile,
     )
 

@@ -3,7 +3,6 @@ package com.matin.happystore.ui
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,8 +21,8 @@ sealed class BottomNavigationScreens(
         Icons.AutoMirrored.Filled.List
     )
 
-    data object ShoppingCart : BottomNavigationScreens(
-        HappyStoreScreens.ShoppingCartScreen.name,
+    data object Cart : BottomNavigationScreens(
+        HappyStoreScreens.CartScreen.name,
         R.string.shopping_cart,
         Icons.Default.ShoppingCart
     )

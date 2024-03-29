@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen() {
+fun ProfileScreen() {
     Scaffold(modifier = Modifier.fillMaxSize(),
     ) {
         Surface(modifier = Modifier.padding(it)) {
-            Text(text = "Home screen")
+            Text(text = "Profile screen")
         }
     }
 }
