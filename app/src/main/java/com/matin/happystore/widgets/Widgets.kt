@@ -53,14 +53,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.matin.happystore.R
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
@@ -233,7 +231,7 @@ fun HappyStoreBottomNavigation(
                 },
                 icon = {
                     when {
-                        (inCartProductsCount > 0) && bottomNavItem is BottomNavigationScreens.ShoppingCart -> {
+                        (inCartProductsCount > 0) && bottomNavItem is BottomNavigationScreens.Cart -> {
                             BadgedBox(badge = {
                                 Badge {
                                     Text(text = "$inCartProductsCount")
