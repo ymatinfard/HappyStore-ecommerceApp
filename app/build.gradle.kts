@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias (libs.plugins.hilt)
     alias (libs.plugins.ksp)
+    alias(libs.plugins.firebase)
 }
 
 android {
@@ -70,6 +71,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.coil.compose)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     ksp(libs.hilt.android.compiler)
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
