@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -50,12 +51,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.matin.happystore.R
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
@@ -137,12 +140,7 @@ fun ProductItem(item: UiProduct, onFavoriteClick: (Int) -> Unit, onProductClicke
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("${item.product.price}$", fontSize = 16.sp)
-                        Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 8.dp)) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = null
-                            )
-                        }
+                        ShoppingButton(onClick = { /*TODO*/ }, badgeIsVisible = true)
                     }
                 }
             }
@@ -209,7 +207,7 @@ fun HappyStoreBottomNavigation(
     navController: NavController,
     selectedTabIndex: MutableState<Int>,
     bottomNavItems: List<BottomNavigationScreens> = listOf(
-        BottomNavigationScreens.Home,
+        BottomNavigationScreens.Profile,
         BottomNavigationScreens.Products
     ),
 ) {
@@ -226,6 +224,33 @@ fun HappyStoreBottomNavigation(
                     navController.navigate(bottomNavItem.route)
                 },
                 icon = { Icon(imageVector = bottomNavItem.icon, contentDescription = null) },
+            )
+        }
+    }
+}
+
+@Composable
+fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
+    Box(contentAlignment = Alignment.CenterStart) {
+        Button(
+            onClick = { onClick() },
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ShoppingCart,
+                contentDescription = null
+            )
+        }
+        if (badgeIsVisible) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(color = Color.White),
+                tint = Color.Green,
+                contentDescription = null
             )
         }
     }
