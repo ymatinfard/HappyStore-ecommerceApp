@@ -98,7 +98,7 @@ class HappyStoreViewModel @Inject constructor(
         }
     }
 
-    val productListUIState = combine(
+    val productListUiState = combine(
         productListReducer.reduce(),
         store.state.map { it.productFilterInfo }) { products, filterInfo ->
         productListUIStateGenerator(products, filterInfo)
