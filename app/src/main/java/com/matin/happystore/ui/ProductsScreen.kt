@@ -25,7 +25,7 @@ fun ProductsScreen(
     viewModel: HappyStoreViewModel,
 ) {
 
-    val productListUiState by viewModel.productListUIState.collectAsState()
+    val productListUiState by viewModel.productListUiState.collectAsState()
 
     Surface {
         HandleProductScreen(uiProductState = productListUiState,
