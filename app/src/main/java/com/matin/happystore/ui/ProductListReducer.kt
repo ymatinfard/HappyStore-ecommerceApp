@@ -1,4 +1,4 @@
-package com.matin.happystore.domain
+package com.matin.happystore.ui
 
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.ui.redux.ApplicationState
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ProductListReducerUseCase @Inject constructor(private val store: Store<ApplicationState>) {
+class ProductListReducer @Inject constructor(private val store: Store<ApplicationState>) {
     fun reduce(): Flow<List<UiProduct>> {
         return combine(
             store.state.map { it.products },

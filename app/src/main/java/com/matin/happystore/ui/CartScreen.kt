@@ -14,16 +14,8 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun CartScreen(viewModel: HappyStoreViewModel) {
-    val inCartProductsState = viewModel.productListReducerUseCase.reduce().map { uiProducts ->
-        val inCartProducts = uiProducts.filter { it.isInCart }
 
-        return@map if (inCartProducts.isNotEmpty()) {
-            CartScreenUiState.Data(inCartProducts)
-        } else {
-            CartScreenUiState.Empty
-        }
-    }.collectAsState(initial = CartScreenUiState.Empty)
-
+    val inCartProductsState = viewModel.inCartProductsUiState.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
