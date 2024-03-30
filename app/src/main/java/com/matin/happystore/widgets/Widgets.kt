@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,12 +29,13 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -56,7 +56,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -156,14 +155,6 @@ fun ProductItem(
             }
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
-    }
-}
-
-@Preview
-@Composable
-fun MainProgressBar() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(modifier = Modifier.size(60.dp))
     }
 }
 
@@ -283,6 +274,7 @@ fun CartItem(
     item: UiProduct,
     onFavoriteClick: (Int) -> Unit = {},
     onDeleteClick: (Int) -> Unit,
+    onQuantityChange: (productId: Int, quantity: Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -340,9 +332,14 @@ fun CartItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 10.dp, bottom = 8.dp),
-                        horizontalArrangement = Arrangement.End,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        CartItemQuantity(
+                            item.inCartQuantity,
+                            item.product.id,
+                            onQuantityChange
+                        )
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = null,
@@ -359,6 +356,41 @@ fun CartItem(
                     .height(3.dp)
                     .padding(start = 8.dp, end = 8.dp),
                 color = Color.Gray
+            )
+        }
+    }
+}
+
+@Composable
+fun CartItemQuantity(
+    quantity: Int,
+    productId: Int,
+    onQuantityChange: (productId: Int, quantity: Int) -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.onPrimary
+    ) {
+        Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowUp,
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    onQuantityChange(productId, quantity + 1)
+                })
+            Text(
+                text = quantity.toString(),
+                modifier = Modifier
+                    .padding(start = 4.dp, end = 4.dp),
+                fontSize = 16.sp
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                modifier = Modifier.clickable {
+                    if (quantity == 1) return@clickable
+                    onQuantityChange(productId, quantity - 1)
+                },
+                contentDescription = null,
             )
         }
     }
