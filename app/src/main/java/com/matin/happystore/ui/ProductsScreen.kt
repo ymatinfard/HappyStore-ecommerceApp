@@ -10,49 +10,25 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.model.ProductsAndFilters
-import com.matin.happystore.ui.model.UiFilter
 import com.matin.happystore.widgets.CategoryFilterChips
 import com.matin.happystore.widgets.ProductItem
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 
 
 @Composable
 fun ProductsScreen(
     viewModel: HappyStoreViewModel,
 ) {
-    val productsScreenState =
-        combine(
-            viewModel.productListReducerUseCase.reduce(),
-            viewModel.store.state.map { it.productFilterInfo }) { products, filterInfo ->
 
-            if (products.isEmpty()) return@combine ProductsScreenUiState.Loading
-
-            val uiProducts =
-                products.filter {
-                    filterInfo.selectedFilter == null ||
-                            it.product.category == filterInfo.selectedFilter.value
-                }
-
-            val filters = filterInfo.filters.map { filter ->
-                UiFilter(filter, filter == filterInfo.selectedFilter)
-            }
-
-            val productsAndFilters = ProductsAndFilters(
-                uiProducts,
-                filters
-            )
-
-            ProductsScreenUiState.Success(productsAndFilters)
-        }.collectAsState(initial = ProductsScreenUiState.Loading)
+    val productListUiState by viewModel.productListUIState.collectAsState()
 
     Surface {
-        HandleProductScreen(uiProductState = productsScreenState.value,
+        HandleProductScreen(uiProductState = productListUiState,
             onFavoriteClick = { productId ->
                 viewModel.updateFavoriteIds(productId)
             }, onProductClick = { productId ->
@@ -84,7 +60,6 @@ fun HandleProductScreen(
         )
         is ProductsScreenUiState.Loading -> ShowLoading()
         is ProductsScreenUiState.Error -> TODO()
-        else -> {}
     }
 }
 
