@@ -8,13 +8,16 @@ import com.matin.happystore.domain.ProductExpandUpdaterUseCase
 import com.matin.happystore.domain.ProductFavoriteUpdaterUseCase
 import com.matin.happystore.domain.ProductFilterSelectionUpdater
 import com.matin.happystore.domain.ProductInCartItemUpdater
-import com.matin.happystore.domain.ProductListReducerUseCase
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
 import com.matin.happystore.ui.redux.Store
 import com.matin.happystore.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,15 +26,22 @@ class HappyStoreViewModel @Inject constructor(
     val store: Store<ApplicationState>,
     private val repository: HappyStoreRepository,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
-    val productListReducerUseCase: ProductListReducerUseCase,
+    private val productListReducer: ProductListReducer,
     private val productFavoriteUpdaterUseCase: ProductFavoriteUpdaterUseCase,
     private val productExpandUpdaterUseCase: ProductExpandUpdaterUseCase,
     private val productFilterSelectionUpdater: ProductFilterSelectionUpdater,
     private val productInCartItemUpdater: ProductInCartItemUpdater,
+    val productListUIStateGenerator: ProductListUIStateGenerator,
 ) : ViewModel() {
 
     init {
-        getProducts()
+        viewModelScope.launch {
+            store.read { appState ->
+                if (appState.products.isEmpty()) {
+                    getProducts()
+                }
+            }
+        }
     }
 
     private fun getProducts() {
@@ -44,7 +54,8 @@ class HappyStoreViewModel @Inject constructor(
                             productFilterInfo = ProductFilterInfo(
                                 filters = categoryFilterGeneratorUseCase(
                                     result.data
-                                )
+                                ),
+                                selectedFilter = applicationState.productFilterInfo.selectedFilter
                             )
                         )
                     }
@@ -86,4 +97,28 @@ class HappyStoreViewModel @Inject constructor(
             }
         }
     }
+
+    val productListUIState = combine(
+        productListReducer.reduce(),
+        store.state.map { it.productFilterInfo }) { products, filterInfo ->
+        productListUIStateGenerator(products, filterInfo)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ProductsScreenUiState.Loading
+    )
+
+    val inCartProductsUiState = productListReducer.reduce().map { uiProducts ->
+        val inCartProducts = uiProducts.filter { it.isInCart }
+
+        if (inCartProducts.isNotEmpty()) {
+            CartScreenUiState.Data(inCartProducts)
+        } else {
+            CartScreenUiState.Empty
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = CartScreenUiState.Empty
+    )
 }
