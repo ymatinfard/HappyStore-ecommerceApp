@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.widgets.CartItem
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun CartScreen(viewModel: HappyStoreViewModel) {
@@ -23,6 +22,8 @@ fun CartScreen(viewModel: HappyStoreViewModel) {
             viewModel.updateFavoriteIds(favoriteItemId)
         }, onDeleteClick = { deletedItemId ->
             viewModel.updateInCartIds(deletedItemId)
+        }, onQuantityChange = { productId, newQuantity ->
+            viewModel.updateProductInCartQuantity(productId, newQuantity)
         })
     }
 }
@@ -32,12 +33,14 @@ fun HandleCartScreen(
     inCartProductsState: CartScreenUiState,
     onFavoriteClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
+    onQuantityChange: (Int, Int) -> Unit,
 ) {
     when (inCartProductsState) {
         is CartScreenUiState.Data -> ShowCartItems(
             inCartProductsState.data,
             onFavoriteClick,
-            onDeleteClick
+            onDeleteClick,
+            onQuantityChange
         )
 
         is CartScreenUiState.Empty -> Text("No item in cart")
@@ -49,10 +52,16 @@ fun ShowCartItems(
     cartItems: List<UiProduct>,
     onFavoriteClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
+    onQuantityChange: (Int, Int) -> Unit,
 ) {
     LazyColumn {
         items(cartItems) { item ->
-            CartItem(item = item, onFavoriteClick = onFavoriteClick, onDeleteClick = onDeleteClick)
+            CartItem(
+                item = item,
+                onFavoriteClick = onFavoriteClick,
+                onDeleteClick = onDeleteClick,
+                onQuantityChange = onQuantityChange
+            )
         }
     }
 }

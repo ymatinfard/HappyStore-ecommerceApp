@@ -98,6 +98,15 @@ class HappyStoreViewModel @Inject constructor(
         }
     }
 
+    fun updateProductInCartQuantity(productId: Int, newQuantity: Int) {
+        viewModelScope.launch {
+            store.update { appState ->
+                val currentQuantityMap = appState.inCartProductQuantity
+                appState.copy(inCartProductQuantity = currentQuantityMap + (productId to newQuantity))
+            }
+        }
+    }
+
     val productListUiState = combine(
         productListReducer.reduce(),
         store.state.map { it.productFilterInfo }) { products, filterInfo ->
