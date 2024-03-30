@@ -36,6 +36,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -138,6 +139,8 @@ fun ProductItem(
                         Text(text = item.product.category)
                     }
 
+                    RatingIndicator(modifier = Modifier.padding(start = 6.dp).size(32.dp), item.product.rating.rate)
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -155,6 +158,14 @@ fun ProductItem(
             }
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
+    }
+}
+
+@Composable
+fun RatingIndicator(modifier: Modifier, rate: Float) {
+    Box(contentAlignment = Alignment.Center, modifier = modifier) {
+        CircularProgressIndicator(progress = { rate / 5f })
+        Text(text = rate.toString(), fontSize = 12.sp)
     }
 }
 
