@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.matin.happystore.navigation.HappyStoreNavigation
 import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.HappyStoreViewModel
-import com.matin.happystore.widgets.HappyStoreBottomNavigation
+import com.matin.happystore.ui.widgets.HappyStoreBottomNavigation
 import kotlinx.coroutines.flow.map
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
