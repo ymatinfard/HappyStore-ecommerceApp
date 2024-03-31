@@ -1,4 +1,4 @@
-package com.matin.happystore.di
+package com.matin.happystore.ui.di
 
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.Store
