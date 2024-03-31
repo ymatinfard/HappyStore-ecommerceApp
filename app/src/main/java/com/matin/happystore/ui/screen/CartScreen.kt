@@ -1,13 +1,16 @@
-package com.matin.happystore.ui
+package com.matin.happystore.ui.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import com.matin.happystore.ui.CartScreenUiState
+import com.matin.happystore.ui.HappyStoreViewModel
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.widgets.CartItem
 
@@ -16,7 +19,7 @@ fun CartScreen(viewModel: HappyStoreViewModel) {
 
     val inCartProductsState = viewModel.inCartProductsUiState.collectAsState()
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 
         HandleCartScreen(inCartProductsState.value, onFavoriteClick = { favoriteItemId ->
             viewModel.updateFavoriteIds(favoriteItemId)
