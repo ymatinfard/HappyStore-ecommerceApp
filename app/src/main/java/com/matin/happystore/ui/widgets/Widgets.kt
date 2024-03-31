@@ -1,4 +1,4 @@
-package com.matin.happystore.widgets
+package com.matin.happystore.ui.widgets
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -67,8 +67,7 @@ import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
 import com.matin.happystore.ui.model.UiProduct
-import com.matin.happystore.ui.theme.md_theme_light_primaryContainer
-import com.matin.happystore.utils.clipIfLengthy
+import com.matin.happystore.ui.util.clipIfLengthy
 
 
 @Composable

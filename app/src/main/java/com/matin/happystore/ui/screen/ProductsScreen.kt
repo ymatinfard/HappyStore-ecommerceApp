@@ -21,8 +21,8 @@ import com.matin.happystore.ui.HappyStoreViewModel
 import com.matin.happystore.ui.ProductsScreenUiState
 import com.matin.happystore.ui.model.ProductsAndFilters
 import com.matin.happystore.ui.theme.md_theme_light_background
-import com.matin.happystore.widgets.CategoryFilterChips
-import com.matin.happystore.widgets.ProductItem
+import com.matin.happystore.ui.widgets.CategoryFilterChips
+import com.matin.happystore.ui.widgets.ProductItem
 
 
 @Composable

@@ -1,8 +1,8 @@
-package com.matin.happystore.utils.mapper
+package com.matin.happystore.domain.util
 
 import com.matin.happystore.data.model.ProductEntity
 import com.matin.happystore.domain.model.Product
-import com.matin.happystore.utils.orZero
+import com.matin.happystore.ui.util.orZero
 import java.math.BigDecimal
 import java.math.RoundingMode
 

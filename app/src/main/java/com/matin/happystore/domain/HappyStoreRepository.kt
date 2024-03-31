@@ -1,7 +1,7 @@
 package com.matin.happystore.domain
 
 import com.matin.happystore.domain.model.Product
-import com.matin.happystore.utils.Result
+import com.matin.happystore.domain.util.Result
 
 interface HappyStoreRepository {
     suspend fun getProducts(): Result<List<Product>>

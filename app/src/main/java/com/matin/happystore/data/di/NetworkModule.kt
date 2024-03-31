@@ -1,9 +1,6 @@
-package com.matin.happystore.di
+package com.matin.happystore.data.di
 
 import com.matin.happystore.data.HappyStoreApi
-import com.matin.happystore.data.HappyStoreRepositoryImp
-import com.matin.happystore.domain.HappyStoreRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,13 +19,4 @@ object NetworkModule {
         Retrofit.Builder().baseUrl("https://fakestoreapi.com")
             .addConverterFactory(GsonConverterFactory.create()).build()
             .create(HappyStoreApi::class.java)
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-interface RepositoryModule {
-
-    @Binds
-    @Singleton
-    fun provideRepository(repository: HappyStoreRepositoryImp): HappyStoreRepository
 }

@@ -12,7 +12,7 @@ import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
 import com.matin.happystore.ui.redux.Store
-import com.matin.happystore.utils.Result
+import com.matin.happystore.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
