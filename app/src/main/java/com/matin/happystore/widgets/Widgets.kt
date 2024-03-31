@@ -267,7 +267,7 @@ fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
         Button(
             onClick = { onClick() },
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimaryContainer),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
             Icon(
