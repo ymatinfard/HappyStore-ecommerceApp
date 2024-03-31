@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.matin.happystore.ui.screen.CartScreen
-import com.matin.happystore.ui.HappyStoreViewModel
+import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
 import com.matin.happystore.ui.screen.ProfileScreen
 import com.matin.happystore.ui.screen.ProductsScreen
 

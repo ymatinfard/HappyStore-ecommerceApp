@@ -1,9 +1,9 @@
-package com.matin.happystore.domain
+package com.matin.happystore.ui.stateupdater
 
 import com.matin.happystore.ui.redux.ApplicationState
 import javax.inject.Inject
 
-class ProductFavoriteUpdaterUseCase @Inject constructor() {
+class ProductFavoriteUpdater @Inject constructor() {
 
     operator fun invoke(id: Int, appState: ApplicationState): ApplicationState {
         val updateFavIds = if (appState.favoriteProductId.contains(id)) {

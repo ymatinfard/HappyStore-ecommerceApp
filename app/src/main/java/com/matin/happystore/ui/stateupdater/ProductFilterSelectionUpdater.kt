@@ -1,4 +1,4 @@
-package com.matin.happystore.domain
+package com.matin.happystore.ui.stateupdater
 
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState

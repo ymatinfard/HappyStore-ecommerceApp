@@ -1,6 +1,5 @@
 package com.matin.happystore.ui.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.domain.model.Filter
-import com.matin.happystore.ui.HappyStoreViewModel
+import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
 import com.matin.happystore.ui.ProductsScreenUiState
 import com.matin.happystore.ui.model.ProductsAndFilters
-import com.matin.happystore.ui.theme.md_theme_light_background
 import com.matin.happystore.ui.widgets.CategoryFilterChips
 import com.matin.happystore.ui.widgets.ProductItem
 
