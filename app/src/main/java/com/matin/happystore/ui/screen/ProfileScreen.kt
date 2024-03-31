@@ -1,4 +1,4 @@
-package com.matin.happystore.ui
+package com.matin.happystore.ui.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

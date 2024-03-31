@@ -1,5 +1,6 @@
-package com.matin.happystore.ui
+package com.matin.happystore.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,7 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.domain.model.Filter
+import com.matin.happystore.ui.HappyStoreViewModel
+import com.matin.happystore.ui.ProductsScreenUiState
 import com.matin.happystore.ui.model.ProductsAndFilters
+import com.matin.happystore.ui.theme.md_theme_light_background
 import com.matin.happystore.widgets.CategoryFilterChips
 import com.matin.happystore.widgets.ProductItem
 
@@ -78,7 +83,7 @@ fun ShowProductList(
     onFilterClick: (Filter) -> Unit,
     onAddToCartClick: (Int) -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column {
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
             LazyColumn {

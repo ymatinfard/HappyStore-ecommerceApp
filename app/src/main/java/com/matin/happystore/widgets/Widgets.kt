@@ -29,12 +29,14 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -65,6 +67,7 @@ import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
 import com.matin.happystore.ui.model.UiProduct
+import com.matin.happystore.ui.theme.md_theme_light_primaryContainer
 import com.matin.happystore.utils.clipIfLengthy
 
 
@@ -90,7 +93,8 @@ fun ProductItem(
                 defaultElevation = 6.dp
             ),
             colors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onBackground
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         ) {
             Row {
@@ -98,7 +102,7 @@ fun ProductItem(
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .padding(8.dp)
-                        .size(170.dp)
+                        .size(160.dp)
                 ) {
                     AsyncImage(
                         model = item.product.image,
@@ -112,16 +116,16 @@ fun ProductItem(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Image(
-                            imageVector = Icons.Default.Favorite,
+                            imageVector = if (item.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = null,
                             modifier = Modifier
                                 .clip(
                                     CircleShape
                                 )
-                                .background(color = Color.LightGray)
-                                .padding(2.dp)
+                                .background(color = MaterialTheme.colorScheme.secondary)
+                                .padding(3.dp)
                                 .clickable { onFavoriteClick(item.product.id) },
-                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
+                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.LightGray)
                         )
                     }
 
@@ -139,7 +143,11 @@ fun ProductItem(
                         Text(text = item.product.category)
                     }
 
-                    RatingIndicator(modifier = Modifier.padding(start = 6.dp).size(32.dp), item.product.rating.rate)
+                    RatingIndicator(
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .size(32.dp), item.product.rating.rate
+                    )
 
                     Row(
                         modifier = Modifier
@@ -259,6 +267,7 @@ fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
         Button(
             onClick = { onClick() },
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimaryContainer),
             shape = RoundedCornerShape(12.dp)
         ) {
             Icon(
