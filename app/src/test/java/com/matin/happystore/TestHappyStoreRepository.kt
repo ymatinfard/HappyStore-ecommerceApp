@@ -8,19 +8,7 @@ import java.math.BigDecimal
 class TestHappyStoreRepository : HappyStoreRepository {
 
     override suspend fun getProducts(): Result<List<Product>> {
-
-        val productTest = Product(
-            123,
-            "title",
-            BigDecimal.ZERO,
-            "categoryTest",
-            "descriptionTest",
-            "http://image.test.jpg"
-        )
-
-        val products = listOf(productTest)
-
-        return Result.Success(products)
+        TODO()
     }
 
     override suspend fun getSingleProduct(id: Int): Result<Product> {

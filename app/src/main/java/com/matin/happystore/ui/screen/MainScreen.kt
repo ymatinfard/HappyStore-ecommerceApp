@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.matin.happystore.navigation.HappyStoreNavigation
 import com.matin.happystore.ui.BottomNavigationScreens
-import com.matin.happystore.ui.HappyStoreViewModel
+import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
 import com.matin.happystore.ui.widgets.HappyStoreBottomNavigation
 import kotlinx.coroutines.flow.map
 

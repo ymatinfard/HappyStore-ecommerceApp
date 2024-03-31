@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.matin.happystore.ui.CartScreenUiState
-import com.matin.happystore.ui.HappyStoreViewModel
+import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.ui.widgets.CartItem
 

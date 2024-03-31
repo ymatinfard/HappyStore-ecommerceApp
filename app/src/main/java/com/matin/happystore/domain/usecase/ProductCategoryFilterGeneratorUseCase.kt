@@ -1,4 +1,4 @@
-package com.matin.happystore.domain
+package com.matin.happystore.domain.usecase
 
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.domain.model.Product

@@ -1,18 +1,22 @@
-package com.matin.happystore.ui
+package com.matin.happystore.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matin.happystore.domain.HappyStoreRepository
-import com.matin.happystore.domain.ProductCategoryFilterGeneratorUseCase
-import com.matin.happystore.domain.ProductExpandUpdaterUseCase
-import com.matin.happystore.domain.ProductFavoriteUpdaterUseCase
-import com.matin.happystore.domain.ProductFilterSelectionUpdater
-import com.matin.happystore.domain.ProductInCartItemUpdater
+import com.matin.happystore.domain.usecase.GetProductsUseCase
+import com.matin.happystore.domain.usecase.ProductCategoryFilterGeneratorUseCase
+import com.matin.happystore.ui.stateupdater.ProductExpandUpdater
+import com.matin.happystore.ui.stateupdater.ProductFavoriteUpdater
+import com.matin.happystore.ui.stateupdater.ProductFilterSelectionUpdater
+import com.matin.happystore.ui.stateupdater.ProductInCartItemUpdater
 import com.matin.happystore.domain.model.Filter
 import com.matin.happystore.ui.redux.ApplicationState
 import com.matin.happystore.ui.redux.ApplicationState.ProductFilterInfo
 import com.matin.happystore.ui.redux.Store
 import com.matin.happystore.domain.util.Result
+import com.matin.happystore.ui.CartScreenUiState
+import com.matin.happystore.ui.ProductListReducer
+import com.matin.happystore.ui.ProductListUIStateGenerator
+import com.matin.happystore.ui.ProductsScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -24,11 +28,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HappyStoreViewModel @Inject constructor(
     val store: Store<ApplicationState>,
-    private val repository: HappyStoreRepository,
+    private val getProductsUseCase: GetProductsUseCase,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
     private val productListReducer: ProductListReducer,
-    private val productFavoriteUpdaterUseCase: ProductFavoriteUpdaterUseCase,
-    private val productExpandUpdaterUseCase: ProductExpandUpdaterUseCase,
+    private val productFavoriteUpdaterUseCase: ProductFavoriteUpdater,
+    private val productExpandUpdaterUseCase: ProductExpandUpdater,
     private val productFilterSelectionUpdater: ProductFilterSelectionUpdater,
     private val productInCartItemUpdater: ProductInCartItemUpdater,
     val productListUIStateGenerator: ProductListUIStateGenerator,
@@ -46,7 +50,7 @@ class HappyStoreViewModel @Inject constructor(
 
     private fun getProducts() {
         viewModelScope.launch {
-            when (val result = repository.getProducts()) {
+            when (val result = getProductsUseCase()) {
                 is Result.Success -> {
                     store.update { applicationState ->
                         return@update applicationState.copy(
