@@ -30,7 +30,7 @@ fun MainScreen() {
     )
 
     val viewModel = hiltViewModel<HappyStoreViewModel>()
-    val inCartProductsState = viewModel.store.state.map { it.inCartProductIds }.collectAsState(initial = emptySet())
+    val inCartItemsCount = viewModel.inCartItemsCount.collectAsState()
 
     Scaffold(
         bottomBar = {
@@ -38,7 +38,7 @@ fun MainScreen() {
                 navController = navController,
                 selectedTabIndex = tabIndex,
                 bottomNavItems = bottomNavItems,
-                inCartProductsState.value.size,
+                inCartItemsCount.value,
             )
         }
     ) {
