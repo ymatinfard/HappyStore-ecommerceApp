@@ -1,0 +1,14 @@
+name: On Pull Request Opened
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  lint:
+    name: Lint debug variant
+    uses: ./.github/workflows/lint_debug_job.yml
+
+  test:
+    name: Test debug variant
+    uses: ./.github/workflows/test_debug_job.yml
