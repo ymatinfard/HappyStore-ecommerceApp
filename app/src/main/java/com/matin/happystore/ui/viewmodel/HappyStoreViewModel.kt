@@ -31,8 +31,8 @@ class HappyStoreViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
     private val productListReducer: ProductListReducer,
-    private val productFavoriteUpdaterUseCase: ProductFavoriteUpdater,
-    private val productExpandUpdaterUseCase: ProductExpandUpdater,
+    private val productFavoriteUpdater: ProductFavoriteUpdater,
+    private val productExpandUpdater: ProductExpandUpdater,
     private val productFilterSelectionUpdater: ProductFilterSelectionUpdater,
     private val productInCartItemUpdater: ProductInCartItemUpdater,
     val productListUIStateGenerator: ProductListUIStateGenerator,
@@ -73,7 +73,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateFavoriteIds(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                productFavoriteUpdaterUseCase(id, appState)
+                productFavoriteUpdater(id, appState)
             }
         }
     }
@@ -81,7 +81,7 @@ class HappyStoreViewModel @Inject constructor(
     fun updateProductExpand(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
-                productExpandUpdaterUseCase(id, appState)
+                productExpandUpdater(id, appState)
             }
         }
     }
