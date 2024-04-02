@@ -9,7 +9,7 @@ import java.math.BigDecimal
 class ProductFavoriteUpdaterTest {
 
     @Test
-    fun productIsFavorite() {
+    fun favoriteProductsShouldBeUpdatedAfterAddingNewFavorite() {
         val productFavoriteUpdater = ProductFavoriteUpdater()
         val productsTest = listOf(
             Product(
