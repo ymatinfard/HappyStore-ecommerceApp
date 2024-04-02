@@ -10,7 +10,7 @@ import java.math.BigDecimal
 class ProductExpandUpdaterTest {
 
     @Test
-    fun productIsExpanded() {
+    fun productExpandStateShouldBeUpdatedAfterNewOneExpanded() {
         val productExpandUpdater = ProductExpandUpdater()
         val productsTest = listOf(
             Product(
