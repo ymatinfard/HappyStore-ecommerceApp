@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: TestDebug
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "feature/show-product-list-mvi" branch
+  # push:
+  #   branches: [ "feature/show-product-list-mvi" ]
+  # pull_request:
+  #   branches: [ "feature/show-product-list-mvi" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_call:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Make gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Run testDebug
+        run: ./gradlew testDebugUnitTest
