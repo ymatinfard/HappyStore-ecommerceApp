@@ -36,4 +36,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: ${{ input.release_notes }}
+          releaseNotes: ${{ inputs.release_notes }}
