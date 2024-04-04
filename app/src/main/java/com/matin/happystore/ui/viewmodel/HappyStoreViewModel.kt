@@ -95,7 +95,7 @@ class HappyStoreViewModel @Inject constructor(
         }
     }
 
-    fun updateInCartIds(id: Int) {
+    fun updateInCartItemIds(id: Int) {
         viewModelScope.launch {
             store.update { appState ->
                 productInCartItemUpdater(id, appState)
