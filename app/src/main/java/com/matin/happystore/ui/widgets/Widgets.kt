@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -59,6 +60,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -352,13 +354,19 @@ fun CartItem(
                             .fillMaxWidth()
                             .padding(end = 10.dp, bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
-                        CartItemQuantity(
-                            item.inCartQuantity,
-                            item.product.id,
-                            onQuantityChange
-                        )
+                        val price = item.product.price * item.inCartQuantity.toBigDecimal()
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = "$${price}")
+                            Spacer(modifier = Modifier.height(6.dp))
+                            CartItemQuantity(
+                                item.inCartQuantity,
+                                item.product.id,
+                                onQuantityChange
+                            )
+                        }
+
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = null,
@@ -388,7 +396,7 @@ fun CartItemQuantity(
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.onPrimary
+        color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -401,6 +409,7 @@ fun CartItemQuantity(
                 text = quantity.toString(),
                 modifier = Modifier
                     .padding(start = 4.dp, end = 4.dp),
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 16.sp
             )
             Icon(
@@ -411,6 +420,34 @@ fun CartItemQuantity(
                 },
                 contentDescription = null,
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TotalCartItemsPrice(cartItems: List<UiProduct> = emptyList()) {
+    val totalPrice = cartItems.sumOf { it.product.price * it.inCartQuantity.toBigDecimal() }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            Text(text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text = "${cartItems.size} Items for $$totalPrice")
+        }
+
+        Button(
+            onClick = { /*TODO*/ },
+            shape = RoundedCornerShape(0),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text(text = "Checkout")
         }
     }
 }
