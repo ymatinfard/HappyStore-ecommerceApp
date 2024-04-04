@@ -40,7 +40,7 @@ fun ProductsScreen(
                 viewModel.updateFilterSelection(filter)
             },
             onAddToCartClick = { productId ->
-                viewModel.updateInCartIds(productId)
+                viewModel.updateInCartItemIds(productId)
             })
     }
 }
