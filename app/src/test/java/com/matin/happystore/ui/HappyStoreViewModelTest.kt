@@ -173,7 +173,7 @@ class HappyStoreViewModelTest {
             )
         )
 
-        viewModel.updateInCartIds(123)
+        viewModel.updateInCartItemIds(123)
 
         assertEquals(CartScreenUiState.Data(inCartProducts), viewModel.inCartProductsUiState.value)
 
@@ -191,9 +191,20 @@ class HappyStoreViewModelTest {
 
     @Test
     fun inCartProductsUpdateAfterAddingProductsToCart() = runTest {
-        viewModel.updateInCartIds(124)
+        viewModel.updateInCartItemIds(124)
         viewModel.store.read { appState ->
             assertTrue(appState.inCartProductIds.contains(124))
+        }
+    }
+
+    @Test
+    fun productQuantityResetAfterRemovingFromCart() = runTest {
+        viewModel.updateInCartItemIds(124)
+        viewModel.updateProductInCartQuantity(124, 5)
+        viewModel.updateInCartItemIds(124)
+
+        viewModel.store.read { appState ->
+            assertTrue(appState.inCartProductQuantity[124] == 1)
         }
     }
 }
