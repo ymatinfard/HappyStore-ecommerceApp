@@ -17,10 +17,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -70,6 +73,7 @@ import com.matin.happystore.ui.BottomNavigationScreens
 import com.matin.happystore.ui.model.UiFilter
 import com.matin.happystore.ui.model.UiProduct
 import com.matin.happystore.ui.util.clipIfLengthy
+import com.matin.happystore.ui.util.shimmerEffect
 
 
 @Composable
@@ -424,7 +428,6 @@ fun CartItemQuantity(
     }
 }
 
-@Preview
 @Composable
 fun TotalCartItemsPrice(cartItems: List<UiProduct> = emptyList()) {
     val totalPrice = cartItems.sumOf { it.product.price * it.inCartQuantity.toBigDecimal() }
@@ -448,6 +451,59 @@ fun TotalCartItemsPrice(cartItems: List<UiProduct> = emptyList()) {
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(text = "Checkout")
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ShowProductListShimmerOrContent(
+    isLoading: Boolean = true,
+    contentAfterLoading: @Composable () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
+    if (isLoading) {
+        LazyColumn {
+            items(6) {
+                ProductShimmerItem(modifier = modifier)
+            }
+        }
+    } else {
+        contentAfterLoading()
+    }
+}
+
+@Composable
+private fun ProductShimmerItem(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            .height(140.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(140.dp)
+                .shimmerEffect()
+        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(26.dp)
+                    .padding(start = 6.dp)
+                    .fillMaxWidth()
+                    .shimmerEffect()
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Box(
+                    modifier = Modifier
+                        .width(52.dp)
+                        .height(32.dp)
+                        .shimmerEffect()
+                )
+            }
         }
     }
 }
