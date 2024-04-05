@@ -21,6 +21,7 @@ import com.matin.happystore.ui.ProductsScreenUiState
 import com.matin.happystore.ui.model.ProductsAndFilters
 import com.matin.happystore.ui.widgets.CategoryFilterChips
 import com.matin.happystore.ui.widgets.ProductItem
+import com.matin.happystore.ui.widgets.ShowProductListShimmerOrContent
 
 
 @Composable
@@ -53,17 +54,20 @@ fun HandleProductScreen(
     onFilterClick: (Filter) -> Unit = {},
     onAddToCartClick: (Int) -> Unit = {},
 ) {
-    when (uiProductState) {
-        is ProductsScreenUiState.Success -> ShowProductList(
-            productsAndFilters = uiProductState.data,
-            onFavoriteClick = onFavoriteClick,
-            onProductClick = onProductClick,
-            onFilterClick = onFilterClick,
-            onAddToCartClick = onAddToCartClick
-        )
-        is ProductsScreenUiState.Loading -> ShowLoading()
-        is ProductsScreenUiState.Error -> TODO()
-    }
+
+    ShowProductListShimmerOrContent(
+        isLoading = (uiProductState !is ProductsScreenUiState.Success),
+        contentAfterLoading = {
+            ShowProductList(
+                productsAndFilters = (uiProductState as ProductsScreenUiState.Success).data,
+                onFavoriteClick = onFavoriteClick,
+                onProductClick = onProductClick,
+                onFilterClick = onFilterClick,
+                onAddToCartClick = onAddToCartClick
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    )
 }
 
 @Composable
