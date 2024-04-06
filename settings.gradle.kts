@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HappyStore"
 include(":app")
+include(":feature:products")
