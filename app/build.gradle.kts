@@ -1,18 +1,17 @@
+import com.matin.happystore.HappyStoreBuildType
+
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.happystore.android.application)
+    alias(libs.plugins.happystore.android.compose)
     alias(libs.plugins.firebase)
     alias(libs.plugins.happystore.android.hilt)
 }
 
 android {
     namespace = "com.matin.happystore"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.matin.happystore"
-        minSdk = 24
-        targetSdk = 34
         versionCode = 6
         versionName = "2.0.1"
 
@@ -23,27 +22,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = HappyStoreBuildType.DEBUG.appIdSuffix
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            applicationIdSuffix = HappyStoreBuildType.RELEASE.appIdSuffix
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

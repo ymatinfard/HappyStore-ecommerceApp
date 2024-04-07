@@ -43,5 +43,13 @@ gradlePlugin {
             id = "happystore.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
+        register("androidApplication") {
+            id = "happystore.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+        register("androidCompose") {
+            id = "happystore.android.compose"
+            implementationClass ="AndroidApplicationComposeConventionPlugin"
+        }
     }
 }
