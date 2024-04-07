@@ -49,7 +49,11 @@ gradlePlugin {
         }
         register("androidCompose") {
             id = "happystore.android.compose"
-            implementationClass ="AndroidApplicationComposeConventionPlugin"
+            implementationClass = "AndroidApplicationComposeConventionPlugin"
+        }
+        register("jvmLibrary") {
+            id = "happystore.jvm.library"
+            implementationClass = "JvmLibraryConventionPlugin"
         }
     }
 }

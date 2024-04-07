@@ -3,8 +3,8 @@ import com.matin.happystore.HappyStoreBuildType
 plugins {
     alias(libs.plugins.happystore.android.application)
     alias(libs.plugins.happystore.android.compose)
-    alias(libs.plugins.firebase)
     alias(libs.plugins.happystore.android.hilt)
+    alias(libs.plugins.firebase)
 }
 
 android {
