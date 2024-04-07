@@ -25,3 +25,4 @@ rootProject.name = "HappyStore"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":feature:products")
+include(":core:data")

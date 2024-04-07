@@ -82,8 +82,9 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 
-happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
-happystore-android-hilt = { id = "happystore.android.hilt", version = "unspecified" }
 happystore-android-application = { id = "happystore.android.application", version = "unspecified" }
+happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
+happystore-android-library = { id = "happystore.android.library", version = "unspecified"}
+happystore-android-hilt = { id = "happystore.android.hilt", version = "unspecified" }
 happystore-android-compose = { id = "happystore.android.compose", version = "unspecified" }
 
