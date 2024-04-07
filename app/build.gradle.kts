@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias (libs.plugins.hilt)
-    alias (libs.plugins.ksp)
     alias(libs.plugins.firebase)
+    alias(libs.plugins.happystore.android.hilt)
 }
 
 android {
@@ -14,8 +13,8 @@ android {
         applicationId = "com.matin.happystore"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 6
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -54,6 +53,8 @@ android {
 
 dependencies {
 
+    implementation(projects.feature.products)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -73,11 +74,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    ksp(libs.hilt.android.compiler)
+    ksp(libs.hilt.compiler)
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("junit:junit:4.12")
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(kotlin("test"))
