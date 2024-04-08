@@ -2,7 +2,7 @@ import com.matin.happystore.HappyStoreBuildType
 
 plugins {
     alias(libs.plugins.happystore.android.application)
-    alias(libs.plugins.happystore.android.compose)
+    alias(libs.plugins.happystore.android.application.compose)
     alias(libs.plugins.happystore.android.hilt)
     alias(libs.plugins.firebase)
 }
@@ -55,14 +55,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.coil.compose)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     ksp(libs.hilt.compiler)

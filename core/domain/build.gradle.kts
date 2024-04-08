@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.happystore.android.library)
     alias(libs.plugins.happystore.android.hilt)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -9,7 +10,8 @@ android {
 
 dependencies {
 
-    implementation(projects.core.data)
-    implementation(projects.core.model)
+    api(projects.core.data)
+    api(projects.core.model)
     implementation(projects.core.common)
+    implementation(libs.javax.inject)
 }

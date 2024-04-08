@@ -31,6 +31,10 @@ androidDesugarJdk = "2.0.4"
 androidxComposeCompiler = "1.5.8"
 jetbrainsKotlinJvm = "1.9.0"
 kotlin2 = "1.9.0"
+material3Android = "1.2.1"
+androidxHiltNavigationCompose = "1.2.0"
+androidxLifecycle = "2.7.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,17 +53,19 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtimeTesting = { group = "androidx.lifecycle", name = "lifecycle-runtime-testing", version.ref = "androidxLifecycle" }
 
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdk" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
@@ -75,6 +81,11 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 work-testing = { group = "androidx.work", name = "work-testing", version = "2.9.0" }
+javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -88,7 +99,8 @@ happystore-android-application = { id = "happystore.android.application", versio
 happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
 happystore-android-library = { id = "happystore.android.library", version = "unspecified"}
 happystore-android-hilt = { id = "happystore.android.hilt", version = "unspecified" }
-happystore-android-compose = { id = "happystore.android.compose", version = "unspecified" }
+happystore-android-application-compose = { id = "happystore.android.application.compose", version = "unspecified" }
+happystore-android-library-compose = { id = "happystore.android.library.compose", version = "unspecified" }
 happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified"}
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
 
