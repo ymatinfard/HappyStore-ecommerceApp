@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.happystore.android.feature)
-    alias(libs.plugins.happystore.android.hilt)
+    alias(libs.plugins.happystore.android.library.compose)
 }
 
 android {

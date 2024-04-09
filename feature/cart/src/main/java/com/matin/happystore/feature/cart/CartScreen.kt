@@ -13,14 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.matin.happystore.ui.CartScreenUiState
-import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
-import com.matin.happystore.ui.model.UiProduct
-import com.matin.happystore.ui.widgets.CartItem
-import com.matin.happystore.ui.widgets.TotalCartItemsPrice
+import com.matin.happystore.core.model.ui.UiProduct
+import com.matin.happystore.core.ui.CartItem
+import com.matin.happystore.core.ui.TotalCartItemsPrice
+import com.matin.happystore.feature.cart.CartScreenUiState
+import com.matin.happystore.feature.cart.CartViewModel
+
 
 @Composable
-fun CartScreen(viewModel: HappyStoreViewModel) {
+fun CartScreen(viewModel: CartViewModel) {
 
     val inCartProductsState = viewModel.inCartProductsUiState.collectAsState()
 

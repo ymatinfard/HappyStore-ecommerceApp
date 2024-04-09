@@ -16,5 +16,5 @@ dependencies {
     api(libs.androidx.compose.foundation)
     api(libs.androidx.compose.foundation.layout)
     api(libs.androidx.compose.material3)
-    implementation(libs.coil.kt.compose)
+    api(libs.coil.kt.compose)
 }

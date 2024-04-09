@@ -1,4 +1,4 @@
-package com.matin.happystore.ui.screen
+package com.matin.products
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.matin.happystore.domain.model.Filter
-import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
-import com.matin.happystore.ui.ProductsScreenUiState
-import com.matin.happystore.ui.model.ProductsAndFilters
-import com.matin.happystore.ui.widgets.CategoryFilterChips
-import com.matin.happystore.ui.widgets.ProductItem
-import com.matin.happystore.ui.widgets.ShowProductListShimmerOrContent
+import com.matin.happystore.core.model.Filter
+import com.matin.happystore.core.model.ui.ProductsAndFilters
+import com.matin.happystore.core.ui.CategoryFilterChips
+import com.matin.happystore.core.ui.ProductItem
+import com.matin.happystore.core.ui.ShowProductListShimmerOrContent
 
 
 @Composable

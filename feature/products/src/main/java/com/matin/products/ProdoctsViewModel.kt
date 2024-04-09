@@ -8,8 +8,7 @@ import com.matin.happystore.core.redux.ApplicationState
 import com.matin.happystore.core.redux.Store
 import com.matin.products.stateupdater.ProductFilterSelectionUpdater
 import com.matin.products.stateupdater.ProductExpandUpdater
-import com.matin.products.stateupdater.ProductFavoriteUpdater
-import com.matin.products.stateupdater.ProductInCartItemUpdater
+import com.matin.happystore.core.ui.ProductFavoriteUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,11 +19,13 @@ import kotlinx.coroutines.launch
 import com.matin.happystore.core.common.Result
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.ui.ProductsAndFilters
+import com.matin.happystore.core.ui.ProductInCartItemUpdater
+import com.matin.happystore.core.ui.ProductListReducer
 import javax.inject.Inject
 
 @HiltViewModel
 class HappyStoreViewModel @Inject constructor(
-    val store: Store<ApplicationState>,
+    private val store: Store<ApplicationState>,
     private val getProductsUseCase: GetProductsUseCase,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
     private val productListReducer: ProductListReducer,
@@ -99,15 +100,6 @@ class HappyStoreViewModel @Inject constructor(
         }
     }
 
-    fun updateProductInCartQuantity(productId: Int, newQuantity: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                val currentQuantityMap = appState.inCartProductQuantity
-                appState.copy(inCartProductQuantity = currentQuantityMap + (productId to newQuantity))
-            }
-        }
-    }
-
     val productListUiState = combine(
         productListReducer.reduce(),
         store.state.map { it.productFilterInfo }) { products, filterInfo ->
@@ -117,20 +109,6 @@ class HappyStoreViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ProductsScreenUiState.Loading
     )
-
-//    val inCartProductsUiState = productListReducer.reduce().map { uiProducts ->
-//        val inCartProducts = uiProducts.filter { it.isInCart }
-//
-//        if (inCartProducts.isNotEmpty()) {
-//            CartScreenUiState.Data(inCartProducts)
-//        } else {
-//            CartScreenUiState.Empty
-//        }
-//    }.stateIn(
-//        scope = viewModelScope,
-//        started = SharingStarted.WhileSubscribed(5_000),
-//        initialValue = CartScreenUiState.Empty
-//    )
 
     val inCartItemsCount: StateFlow<Int> = store.state.map { it.inCartProductIds.size }.stateIn(
         scope = viewModelScope,

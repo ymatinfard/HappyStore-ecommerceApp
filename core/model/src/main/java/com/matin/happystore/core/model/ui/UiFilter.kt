@@ -1,6 +1,6 @@
 package com.matin.happystore.core.model.ui
 
-import com.matin.happystore.domain.model.Filter
+import com.matin.happystore.core.model.Filter
 
 data class UiFilter (
     val filter: Filter,

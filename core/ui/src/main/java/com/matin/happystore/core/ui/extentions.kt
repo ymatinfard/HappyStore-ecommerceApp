@@ -1,4 +1,4 @@
-package com.matin.happystore.ui.util
+package com.matin.happystore.core.ui
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.geometry.Offset
 
 fun String.clipIfLengthy() = if (this.length > 20) this.take(20).plus("...") else this
-fun Int?.orZero() = this ?: 0
-fun Float?.orZero() = this ?: 0f
 
 fun Modifier.shimmerEffect(): Modifier = composed {
     var size by remember {

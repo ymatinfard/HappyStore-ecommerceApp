@@ -1,6 +1,6 @@
-package com.matin.products.stateupdater
+package com.matin.happystore.core.ui
 
-import com.matin.happystore.ui.redux.ApplicationState
+import com.matin.happystore.core.redux.ApplicationState
 import javax.inject.Inject
 
 class ProductInCartItemUpdater @Inject constructor() {

@@ -1,6 +1,6 @@
 package com.matin.happystore.core.model.ui
 
-import com.matin.happystore.domain.model.Product
+import com.matin.happystore.core.model.Product
 
 data class UiProduct (
     val product: Product,
