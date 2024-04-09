@@ -45,6 +45,8 @@ android {
 dependencies {
 
     implementation(projects.feature.products)
+    implementation(projects.feature.cart)
+    implementation(projects.feature.profile)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
