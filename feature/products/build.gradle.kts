@@ -8,8 +8,10 @@ android {
 }
 
 dependencies {
+
     implementation(projects.core.domain)
     implementation(projects.core.redux)
     implementation(projects.core.model)
     implementation(projects.core.common)
+    implementation(projects.core.ui)
 }
