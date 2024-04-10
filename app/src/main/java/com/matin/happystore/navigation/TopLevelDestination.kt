@@ -11,25 +11,22 @@ import com.matin.happystore.feature.cart.navigation.CART_ROUTE
 import com.matin.happystore.feature.profile.navigation.PROFILE_ROUTE
 import com.matin.products.navigation.PRODUCTS_ROUTE
 
-sealed class TopLevelDestination(
+enum class TopLevelDestination(
     val route: String,
     @StringRes val resourceId: Int,
     val icon: ImageVector,
 ) {
-
-    data object Products : TopLevelDestination(
+    Products(
         PRODUCTS_ROUTE,
         R.string.products,
         Icons.AutoMirrored.Filled.List
-    )
-
-    data object Cart : TopLevelDestination(
+    ),
+    Cart(
         CART_ROUTE,
         R.string.shopping_cart,
         Icons.Default.ShoppingCart
-    )
-
-    data object Profile : TopLevelDestination(
+    ),
+    Profile(
         PROFILE_ROUTE,
         R.string.profile,
         Icons.Default.Person
