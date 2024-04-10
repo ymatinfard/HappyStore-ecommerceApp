@@ -5,14 +5,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.matin.happystore.feature.cart.navigation.cartScreen
 import com.matin.happystore.feature.profile.navigation.profileScreen
+import com.matin.happystore.ui.HappyStoreAppState
 import com.matin.products.navigation.PRODUCTS_ROUTE
 import com.matin.products.navigation.productsScreen
 
 @Composable
-fun HappyStoreNavHost(navController: NavHostController) {
+fun HappyStoreNavHost(appState: HappyStoreAppState) {
 
     NavHost(
-        navController = navController,
+        navController = appState.navController,
         startDestination = PRODUCTS_ROUTE
     ) {
         productsScreen()

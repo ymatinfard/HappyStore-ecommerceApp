@@ -1,4 +1,4 @@
-package com.matin.happystore.ui.screen
+package com.matin.happystore.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,32 +11,31 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.matin.happystore.navigation.HappyStoreNavigation
-import com.matin.happystore.ui.BottomNavigationScreens
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import com.matin.happystore.navigation.HappyStoreNavHost
+import com.matin.happystore.navigation.TopLevelDestination
 import com.matin.products.HappyStoreViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun HappyStoreApp(appState: HappyStoreAppState) {
+
 
     val tabIndex = rememberSaveable {
         mutableIntStateOf(0)
     }
 
     val bottomNavItems = listOf(
-        BottomNavigationScreens.Products,
-        BottomNavigationScreens.Cart,
-        BottomNavigationScreens.Profile,
+        TopLevelDestination.Products,
+        TopLevelDestination.Cart,
+        TopLevelDestination.Profile,
     )
 
     val viewModel = hiltViewModel<HappyStoreViewModel>()
@@ -44,23 +43,23 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            HappyStoreBottomNavigation(
-                navController = navController,
-                selectedTabIndex = tabIndex,
+            HappyStoreBottomNavigationBar(
+                currentDestination = appState.currentDestination,
+                onNavigationToDestination = appState::navigateToTopLevelDestination,
                 bottomNavItems = bottomNavItems,
                 inCartItemsCount.value,
             )
         }
     ) {
-        HappyStoreNavigation(navController)
+        HappyStoreNavHost(appState)
     }
 }
 
 @Composable
-fun HappyStoreBottomNavigation(
-    navController: NavController,
-    selectedTabIndex: MutableState<Int>,
-    bottomNavItems: List<BottomNavigationScreens>,
+fun HappyStoreBottomNavigationBar(
+    currentDestination: NavDestination?,
+    onNavigationToDestination: (TopLevelDestination) -> Unit,
+    bottomNavItems: List<TopLevelDestination>,
     inCartProductsCount: Int,
 ) {
     NavigationBar(
@@ -68,29 +67,32 @@ fun HappyStoreBottomNavigation(
             .fillMaxWidth()
             .height(50.dp)
     ) {
-        bottomNavItems.forEachIndexed { index, bottomNavItem ->
+        bottomNavItems.forEach { destination ->
             NavigationBarItem(
-                selected = selectedTabIndex.value == index,
+                selected = currentDestination.isTopLevelDestinationInHierarchy(destination),
                 onClick = {
-                    selectedTabIndex.value = index
-                    navController.navigate(bottomNavItem.route)
+                    onNavigationToDestination(destination)
                 },
                 icon = {
                     when {
-                        (inCartProductsCount > 0) && bottomNavItem is BottomNavigationScreens.Cart -> {
+                        (inCartProductsCount > 0) && destination is TopLevelDestination.Cart -> {
                             BadgedBox(badge = {
                                 Badge {
                                     Text(text = "$inCartProductsCount")
                                 }
                             }) {
-                                Icon(imageVector = bottomNavItem.icon, contentDescription = null)
+                                Icon(imageVector = destination.icon, contentDescription = null)
                             }
                         }
 
-                        else -> Icon(imageVector = bottomNavItem.icon, contentDescription = null)
+                        else -> Icon(imageVector = destination.icon, contentDescription = null)
                     }
                 }
             )
         }
     }
+}
+
+private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination): Boolean {
+    return this?.hierarchy?.any { it.route == destination.route } ?: false
 }
