@@ -20,7 +20,7 @@ class CartViewModel @Inject constructor(
     private val productListReducer: ProductListReducer,
     private val productInCartItemUpdater: ProductInCartItemUpdater,
     private val productFavoriteUpdater: ProductFavoriteUpdater,
-    private val store: Store<ApplicationState>,
+    val store: Store<ApplicationState>,
 ) : ViewModel() {
 
     val inCartProductsUiState = productListReducer.reduce().map { uiProducts ->
