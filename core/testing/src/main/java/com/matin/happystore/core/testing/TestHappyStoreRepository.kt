@@ -1,8 +1,8 @@
-package com.matin.happystore
+package com.matin.happystore.core.testing
 
-import com.matin.happystore.domain.HappyStoreRepository
-import com.matin.happystore.domain.model.Product
-import com.matin.happystore.domain.util.Result
+import com.matin.data.HappyStoreRepository
+import com.matin.happystore.core.common.Result
+import com.matin.happystore.core.model.Product
 import java.math.BigDecimal
 
 class TestHappyStoreRepository : HappyStoreRepository {
