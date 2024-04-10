@@ -14,4 +14,5 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.common)
     implementation(projects.core.ui)
+    implementation(projects.core.testing)
 }

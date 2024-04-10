@@ -1,17 +1,16 @@
-package com.matin.happystore.ui.stateupdater
+package com.matin.happystore.core.ui
 
-import com.matin.happystore.domain.model.Product
-import com.matin.happystore.ui.redux.ApplicationState
+import com.matin.happystore.core.model.Product
+import com.matin.happystore.core.redux.ApplicationState
 import org.junit.Assert.assertTrue
-
 import org.junit.Test
 import java.math.BigDecimal
 
-class ProductExpandUpdaterTest {
+class ProductFavoriteUpdaterTest {
 
     @Test
-    fun productExpandStateShouldBeUpdatedAfterNewOneExpanded() {
-        val productExpandUpdater = ProductExpandUpdater()
+    fun favoriteProductsShouldBeUpdatedAfterAddingNewFavorite() {
+        val productFavoriteUpdater = ProductFavoriteUpdater()
         val productsTest = listOf(
             Product(
                 123,
@@ -32,10 +31,10 @@ class ProductExpandUpdaterTest {
                 Product.Rating(4.4f, 2000)
             )
         )
-        val appState = ApplicationState(products = productsTest, expandedProductIds = emptySet())
 
-        val newAppState = productExpandUpdater(124, appState)
+        val appState = ApplicationState(products = productsTest)
+        val newAppState = productFavoriteUpdater(124, appState)
 
-        assertTrue(newAppState.expandedProductIds.contains(124))
+        assertTrue(newAppState.favoriteProductId.contains(124))
     }
 }

@@ -1,7 +1,8 @@
-package com.matin.happystore.ui.stateupdater
+package com.matin.products
 
-import com.matin.happystore.domain.model.Filter
-import com.matin.happystore.ui.redux.ApplicationState
+import com.matin.happystore.core.model.Filter
+import com.matin.happystore.core.redux.ApplicationState
+import com.matin.products.stateupdater.ProductFilterSelectionUpdater
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

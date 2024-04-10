@@ -1,23 +1,23 @@
-package com.matin.happystore.ui
+package com.matin.products
 
 
-import com.matin.happystore.MainDispatcherRule
-import com.matin.happystore.TestHappyStoreRepository
-import com.matin.happystore.domain.HappyStoreRepository
-import com.matin.happystore.domain.model.Filter
-import com.matin.happystore.domain.model.Product
-import com.matin.happystore.domain.usecase.GetProductsUseCase
-import com.matin.happystore.domain.usecase.ProductCategoryFilterGeneratorUseCase
-import com.matin.happystore.ui.model.ProductsAndFilters
-import com.matin.happystore.ui.model.UiFilter
-import com.matin.happystore.ui.model.UiProduct
-import com.matin.happystore.ui.redux.ApplicationState
-import com.matin.happystore.ui.redux.Store
-import com.matin.happystore.ui.stateupdater.ProductExpandUpdater
-import com.matin.happystore.ui.stateupdater.ProductFavoriteUpdater
-import com.matin.happystore.ui.stateupdater.ProductFilterSelectionUpdater
-import com.matin.happystore.ui.stateupdater.ProductInCartItemUpdater
-import com.matin.happystore.ui.viewmodel.HappyStoreViewModel
+import com.matin.data.HappyStoreRepository
+import com.matin.happystore.core.domain.GetProductsUseCase
+import com.matin.happystore.core.domain.ProductCategoryFilterGeneratorUseCase
+import com.matin.happystore.core.model.Filter
+import com.matin.happystore.core.model.Product
+import com.matin.happystore.core.model.ui.ProductsAndFilters
+import com.matin.happystore.core.model.ui.UiFilter
+import com.matin.happystore.core.model.ui.UiProduct
+import com.matin.happystore.core.redux.ApplicationState
+import com.matin.happystore.core.redux.Store
+import com.matin.happystore.core.testing.MainDispatcherRule
+import com.matin.happystore.core.testing.TestHappyStoreRepository
+import com.matin.happystore.core.ui.ProductFavoriteUpdater
+import com.matin.happystore.core.ui.ProductInCartItemUpdater
+import com.matin.happystore.core.ui.ProductListReducer
+import com.matin.products.stateupdater.ProductExpandUpdater
+import com.matin.products.stateupdater.ProductFilterSelectionUpdater
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -31,12 +31,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 
-class HappyStoreViewModelTest {
+class ProductsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var viewModel: HappyStoreViewModel
+    private lateinit var viewModel: ProductsViewModel
     private val repository: HappyStoreRepository = TestHappyStoreRepository()
 
     @Before
@@ -44,7 +44,7 @@ class HappyStoreViewModelTest {
 
         val appState = ApplicationState()
         val store = Store(appState)
-        viewModel = HappyStoreViewModel(
+        viewModel = ProductsViewModel(
             store,
             GetProductsUseCase(repository),
             ProductCategoryFilterGeneratorUseCase(),
@@ -151,60 +151,10 @@ class HappyStoreViewModelTest {
     }
 
     @Test
-    fun inCartProductUiStateIsInitiallyIsEmpty() {
-        assertEquals(viewModel.inCartProductsUiState.value, CartScreenUiState.Empty)
-    }
-
-    @Test
-    fun inCartProductUiStateLoaded() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.inCartProductsUiState.collect() }
-        val inCartProducts = listOf(
-            UiProduct(
-                Product(
-                    123,
-                    "title1",
-                    BigDecimal("23.3"),
-                    "Jewerly",
-                    "description1",
-                    "http://example.png",
-                    Product.Rating(3.4f, 1000)
-                ), isFavorite = false, isExpended = false, isInCart = true, 1
-            )
-        )
-
-        viewModel.updateInCartItemIds(123)
-
-        assertEquals(CartScreenUiState.Data(inCartProducts), viewModel.inCartProductsUiState.value)
-
-        collectJob.cancel()
-    }
-
-    @Test
-    fun productQuantityUpdatesAfterChangingQuantity() = runTest {
-        viewModel.updateProductInCartQuantity(123, 3)
-
-        viewModel.store.read { appState ->
-            assertEquals(3, appState.inCartProductQuantity[123])
-        }
-    }
-
-    @Test
     fun inCartProductsUpdateAfterAddingProductsToCart() = runTest {
         viewModel.updateInCartItemIds(124)
         viewModel.store.read { appState ->
             assertTrue(appState.inCartProductIds.contains(124))
-        }
-    }
-
-    @Test
-    fun productQuantityResetAfterRemovingFromCart() = runTest {
-        viewModel.updateInCartItemIds(124)
-        viewModel.updateProductInCartQuantity(124, 5)
-        viewModel.updateInCartItemIds(124)
-
-        viewModel.store.read { appState ->
-            assertTrue(appState.inCartProductQuantity[124] == 1)
         }
     }
 }
