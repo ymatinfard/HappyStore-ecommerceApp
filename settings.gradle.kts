@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -20,4 +21,18 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "HappyStore"
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
+include(":feature:products")
+include(":core:data")
+include(":core:network")
+include(":core:model")
+include(":core:common")
+include(":core:redux")
+include(":core:domain")
+include(":core:designsystem")
+include(":core:ui")
+include(":core:testing")
+include(":feature:cart")
+include(":feature:profile")
