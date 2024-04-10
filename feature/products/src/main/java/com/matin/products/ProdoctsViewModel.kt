@@ -24,8 +24,8 @@ import com.matin.happystore.core.ui.ProductListReducer
 import javax.inject.Inject
 
 @HiltViewModel
-class HappyStoreViewModel @Inject constructor(
-    private val store: Store<ApplicationState>,
+class ProductsViewModel @Inject constructor(
+    val store: Store<ApplicationState>,
     private val getProductsUseCase: GetProductsUseCase,
     private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
     private val productListReducer: ProductListReducer,

@@ -12,8 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,24 +19,13 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.matin.happystore.navigation.HappyStoreNavHost
 import com.matin.happystore.navigation.TopLevelDestination
-import com.matin.products.HappyStoreViewModel
+import com.matin.products.ProductsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HappyStoreApp(appState: HappyStoreAppState) {
 
-
-    val tabIndex = rememberSaveable {
-        mutableIntStateOf(0)
-    }
-
-    val bottomNavItems = listOf(
-        TopLevelDestination.Products,
-        TopLevelDestination.Cart,
-        TopLevelDestination.Profile,
-    )
-
-    val viewModel = hiltViewModel<HappyStoreViewModel>()
+    val viewModel = hiltViewModel<ProductsViewModel>()
     val inCartItemsCount = viewModel.inCartItemsCount.collectAsState()
 
     Scaffold(
@@ -46,7 +33,7 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
             HappyStoreBottomNavigationBar(
                 currentDestination = appState.currentDestination,
                 onNavigationToDestination = appState::navigateToTopLevelDestination,
-                bottomNavItems = bottomNavItems,
+                bottomNavItems = TopLevelDestination.entries,
                 inCartItemsCount.value,
             )
         }
@@ -75,7 +62,7 @@ fun HappyStoreBottomNavigationBar(
                 },
                 icon = {
                     when {
-                        (inCartProductsCount > 0) && destination is TopLevelDestination.Cart -> {
+                        (inCartProductsCount > 0) && destination == TopLevelDestination.Cart -> {
                             BadgedBox(badge = {
                                 Badge {
                                     Text(text = "$inCartProductsCount")

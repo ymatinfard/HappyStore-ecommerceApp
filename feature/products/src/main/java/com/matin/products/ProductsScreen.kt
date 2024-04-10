@@ -24,7 +24,7 @@ import com.matin.happystore.core.ui.ShowProductListShimmerOrContent
 
 @Composable
 fun ProductsScreen(
-    viewModel: HappyStoreViewModel,
+    viewModel: ProductsViewModel,
 ) {
 
     val productListUiState by viewModel.productListUiState.collectAsState()
