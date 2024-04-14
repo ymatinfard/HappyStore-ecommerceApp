@@ -62,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.ui.UiFilter
 import com.matin.happystore.core.model.ui.UiProduct
@@ -112,7 +113,7 @@ fun ProductItem(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Image(
-                            imageVector = if (item.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            imageVector = if (item.isFavorite) HappyStoreIcons.Favorites else HappyStoreIcons.FavoriteBorder,
                             contentDescription = null,
                             modifier = Modifier
                                 .clip(
@@ -228,13 +229,13 @@ fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
             shape = RoundedCornerShape(12.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.ShoppingCart,
+                imageVector = HappyStoreIcons.ShoppingCart,
                 contentDescription = null
             )
         }
         if (badgeIsVisible) {
             Icon(
-                imageVector = Icons.Default.CheckCircle,
+                imageVector = HappyStoreIcons.Check,
                 modifier = Modifier
                     .size(18.dp)
                     .clip(CircleShape)
@@ -281,7 +282,7 @@ fun CartItem(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Image(
-                            imageVector = Icons.Default.Favorite,
+                            imageVector = HappyStoreIcons.Favorites,
                             contentDescription = null,
                             modifier = Modifier
                                 .clip(
@@ -324,7 +325,7 @@ fun CartItem(
                         }
 
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = HappyStoreIcons.Delete,
                             contentDescription = null,
                             tint = Color.Red,
                             modifier = Modifier.clickable {
@@ -356,7 +357,7 @@ fun CartItemQuantity(
     ) {
         Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowUp,
+                imageVector = HappyStoreIcons.ArrowUp,
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     onQuantityChange(productId, quantity + 1)
@@ -369,7 +370,7 @@ fun CartItemQuantity(
                 fontSize = 16.sp
             )
             Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
+                imageVector = HappyStoreIcons.ArrowDown,
                 modifier = Modifier.clickable {
                     if (quantity == 1) return@clickable
                     onQuantityChange(productId, quantity - 1)

@@ -1,12 +1,9 @@
 package com.matin.happystore.navigation
 
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.matin.happystore.R
+import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
 import com.matin.happystore.feature.cart.navigation.CART_ROUTE
 import com.matin.happystore.feature.profile.navigation.PROFILE_ROUTE
 import com.matin.products.navigation.PRODUCTS_ROUTE
@@ -19,16 +16,16 @@ enum class TopLevelDestination(
     Products(
         PRODUCTS_ROUTE,
         R.string.products,
-        Icons.AutoMirrored.Filled.List
+        HappyStoreIcons.List
     ),
     Cart(
         CART_ROUTE,
         R.string.shopping_cart,
-        Icons.Default.ShoppingCart
+        HappyStoreIcons.ShoppingCart
     ),
     Profile(
         PROFILE_ROUTE,
         R.string.profile,
-        Icons.Default.Person
+        HappyStoreIcons.Profile
     )
 }

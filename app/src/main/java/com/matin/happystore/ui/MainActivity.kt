@@ -3,8 +3,7 @@ package com.matin.happystore.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
-import com.matin.happystore.ui.theme.HappyStoreTheme
+import com.matin.happystore.core.designsystem.theme.HappyStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

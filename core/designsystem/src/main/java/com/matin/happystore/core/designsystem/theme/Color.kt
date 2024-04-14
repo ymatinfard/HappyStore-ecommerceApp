@@ -1,4 +1,4 @@
-package com.matin.happystore.ui.theme
+package com.matin.happystore.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
