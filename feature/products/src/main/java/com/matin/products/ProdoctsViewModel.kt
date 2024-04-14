@@ -63,7 +63,8 @@ class ProductsViewModel @Inject constructor(
                     }
                 }
 
-                is Result.Error -> TODO()
+                is Result.Error -> { //ToDo()
+                 }
             }
         }
     }
