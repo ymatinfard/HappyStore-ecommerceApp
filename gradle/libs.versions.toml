@@ -72,6 +72,9 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -95,13 +98,15 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+room = { id = "androidx.room", version.ref = "room" }
 
 happystore-android-application = { id = "happystore.android.application", version = "unspecified" }
 happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
-happystore-android-library = { id = "happystore.android.library", version = "unspecified"}
+happystore-android-library = { id = "happystore.android.library", version = "unspecified" }
 happystore-android-hilt = { id = "happystore.android.hilt", version = "unspecified" }
 happystore-android-application-compose = { id = "happystore.android.application.compose", version = "unspecified" }
 happystore-android-library-compose = { id = "happystore.android.library.compose", version = "unspecified" }
-happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified"}
+happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified" }
+happystore-android-room = { id = "happystore.android.room", version = "unspecified" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
 

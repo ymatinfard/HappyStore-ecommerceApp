@@ -7,4 +7,5 @@ plugins {
     alias (libs.plugins.ksp) apply false
     alias(libs.plugins.firebase) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
+    alias(libs.plugins.room)
 }
