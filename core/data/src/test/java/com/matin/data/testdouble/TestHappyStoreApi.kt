@@ -1,4 +1,4 @@
-package com.matin.data
+package com.matin.data.testdouble
 
 import com.matin.happystore.core.network.HappyStoreApi
 import com.matin.happystore.core.network.model.NetworkProduct

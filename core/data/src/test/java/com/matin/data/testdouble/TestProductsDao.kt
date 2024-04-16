@@ -1,4 +1,4 @@
-package com.matin.data
+package com.matin.data.testdouble
 
 import com.matin.happystore.core.database.model.ProductEntity
 import com.matin.happystore.core.database.model.di.ProductsDao
