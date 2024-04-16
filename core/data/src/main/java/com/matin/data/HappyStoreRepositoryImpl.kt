@@ -33,14 +33,5 @@ class HappyStoreRepositoryImpl @Inject constructor(
             productsDao.upsertProducts(serverProducts)
     }
 
-    override suspend fun getSingleProduct(id: Int): Result<Product> =
-        withContext(Dispatchers.IO) {
-            try {
-                val product = api.getSingleProduct(id)
-                Result.Success(product)
-                TODO()
-            } catch (e: Exception) {
-                Result.Error(e)
-            }
-        }
+    override suspend fun getSingleProduct(id: Int): Result<Product> = TODO()
 }
