@@ -1,7 +1,6 @@
 package com.matin.happystore.feature.cart
 
 
-import com.matin.happystore.core.common.Result
 import com.matin.happystore.core.model.Product
 import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.core.redux.ApplicationState
@@ -12,6 +11,7 @@ import com.matin.happystore.core.ui.ProductFavoriteUpdater
 import com.matin.happystore.core.ui.ProductInCartItemUpdater
 import com.matin.happystore.core.ui.ProductListReducer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -45,7 +45,7 @@ class CartViewModelTest {
         )
 
         launch(UnconfinedTestDispatcher()) {
-            val initialProductList = (repository.getProducts() as Result.Success).data
+            val initialProductList = repository.getProducts().first()
             store.update { applicationState ->
                 applicationState.copy(products = initialProductList)
             }
