@@ -36,6 +36,7 @@ androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.7.0"
 androidxWork = "2.9.0"
 hiltExt = "1.2.0"
+turbine = "1.0.0"
 
 
 [libraries]
@@ -94,7 +95,7 @@ javax-inject = { module = "javax.inject:javax.inject", version = "1" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
-
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
