@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.happystore.android.library)
+    alias(libs.plugins.happystore.android.hilt)
 }
 
 android {
@@ -9,4 +10,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }

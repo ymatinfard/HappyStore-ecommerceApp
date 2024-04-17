@@ -59,5 +59,9 @@ gradlePlugin {
             id = "happystore.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidRoom") {
+            id = "happystore.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
+        }
     }
 }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.matin.happystore.core.common.Result
+import com.matin.happystore.core.common.asResource
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.ui.ProductsAndFilters
 import com.matin.happystore.core.ui.ProductInCartItemUpdater
@@ -37,89 +38,85 @@ class ProductsViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        viewModelScope.launch {
-            store.read { appState ->
-                if (appState.products.isEmpty()) {
-                    getProducts()
-                }
-            }
-        }
+        collectProducts()
     }
 
-    private fun getProducts() {
+    private fun collectProducts() {
         viewModelScope.launch {
-            when (val result = getProductsUseCase()) {
-                is Result.Success -> {
-                    store.update { applicationState ->
-                        return@update applicationState.copy(
-                            products = result.data,
-                            productFilterInfo = ApplicationState.ProductFilterInfo(
-                                filters = categoryFilterGeneratorUseCase(
-                                    result.data
-                                ),
-                                selectedFilter = applicationState.productFilterInfo.selectedFilter
+            getProductsUseCase().asResource().collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        store.update { applicationState ->
+                            return@update applicationState.copy(
+                                products = result.data,
+                                productFilterInfo = ApplicationState.ProductFilterInfo(
+                                    filters = categoryFilterGeneratorUseCase(
+                                        result.data
+                                    ),
+                                    selectedFilter = applicationState.productFilterInfo.selectedFilter
+                                )
                             )
-                        )
+                        }
+                    }
+
+                    is Result.Error -> { //ToDo()
                     }
                 }
-
-                is Result.Error -> { //ToDo()
-                 }
             }
         }
     }
 
-    fun updateFavoriteIds(id: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productFavoriteUpdater(id, appState)
+        fun updateFavoriteIds(id: Int) {
+            viewModelScope.launch {
+                store.update { appState ->
+                    productFavoriteUpdater(id, appState)
+                }
             }
         }
-    }
 
-    fun updateProductExpand(id: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productExpandUpdater(id, appState)
+        fun updateProductExpand(id: Int) {
+            viewModelScope.launch {
+                store.update { appState ->
+                    productExpandUpdater(id, appState)
+                }
             }
         }
-    }
 
-    fun updateFilterSelection(filter: Filter) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productFilterSelectionUpdater(filter, appState)
+        fun updateFilterSelection(filter: Filter) {
+            viewModelScope.launch {
+                store.update { appState ->
+                    productFilterSelectionUpdater(filter, appState)
+                }
             }
         }
-    }
 
-    fun updateInCartItemIds(id: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productInCartItemUpdater(id, appState)
+        fun updateInCartItemIds(id: Int) {
+            viewModelScope.launch {
+                store.update { appState ->
+                    productInCartItemUpdater(id, appState)
+                }
             }
         }
+
+        val productListUiState = combine(
+            productListReducer.reduce(),
+            store.state.map { it.productFilterInfo }) { products, filterInfo ->
+            productListUIStateGenerator(products, filterInfo)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ProductsScreenUiState.Loading
+        )
+
+        val inCartItemsCount: StateFlow<Int> = store.state.map { it.inCartProductIds.size }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = 0
+        )
     }
 
-    val productListUiState = combine(
-        productListReducer.reduce(),
-        store.state.map { it.productFilterInfo }) { products, filterInfo ->
-        productListUIStateGenerator(products, filterInfo)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = ProductsScreenUiState.Loading
-    )
-
-    val inCartItemsCount: StateFlow<Int> = store.state.map { it.inCartProductIds.size }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = 0
-    )
-}
-
-sealed interface ProductsScreenUiState {
-    data object Loading : ProductsScreenUiState
-    data class Success(val data: ProductsAndFilters) : ProductsScreenUiState
-    data class Error(val error: Exception) : ProductsScreenUiState
-}
+    sealed interface ProductsScreenUiState {
+        data object Loading : ProductsScreenUiState
+        data class Success(val data: ProductsAndFilters) : ProductsScreenUiState
+        data class Error(val error: Exception) : ProductsScreenUiState
+    }
