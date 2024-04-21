@@ -15,14 +15,15 @@ const val SYNC_NOTIFICATION_CHANNEL_ID = "SyncNotificationChannel"
 
 // All sync work needs an internet connection
 val SyncConstraints
-    get() = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
-        .build()
+    get() =
+        Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
 fun Context.syncForegroundInfo(): ForegroundInfo {
     return ForegroundInfo(
         SYNC_NOTIFICATION_ID,
-        syncWorkNotification()
+        syncWorkNotification(),
     )
 }
 
@@ -32,13 +33,14 @@ fun Context.syncForegroundInfo(): ForegroundInfo {
  */
 fun Context.syncWorkNotification(): Notification {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(
-            SYNC_NOTIFICATION_CHANNEL_ID,
-            "Sync",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "Background task for HappyStore"
-        }
+        val channel =
+            NotificationChannel(
+                SYNC_NOTIFICATION_CHANNEL_ID,
+                "Sync",
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = "Background task for HappyStore"
+            }
 
         val notificationManager: NotificationManager? =
             getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager

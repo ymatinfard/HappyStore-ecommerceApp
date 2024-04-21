@@ -17,34 +17,36 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 @HiltWorker
-class SyncWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted private val workerParameters: WorkerParameters,
-    private val repository: HappyStoreRepository,
-    @Dispatcher(IO) val ioDispatcher: CoroutineDispatcher
-) : CoroutineWorker(appContext, workerParameters) {
+class SyncWorker
+    @AssistedInject
+    constructor(
+        @Assisted private val appContext: Context,
+        @Assisted private val workerParameters: WorkerParameters,
+        private val repository: HappyStoreRepository,
+        @Dispatcher(IO) val ioDispatcher: CoroutineDispatcher,
+    ) : CoroutineWorker(appContext, workerParameters) {
+        override suspend fun getForegroundInfo(): ForegroundInfo {
+            return appContext.syncForegroundInfo()
+        }
 
-    override suspend fun getForegroundInfo(): ForegroundInfo {
-        return appContext.syncForegroundInfo()
-    }
+        @SuppressLint("RestrictedApi")
+        override suspend fun doWork(): Result =
+            withContext(ioDispatcher) {
+                try {
+                    repository.sync()
+                    Result.Success()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Result.retry()
+                }
+            }
 
-    @SuppressLint("RestrictedApi")
-    override suspend fun doWork(): Result = withContext(ioDispatcher) {
-     try {
-            repository.sync()
-            Result.Success()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.retry()
+        companion object {
+            fun startUpSyncWork() =
+                OneTimeWorkRequestBuilder<DelegatingWorker>()
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .setConstraints(SyncConstraints)
+                    .setInputData(SyncWorker::class.delegatedData())
+                    .build()
         }
     }
-
-    companion object {
-        fun startUpSyncWork() = OneTimeWorkRequestBuilder<DelegatingWorker>()
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .setConstraints(SyncConstraints)
-            .setInputData(SyncWorker::class.delegatedData())
-            .build()
-    }
-}
-

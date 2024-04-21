@@ -13,7 +13,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal interface DataModule {
-
     @Binds
     @Singleton
     fun bindRepository(repository: HappyStoreRepositoryImpl): HappyStoreRepository

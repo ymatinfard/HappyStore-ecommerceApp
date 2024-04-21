@@ -2,7 +2,6 @@ package com.matin.happystore.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
-
 val md_theme_light_primary = Color(0xFF246D00)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFA6F780)

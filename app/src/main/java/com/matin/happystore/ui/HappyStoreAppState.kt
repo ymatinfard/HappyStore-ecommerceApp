@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+const val STOP_TIMEOUT = 5_000L
 
 @Composable
 fun rememberHappyStoreAppState(
@@ -85,7 +86,7 @@ class HappyStoreAppState(
 
     val isOffline = networkMonitor.isOnline.map(Boolean::not).stateIn(
         scope = coroutineScope,
-        started = SharingStarted.WhileSubscribed(5_000),
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT),
         initialValue = false
     )
 }

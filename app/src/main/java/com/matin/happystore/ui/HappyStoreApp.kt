@@ -1,7 +1,6 @@
 package com.matin.happystore.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Badge
@@ -26,15 +25,16 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.matin.happystore.navigation.HappyStoreNavHost
 import com.matin.happystore.navigation.TopLevelDestination
-import com.matin.products.ProductsViewModel
+import kotlinx.coroutines.flow.map
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HappyStoreApp(appState: HappyStoreAppState) {
 
-    val viewModel = hiltViewModel<ProductsViewModel>()
-    val inCartItemsCount = viewModel.inCartItemsCount.collectAsState()
-    val snackbarHostState =  remember { SnackbarHostState() }
+    val viewModel = hiltViewModel<MainActivityViewModel>()
+    val inCartItemsCount =
+        viewModel.mainScreenUiState.map { it.inCartProductsCount }.collectAsState(initial = 0).value
+    val snackbarHostState = remember { SnackbarHostState() }
     val isOffline by appState.isOffline.collectAsState()
 
     LaunchedEffect(isOffline) {
@@ -52,7 +52,7 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
                 currentDestination = appState.currentDestination,
                 onNavigationToDestination = appState::navigateToTopLevelDestination,
                 bottomNavItems = TopLevelDestination.entries,
-                inCartItemsCount.value,
+                inCartItemsCount,
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
