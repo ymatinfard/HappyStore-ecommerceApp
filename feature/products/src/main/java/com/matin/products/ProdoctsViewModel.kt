@@ -2,121 +2,111 @@ package com.matin.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matin.happystore.core.domain.GetProductsUseCase
-import com.matin.happystore.core.domain.ProductCategoryFilterGeneratorUseCase
-import com.matin.happystore.core.redux.ApplicationState
-import com.matin.happystore.core.redux.Store
-import com.matin.products.stateupdater.ProductFilterSelectionUpdater
-import com.matin.products.stateupdater.ProductExpandUpdater
-import com.matin.happystore.core.ui.ProductFavoriteUpdater
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.common.Result
 import com.matin.happystore.core.common.asResource
+import com.matin.happystore.core.domain.AddProductToCartUseCase
+import com.matin.happystore.core.domain.GetInCartProductIdsUseCase
+import com.matin.happystore.core.domain.GetProductsUseCase
+import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
 import com.matin.happystore.core.model.Filter
-import com.matin.happystore.core.model.ui.ProductsAndFilters
-import com.matin.happystore.core.ui.ProductInCartItemUpdater
-import com.matin.happystore.core.ui.ProductListReducer
+import com.matin.happystore.core.model.InCartProduct
+import com.matin.happystore.core.model.Product
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductsViewModel @Inject constructor(
-    val store: Store<ApplicationState>,
-    private val getProductsUseCase: GetProductsUseCase,
-    private val categoryFilterGeneratorUseCase: ProductCategoryFilterGeneratorUseCase,
-    private val productListReducer: ProductListReducer,
-    private val productFavoriteUpdater: ProductFavoriteUpdater,
-    private val productExpandUpdater: ProductExpandUpdater,
-    private val productFilterSelectionUpdater: ProductFilterSelectionUpdater,
-    private val productInCartItemUpdater: ProductInCartItemUpdater,
-    val productListUIStateGenerator: ProductListUIStateGenerator,
-) : ViewModel() {
+class ProductsViewModel
+    @Inject
+    constructor(
+        private val getProductsUseCase: GetProductsUseCase,
+        private val getInCartProductIdsUseCase: GetInCartProductIdsUseCase,
+        private val addProductToCartUseCase: AddProductToCartUseCase,
+        private val removeProductFromCartUseCase: RemoveProductFromCartUseCase,
+        private val productsUiStateHelper: ProductListUiHelper,
+    ) : ViewModel() {
+        val productsScreenUiState = MutableStateFlow(ProductsScreenUiState())
 
-    init {
-        collectProducts()
-    }
+        init {
+            collectProducts()
+        }
 
-    private fun collectProducts() {
-        viewModelScope.launch {
-            getProductsUseCase().asResource().collect { result ->
-                when (result) {
-                    is Result.Success -> {
-                        store.update { applicationState ->
-                            return@update applicationState.copy(
-                                products = result.data,
-                                productFilterInfo = ApplicationState.ProductFilterInfo(
-                                    filters = categoryFilterGeneratorUseCase(
-                                        result.data
-                                    ),
-                                    selectedFilter = applicationState.productFilterInfo.selectedFilter
+        private fun collectProducts() {
+            viewModelScope.launch {
+                productsScreenUiState.update { it.copy(loadingState = DataLoadingState.Loading) }
+
+                combine(
+                    getProductsUseCase(),
+                    getInCartProductIdsUseCase(),
+                    productsScreenUiState.map { it.selectedFilter },
+                ) { allProducts, inCartProductIds, selectedFilter ->
+
+                    productsUiStateHelper.generateUiProductsAndFilters(
+                        allProducts,
+                        productsScreenUiState.value,
+                        inCartProductIds,
+                        selectedFilter,
+                    )
+                }.asResource().collect { uiStateResult ->
+                    val newUiState =
+                        when (uiStateResult) {
+                            is Result.Success -> {
+                                productsScreenUiState.value.copy(
+                                    uiProductsAndFilters = uiStateResult.data,
+                                    loadingState = DataLoadingState.Loaded,
                                 )
-                            )
-                        }
-                    }
+                            }
 
-                    is Result.Error -> { //ToDo()
-                    }
+                            is Result.Error -> {
+                                productsScreenUiState.value.copy(
+                                    loadingState = DataLoadingState.Error(uiStateResult.exception),
+                                )
+                            }
+                        }
+
+                    productsScreenUiState.update { newUiState }
                 }
             }
         }
-    }
 
         fun updateFavoriteIds(id: Int) {
             viewModelScope.launch {
-                store.update { appState ->
-                    productFavoriteUpdater(id, appState)
+                productsScreenUiState.update { state ->
+                    productsUiStateHelper.updateProductFavoriteState(id, state)
                 }
             }
         }
 
         fun updateProductExpand(id: Int) {
             viewModelScope.launch {
-                store.update { appState ->
-                    productExpandUpdater(id, appState)
+                productsScreenUiState.update { state ->
+                    productsUiStateHelper.updateProductExpansionState(id, state)
                 }
             }
         }
 
         fun updateFilterSelection(filter: Filter) {
             viewModelScope.launch {
-                store.update { appState ->
-                    productFilterSelectionUpdater(filter, appState)
+                productsScreenUiState.update { state ->
+                    state.copy(selectedFilter = filter)
                 }
             }
         }
 
-        fun updateInCartItemIds(id: Int) {
+        fun addToCart(id: Int) {
             viewModelScope.launch {
-                store.update { appState ->
-                    productInCartItemUpdater(id, appState)
-                }
+                addProductToCartUseCase(id = id, quantity = 1)
             }
         }
 
-        val productListUiState = combine(
-            productListReducer.reduce(),
-            store.state.map { it.productFilterInfo }) { products, filterInfo ->
-            productListUIStateGenerator(products, filterInfo)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ProductsScreenUiState.Loading
-        )
-
-        val inCartItemsCount: StateFlow<Int> = store.state.map { it.inCartProductIds.size }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 0
-        )
-    }
-
-    sealed interface ProductsScreenUiState {
-        data object Loading : ProductsScreenUiState
-        data class Success(val data: ProductsAndFilters) : ProductsScreenUiState
-        data class Error(val error: Exception) : ProductsScreenUiState
+        fun removeFromCart(id: Int) {
+            viewModelScope.launch {
+                removeProductFromCartUseCase(InCartProduct(Product(id)))
+            }
+        }
     }

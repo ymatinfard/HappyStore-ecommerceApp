@@ -7,5 +7,4 @@ data class UiProduct (
     val isFavorite: Boolean,
     val isExpended: Boolean,
     val isInCart: Boolean,
-    val inCartQuantity: Int,
 )

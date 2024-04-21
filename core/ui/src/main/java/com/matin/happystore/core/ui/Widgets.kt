@@ -29,14 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -64,9 +57,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
 import com.matin.happystore.core.model.Filter
+import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.ui.UiFilter
 import com.matin.happystore.core.model.ui.UiProduct
-
 
 @Composable
 fun ProductItem(
@@ -74,89 +67,105 @@ fun ProductItem(
     onFavoriteClick: (Int) -> Unit,
     onProductClicked: (Int) -> Unit,
     onAddToCartClick: (Int) -> Unit,
+    onRemoveFromCartClick: (Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
     ) {
         ElevatedCard(
-            modifier = Modifier
-                .height(170.dp)
-                .clickable {
-                    onProductClicked(item.product.id)
-                },
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
-            ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            modifier =
+                Modifier
+                    .height(170.dp)
+                    .clickable {
+                        onProductClicked(item.product.id)
+                    },
+            elevation =
+                CardDefaults.cardElevation(
+                    defaultElevation = 6.dp,
+                ),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
         ) {
             Row {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(160.dp)
+                    modifier =
+                        Modifier
+                            .padding(8.dp)
+                            .size(160.dp),
                 ) {
                     AsyncImage(
                         model = item.product.image,
                         contentScale = ContentScale.FillBounds,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        horizontalArrangement = Arrangement.End
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(6.dp),
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         Image(
                             imageVector = if (item.isFavorite) HappyStoreIcons.Favorites else HappyStoreIcons.FavoriteBorder,
                             contentDescription = null,
-                            modifier = Modifier
-                                .clip(
-                                    CircleShape
-                                )
-                                .background(color = MaterialTheme.colorScheme.secondary)
-                                .padding(3.dp)
-                                .clickable { onFavoriteClick(item.product.id) },
-                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.LightGray)
+                            modifier =
+                                Modifier
+                                    .clip(
+                                        CircleShape,
+                                    )
+                                    .background(color = MaterialTheme.colorScheme.secondary)
+                                    .padding(3.dp)
+                                    .clickable { onFavoriteClick(item.product.id) },
+                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.LightGray),
                         )
                     }
-
                 }
                 Column(
                     modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(modifier = Modifier.padding(top = 12.dp)) {
                         Text(
                             text = item.product.title.clipIfLengthy(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
                         )
                         Text(text = item.product.category)
                     }
 
                     RatingIndicator(
-                        modifier = Modifier
-                            .padding(start = 6.dp)
-                            .size(32.dp), item.product.rating.rate
+                        modifier =
+                            Modifier
+                                .padding(start = 6.dp)
+                                .size(32.dp),
+                        item.product.rating.rate,
                     )
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text("${item.product.price}$", fontSize = 16.sp)
                         ShoppingButton(
-                            onClick = { onAddToCartClick(item.product.id) },
-                            badgeIsVisible = item.isInCart
+                            onClick = {
+                                if (item.isInCart) {
+                                    onRemoveFromCartClick(item.product.id)
+                                } else {
+                                    onAddToCartClick(item.product.id)
+                                }
+                            },
+                            badgeIsVisible = item.isInCart,
                         )
                     }
                 }
@@ -167,7 +176,10 @@ fun ProductItem(
 }
 
 @Composable
-fun RatingIndicator(modifier: Modifier, rate: Float) {
+fun RatingIndicator(
+    modifier: Modifier,
+    rate: Float,
+) {
     Box(contentAlignment = Alignment.Center, modifier = modifier) {
         CircularProgressIndicator(progress = { rate / 5f })
         Text(text = rate.toString(), fontSize = 12.sp)
@@ -175,25 +187,34 @@ fun RatingIndicator(modifier: Modifier, rate: Float) {
 }
 
 @Composable
-fun DescriptionText(description: String, visible: Boolean) {
+fun DescriptionText(
+    description: String,
+    visible: Boolean,
+) {
     val density = LocalDensity.current
     AnimatedVisibility(
         visible = visible,
-        enter = slideInVertically {
-            with(density) { -40.dp.roundToPx() }
-        } + expandVertically(
-            expandFrom = Alignment.Top
-        ) + fadeIn(
-            initialAlpha = 0.3f
-        ),
-        exit = slideOutVertically() + shrinkVertically() + fadeOut()
+        enter =
+            slideInVertically {
+                with(density) { -40.dp.roundToPx() }
+            } +
+                expandVertically(
+                    expandFrom = Alignment.Top,
+                ) +
+                fadeIn(
+                    initialAlpha = 0.3f,
+                ),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut(),
     ) {
         Text(text = description, modifier = Modifier.padding(6.dp))
     }
 }
 
 @Composable
-fun CategoryFilterChips(filters: List<UiFilter>, onFilterClick: (Filter) -> Unit) {
+fun CategoryFilterChips(
+    filters: List<UiFilter>,
+    onFilterClick: (Filter) -> Unit,
+) {
     LazyRow(contentPadding = PaddingValues(start = 8.dp, end = 8.dp)) {
         items(filters) { item ->
             FilterChip(
@@ -203,45 +224,50 @@ fun CategoryFilterChips(filters: List<UiFilter>, onFilterClick: (Filter) -> Unit
                     Text(text = item.filter.displayText)
                 },
                 selected = item.isSelected,
-                leadingIcon = if (item.isSelected) {
-                    {
-                        Icon(
-                            imageVector = Icons.Filled.Done,
-                            contentDescription = "Filter icon",
-                            modifier = Modifier.size(FilterChipDefaults.IconSize)
-                        )
-                    }
-                } else {
-                    null
-                },
+                leadingIcon =
+                    if (item.isSelected) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = "Filter icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
+                            )
+                        }
+                    } else {
+                        null
+                    },
             )
         }
     }
 }
 
 @Composable
-fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
+fun ShoppingButton(
+    onClick: () -> Unit,
+    badgeIsVisible: Boolean = false,
+) {
     Box(contentAlignment = Alignment.CenterStart) {
         Button(
             onClick = { onClick() },
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
         ) {
             Icon(
                 imageVector = HappyStoreIcons.ShoppingCart,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         if (badgeIsVisible) {
             Icon(
                 imageVector = HappyStoreIcons.Check,
-                modifier = Modifier
-                    .size(18.dp)
-                    .clip(CircleShape)
-                    .background(color = Color.White),
+                modifier =
+                    Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .background(color = Color.White),
                 tint = Color.Green,
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
@@ -249,78 +275,89 @@ fun ShoppingButton(onClick: () -> Unit, badgeIsVisible: Boolean = false) {
 
 @Composable
 fun CartItem(
-    item: UiProduct,
+    item: InCartProduct?,
     onFavoriteClick: (Int) -> Unit = {},
-    onDeleteClick: (Int) -> Unit,
-    onQuantityChange: (productId: Int, quantity: Int) -> Unit,
+    onDeleteClick: (InCartProduct) -> Unit,
+    onQuantityChange: (InCartProduct) -> Unit,
 ) {
+    if (item == null) {
+        Text(text = "Product is no longer available")
+        return
+    }
+
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
     ) {
         Column(
-            modifier = Modifier
-                .height(170.dp),
+            modifier =
+                Modifier
+                    .height(170.dp),
         ) {
             Row {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(170.dp)
+                    modifier =
+                        Modifier
+                            .padding(8.dp)
+                            .size(170.dp),
                 ) {
                     AsyncImage(
                         model = item.product.image,
                         contentScale = ContentScale.FillBounds,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        horizontalArrangement = Arrangement.End
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(6.dp),
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         Image(
                             imageVector = HappyStoreIcons.Favorites,
                             contentDescription = null,
-                            modifier = Modifier
-                                .clip(
-                                    CircleShape
-                                )
-                                .background(color = Color.LightGray)
-                                .padding(2.dp)
-                                .clickable { onFavoriteClick(item.product.id) },
-                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
+                            modifier =
+                                Modifier
+                                    .clip(
+                                        CircleShape,
+                                    )
+                                    .background(color = Color.LightGray)
+                                    .padding(2.dp)
+                                    .clickable { onFavoriteClick(item.product.id) },
+                            //   colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
                         )
                     }
-
                 }
                 Column(
                     modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(
-                        text = item.product.title.clipIfLengthy(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
+                    item.product.title.let {
+                        Text(
+                            text = it.clipIfLengthy(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                        )
+                    }
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 10.dp, bottom = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(end = 10.dp, bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
+                        verticalAlignment = Alignment.Bottom,
                     ) {
-                        val price = item.product.price * item.inCartQuantity.toBigDecimal()
+                        val price = item.product.price.times(item.quantity.toBigDecimal())
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "$${price}")
+                            Text(text = "$$price")
                             Spacer(modifier = Modifier.height(6.dp))
                             CartItemQuantity(
-                                item.inCartQuantity,
-                                item.product.id,
-                                onQuantityChange
+                                item,
+                                onQuantityChange,
                             )
                         }
 
@@ -328,18 +365,20 @@ fun CartItem(
                             imageVector = HappyStoreIcons.Delete,
                             contentDescription = null,
                             tint = Color.Red,
-                            modifier = Modifier.clickable {
-                                onDeleteClick(item.product.id)
-                            }
+                            modifier =
+                                Modifier.clickable {
+                                    onDeleteClick(item)
+                                },
                         )
                     }
                 }
             }
             HorizontalDivider(
-                modifier = Modifier
-                    .height(3.dp)
-                    .padding(start = 8.dp, end = 8.dp),
-                color = Color.Gray
+                modifier =
+                    Modifier
+                        .height(3.dp)
+                        .padding(start = 8.dp, end = 8.dp),
+                color = Color.Gray,
             )
         }
     }
@@ -347,34 +386,39 @@ fun CartItem(
 
 @Composable
 fun CartItemQuantity(
-    quantity: Int,
-    productId: Int,
-    onQuantityChange: (productId: Int, quantity: Int) -> Unit,
+    inCartProduct: InCartProduct,
+    onQuantityChange: (InCartProduct) -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer
+        color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
         Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = HappyStoreIcons.ArrowUp,
                 contentDescription = null,
-                modifier = Modifier.clickable {
-                    onQuantityChange(productId, quantity + 1)
-                })
+                modifier =
+                    Modifier.clickable {
+                        val newQuantity = inCartProduct.quantity + 1
+                        onQuantityChange(inCartProduct.copy(quantity = newQuantity))
+                    },
+            )
             Text(
-                text = quantity.toString(),
-                modifier = Modifier
-                    .padding(start = 4.dp, end = 4.dp),
+                text = inCartProduct.quantity.toString(),
+                modifier =
+                    Modifier
+                        .padding(start = 4.dp, end = 4.dp),
                 color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 16.sp
+                fontSize = 16.sp,
             )
             Icon(
                 imageVector = HappyStoreIcons.ArrowDown,
-                modifier = Modifier.clickable {
-                    if (quantity == 1) return@clickable
-                    onQuantityChange(productId, quantity - 1)
-                },
+                modifier =
+                    Modifier.clickable {
+                        if (inCartProduct.quantity == 1) return@clickable
+                        val newQuality = inCartProduct.quantity - 1
+                        onQuantityChange(inCartProduct.copy(quantity = newQuality))
+                    },
                 contentDescription = null,
             )
         }
@@ -382,16 +426,17 @@ fun CartItemQuantity(
 }
 
 @Composable
-fun TotalCartItemsPrice(cartItems: List<UiProduct> = emptyList()) {
-    val totalPrice = cartItems.sumOf { it.product.price * it.inCartQuantity.toBigDecimal() }
+fun TotalCartItemsPrice(cartItems: List<InCartProduct> = emptyList()) {
+    val totalPrice = cartItems.sumOf { it.product.price * it.quantity.toBigDecimal() }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
-            .padding(10.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column {
             Text(text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -401,7 +446,7 @@ fun TotalCartItemsPrice(cartItems: List<UiProduct> = emptyList()) {
         Button(
             onClick = { /*TODO*/ },
             shape = RoundedCornerShape(0),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
         ) {
             Text(text = "Checkout")
         }
@@ -429,32 +474,36 @@ fun ShowProductListShimmerOrContent(
 @Composable
 private fun ProductShimmerItem(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-            .height(140.dp)
+        modifier =
+            modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .height(140.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(140.dp)
-                .shimmerEffect()
+            modifier =
+                Modifier
+                    .size(140.dp)
+                    .shimmerEffect(),
         )
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Box(
-                modifier = Modifier
-                    .height(26.dp)
-                    .padding(start = 6.dp)
-                    .fillMaxWidth()
-                    .shimmerEffect()
+                modifier =
+                    Modifier
+                        .height(26.dp)
+                        .padding(start = 6.dp)
+                        .fillMaxWidth()
+                        .shimmerEffect(),
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box(
-                    modifier = Modifier
-                        .width(52.dp)
-                        .height(32.dp)
-                        .shimmerEffect()
+                    modifier =
+                        Modifier
+                            .width(52.dp)
+                            .height(32.dp)
+                            .shimmerEffect(),
                 )
             }
         }

@@ -7,10 +7,10 @@ data class NetworkProduct(
     val category: String?,
     val description: String?,
     val image: String?,
-    val rating: Rating?
+    val rating: Rating?,
 ) {
     data class Rating(
         val rate: Float?,
-        val count: Int?
+        val count: Int?,
     )
 }
