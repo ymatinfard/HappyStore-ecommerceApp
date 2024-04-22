@@ -43,7 +43,7 @@ fun HandleCartScreen(
     when (inCartProductsState.loadingState) {
         is DataLoadingState.Loaded ->
             ShowCartItems(
-                inCartProductsState.products,
+                inCartProductsState.inCartProducts,
                 onFavoriteClick,
                 onDeleteClick,
                 onQuantityChange,

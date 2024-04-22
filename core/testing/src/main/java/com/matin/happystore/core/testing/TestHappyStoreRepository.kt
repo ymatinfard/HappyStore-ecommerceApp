@@ -6,6 +6,8 @@ import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import java.math.BigDecimal
 
 class TestHappyStoreRepository : HappyStoreRepository {
@@ -31,6 +33,22 @@ class TestHappyStoreRepository : HappyStoreRepository {
             ),
         )
 
+    private val inCartProductsStateFlow = MutableStateFlow(
+        listOf(
+            InCartProduct(
+                Product(
+                    123,
+                    "title1",
+                    BigDecimal("23.3"),
+                    "Jewerly",
+                    "description1",
+                    "http://example.png",
+                    Product.Rating(3.4f, 1000),
+                ), quantity = 1
+            )
+        )
+    )
+
     private val productStateFlow = MutableStateFlow(productList)
 
     override suspend fun getProducts() = productStateFlow
@@ -43,23 +61,34 @@ class TestHappyStoreRepository : HappyStoreRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getInCartProductIds(): Flow<List<Int>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getInCartProductIds(): Flow<List<Int>> =
+        inCartProductsStateFlow.map { inCartPoducts ->
+            inCartPoducts.map { it.product.id }
+        }
 
     override suspend fun addToCart(inCartProduct: InCartProduct) {
-        TODO("Not yet implemented")
+        inCartProductsStateFlow.update { inCartProducts ->
+            inCartProducts.toMutableList().apply { add(inCartProduct) }
+        }
     }
 
     override suspend fun removeFromCart(inCartProduct: InCartProduct) {
-        TODO("Not yet implemented")
+        inCartProductsStateFlow.update { inCartProducts ->
+            inCartProducts.toMutableList().apply { remove(inCartProduct) }
+        }
     }
 
-    override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> =
+        inCartProductsStateFlow
 
     override suspend fun updateProductQuantity(inCartProduct: InCartProduct) {
-        TODO("Not yet implemented")
+        inCartProductsStateFlow.update {
+            val mutableList = it.toMutableList()
+            val index = mutableList.indexOfFirst { it.product.id == inCartProduct.product.id }
+            if (index != -1) {
+                mutableList[index] = inCartProduct
+            }
+            mutableList
+        }
     }
 }

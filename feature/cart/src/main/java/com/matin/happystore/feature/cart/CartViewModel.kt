@@ -39,7 +39,7 @@ class CartViewModel
                         is Result.Success -> {
                             cartScreenUiState.update { state ->
                                 state.copy(
-                                    products = result.data,
+                                    inCartProducts = result.data,
                                     loadingState = DataLoadingState.Loaded,
                                 )
                             }
@@ -82,5 +82,5 @@ class CartViewModel
 
 data class CartScreenUiState(
     val loadingState: DataLoadingState = DataLoadingState.Loading,
-    val products: List<InCartProduct> = emptyList(),
+    val inCartProducts: List<InCartProduct> = emptyList(),
 )
