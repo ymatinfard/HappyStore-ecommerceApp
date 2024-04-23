@@ -20,6 +20,7 @@ import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.happystore.core.ui.CategoryFilterChips
 import com.matin.happystore.core.ui.ProductItem
 import com.matin.happystore.core.ui.ShowProductListShimmerOrContent
+import com.matin.products.model.ProductsScreenUiState
 
 @Composable
 fun ProductsScreen(viewModel: ProductsViewModel) {

@@ -1,4 +1,4 @@
-package com.matin.products
+package com.matin.products.helper
 
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.Product
@@ -6,6 +6,8 @@ import com.matin.happystore.core.model.generateCategory
 import com.matin.happystore.core.model.ui.UiFilter
 import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.core.model.ui.UiProductsAndFilters
+import com.matin.products.model.ProductFilterInfo
+import com.matin.products.model.ProductsScreenUiState
 import javax.inject.Inject
 
 class ProductListUiHelper

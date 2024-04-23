@@ -10,24 +10,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(private val getInCartProductIds: GetInCartProductIdsUseCase) :
+class MainActivityViewModel
+    @Inject
+    constructor(private val getInCartProductIds: GetInCartProductIdsUseCase) :
     ViewModel() {
+        val mainScreenUiState = MutableStateFlow(MainScreenUiState())
 
-    val mainScreenUiState = MutableStateFlow(MainScreenUiState())
+        init {
+            getInCartProductItemsCount()
+        }
 
-    init {
-        getInCartProductItemsCount()
-    }
-
-    private fun getInCartProductItemsCount() {
-        viewModelScope.launch {
-            getInCartProductIds().collect { inCartItemsList ->
-                mainScreenUiState.update { state -> state.copy(inCartProductsCount = inCartItemsList.size) }
+        private fun getInCartProductItemsCount() {
+            viewModelScope.launch {
+                getInCartProductIds().collect { inCartItemsList ->
+                    mainScreenUiState.update { state -> state.copy(inCartProductsCount = inCartItemsList.size) }
+                }
             }
         }
     }
-
-}
 
 data class MainScreenUiState(
     val inCartProductsCount: Int = 0,

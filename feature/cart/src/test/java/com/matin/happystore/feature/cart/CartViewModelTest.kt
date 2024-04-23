@@ -31,88 +31,103 @@ class CartViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = CartViewModel(
-            getInCartProductFullDetailUseCase,
-            removeProductFromCartUseCase,
-            updateInCartProductQuantityUseCase
-        )
+        viewModel =
+            CartViewModel(
+                getInCartProductFullDetailUseCase,
+                removeProductFromCartUseCase,
+                updateInCartProductQuantityUseCase,
+            )
     }
 
     @Test
-    fun productsAreLoadedWhileViewModelInitiated() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.cartScreenUiState.collect { result ->
-                assertEquals(
-                    CartScreenUiState(
-                        loadingState = DataLoadingState.Loaded, inCartProducts = listOf(
-                            InCartProduct(
-                                Product(
-                                    123,
-                                    "title1",
-                                    BigDecimal("23.3"),
-                                    "Jewerly",
-                                    "description1",
-                                    "http://example.png",
-                                    Product.Rating(3.4f, 1000),
-                                ), quantity = 1
-                            )
+    fun productsAreLoadedWhileViewModelInitiated() =
+        runTest {
+            val collectJob =
+                launch(UnconfinedTestDispatcher()) {
+                    viewModel.cartScreenUiState.collect { result ->
+                        assertEquals(
+                            CartScreenUiState(
+                                loadingState = DataLoadingState.Loaded,
+                                inCartProducts =
+                                    listOf(
+                                        InCartProduct(
+                                            Product(
+                                                123,
+                                                "title1",
+                                                BigDecimal("23.3"),
+                                                "Jewerly",
+                                                "description1",
+                                                "http://example.png",
+                                                Product.Rating(3.4f, 1000),
+                                            ),
+                                            quantity = 1,
+                                        ),
+                                    ),
+                            ),
+                            result,
                         )
-                    ), result
+                    }
+                }
+            collectJob.cancel()
+        }
+
+    @Test
+    fun productQuantityUpdatesAfterChangingQuantity() =
+        runTest {
+            val debounceWaitTime = 600L
+            val inCartProduct =
+                InCartProduct(
+                    Product(
+                        123,
+                        "title1",
+                        BigDecimal("23.3"),
+                        "Jewerly",
+                        "description1",
+                        "http://example.png",
+                        Product.Rating(3.4f, 1000),
+                    ),
+                    quantity = 3,
                 )
-            }
+
+            viewModel.onQuantityChanged(inCartProduct)
+
+            advanceTimeBy(debounceWaitTime)
+
+            val collectJob =
+                launch(UnconfinedTestDispatcher()) {
+                    viewModel.cartScreenUiState.collect { products ->
+                        assertEquals(3, products.inCartProducts.first { it.product.id == 123 }.quantity)
+                    }
+                }
+
+            collectJob.cancel()
         }
-        collectJob.cancel()
-    }
 
     @Test
-    fun productQuantityUpdatesAfterChangingQuantity() = runTest {
-        val debounceWaitTime = 600L
-        val inCartProduct = InCartProduct(
-            Product(
-                123,
-                "title1",
-                BigDecimal("23.3"),
-                "Jewerly",
-                "description1",
-                "http://example.png",
-                Product.Rating(3.4f, 1000),
-            ), quantity = 3
-        )
+    fun inCartProductsUpdateAfterRemovingProductsFromCart() =
+        runTest {
+            val removedProduct =
+                InCartProduct(
+                    Product(
+                        123,
+                        "title1",
+                        BigDecimal("23.3"),
+                        "Jewerly",
+                        "description1",
+                        "http://example.png",
+                        Product.Rating(3.4f, 1000),
+                    ),
+                    quantity = 1,
+                )
+            viewModel.removeItem(removedProduct)
 
-        viewModel.onQuantityChanged(inCartProduct)
+            val collectJob =
+                launch(UnconfinedTestDispatcher()) {
+                    viewModel.cartScreenUiState.collect {
+                        assertEquals(true, it.inCartProducts.isEmpty())
+                    }
+                }
 
-        advanceTimeBy(debounceWaitTime)
-
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.cartScreenUiState.collect { products ->
-                assertEquals(3, products.inCartProducts.first { it.product.id == 123 }.quantity)
-            }
+            collectJob.cancel()
         }
-
-        collectJob.cancel()
-    }
-
-    @Test
-    fun inCartProductsUpdateAfterRemovingProductsFromCart() = runTest {
-        val removedProduct = InCartProduct(
-            Product(
-                123,
-                "title1",
-                BigDecimal("23.3"),
-                "Jewerly",
-                "description1",
-                "http://example.png",
-                Product.Rating(3.4f, 1000),
-            ), quantity = 1
-        )
-        viewModel.removeItem(removedProduct)
-
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.cartScreenUiState.collect {
-                assertEquals(true, it.inCartProducts.isEmpty())
-            }
-        }
-
-        collectJob.cancel()
-    }
 }

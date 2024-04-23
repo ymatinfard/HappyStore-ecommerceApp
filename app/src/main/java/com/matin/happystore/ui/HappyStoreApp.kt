@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.map
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HappyStoreApp(appState: HappyStoreAppState) {
-
     val viewModel = hiltViewModel<MainActivityViewModel>()
     val inCartItemsCount =
         viewModel.mainScreenUiState.map { it.inCartProductsCount }.collectAsState(initial = 0).value
@@ -41,7 +40,7 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
         if (isOffline) {
             snackbarHostState.showSnackbar(
                 message = "No internet connection",
-                duration = SnackbarDuration.Indefinite
+                duration = SnackbarDuration.Indefinite,
             )
         }
     }
@@ -69,9 +68,10 @@ fun HappyStoreBottomNavigationBar(
     inCartProductsCount: Int,
 ) {
     NavigationBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(50.dp),
     ) {
         bottomNavItems.forEach { destination ->
             NavigationBarItem(
@@ -93,7 +93,7 @@ fun HappyStoreBottomNavigationBar(
 
                         else -> Icon(imageVector = destination.icon, contentDescription = null)
                     }
-                }
+                },
             )
         }
     }

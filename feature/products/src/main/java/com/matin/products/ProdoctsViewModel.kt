@@ -12,6 +12,8 @@ import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
+import com.matin.products.helper.ProductListUiHelper
+import com.matin.products.model.ProductsScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

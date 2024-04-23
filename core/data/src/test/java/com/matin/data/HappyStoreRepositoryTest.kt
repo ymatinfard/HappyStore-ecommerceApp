@@ -2,9 +2,11 @@ package com.matin.data
 
 import com.matin.data.model.toDomain
 import com.matin.data.model.toEntity
+import com.matin.data.testdouble.TestCartDao
 import com.matin.data.testdouble.TestHappyStoreApi
 import com.matin.data.testdouble.TestProductsDao
 import com.matin.happystore.core.database.model.ProductEntity
+import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
 import com.matin.happystore.core.network.model.NetworkProduct
 import kotlinx.coroutines.flow.first
@@ -20,12 +22,13 @@ class HappyStoreRepositoryTest {
     private val testScope = TestScope(UnconfinedTestDispatcher())
     private val productsDao = TestProductsDao()
     private val happyStoreApi = TestHappyStoreApi()
+    private val cartDao = TestCartDao()
 
     private lateinit var repository: HappyStoreRepository
 
     @Before
     fun setup() {
-        repository = HappyStoreRepositoryImpl(happyStoreApi, productsDao)
+        repository = HappyStoreRepositoryImpl(happyStoreApi, productsDao, cartDao)
     }
 
     @Test
@@ -50,6 +53,24 @@ class HappyStoreRepositoryTest {
                     .map(ProductEntity::toDomain),
                 cachedProductList,
             )
+        }
+
+    @Test
+    fun addToCart_adds_product_into_cart() =
+        testScope.runTest {
+            repository.addToCart(InCartProduct(Product(124), 2))
+            val inCartProductCount = repository.getInCartProductIds().first().size
+
+            assertEquals(2, inCartProductCount)
+        }
+
+    @Test
+    fun removeFromCart_removes_product_from_cart() =
+        testScope.runTest {
+            repository.removeFromCart(InCartProduct(Product(123), 1))
+            val inCartProductCount = repository.getInCartProductIds().first().size
+
+            assertEquals(0, inCartProductCount)
         }
 
     private val productList =

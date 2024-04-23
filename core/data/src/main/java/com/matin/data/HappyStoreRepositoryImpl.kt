@@ -24,7 +24,12 @@ class HappyStoreRepositoryImpl
         private val productsDao: ProductsDao,
         private val cartDao: CartDao,
     ) : HappyStoreRepository {
-        override suspend fun getProducts(): Flow<List<Product>> = productsDao.getProducts().map { it.map( ProductEntity::toDomain ) }
+        override suspend fun getProducts(): Flow<List<Product>> =
+            productsDao.getProducts().map {
+                it.map(
+                    ProductEntity::toDomain,
+                )
+            }
 
         override suspend fun sync() =
             withContext(Dispatchers.IO) {

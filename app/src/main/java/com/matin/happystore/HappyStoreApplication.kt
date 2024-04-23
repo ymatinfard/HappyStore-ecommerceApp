@@ -8,6 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 class HappyStoreApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-            Sync.init(this)
+        Sync.init(this)
     }
 }

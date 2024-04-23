@@ -36,6 +36,10 @@ fun NetworkProduct.toEntity() =
         ProductEntity.Rating(rating?.rate.orZero(), rating?.count.orZero()),
     )
 
-fun InCartProductFullEntity.toDomain(): InCartProduct = InCartProduct(product = product.toDomain(), quantity = inCartProduct.quantity)
+fun InCartProductFullEntity.toDomain(): InCartProduct =
+    InCartProduct(
+        product = product.toDomain(),
+        quantity = inCartProduct.quantity,
+    )
 
 fun InCartProduct.toEntity() = InCartProductEntity(product.id, quantity)

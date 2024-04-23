@@ -33,21 +33,23 @@ class TestHappyStoreRepository : HappyStoreRepository {
             ),
         )
 
-    private val inCartProductsStateFlow = MutableStateFlow(
-        listOf(
-            InCartProduct(
-                Product(
-                    123,
-                    "title1",
-                    BigDecimal("23.3"),
-                    "Jewerly",
-                    "description1",
-                    "http://example.png",
-                    Product.Rating(3.4f, 1000),
-                ), quantity = 1
-            )
+    private val inCartProductsStateFlow =
+        MutableStateFlow(
+            listOf(
+                InCartProduct(
+                    Product(
+                        123,
+                        "title1",
+                        BigDecimal("23.3"),
+                        "Jewerly",
+                        "description1",
+                        "http://example.png",
+                        Product.Rating(3.4f, 1000),
+                    ),
+                    quantity = 1,
+                ),
+            ),
         )
-    )
 
     private val productStateFlow = MutableStateFlow(productList)
 
@@ -62,13 +64,13 @@ class TestHappyStoreRepository : HappyStoreRepository {
     }
 
     override suspend fun getInCartProductIds(): Flow<List<Int>> =
-        inCartProductsStateFlow.map { inCartPoducts ->
-            inCartPoducts.map { it.product.id }
+        inCartProductsStateFlow.map { inCartProducts ->
+            inCartProducts.map { it.product.id }
         }
 
     override suspend fun addToCart(inCartProduct: InCartProduct) {
         inCartProductsStateFlow.update { inCartProducts ->
-            inCartProducts.toMutableList().apply { add(inCartProduct) }
+            inCartProducts.toMutableList().apply { add(inCartProduct) }.toList()
         }
     }
 
@@ -78,8 +80,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
         }
     }
 
-    override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> =
-        inCartProductsStateFlow
+    override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> = inCartProductsStateFlow
 
     override suspend fun updateProductQuantity(inCartProduct: InCartProduct) {
         inCartProductsStateFlow.update {
