@@ -35,6 +35,7 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
         viewModel.mainScreenUiState.map { it.inCartProductsCount }.collectAsState(initial = 0).value
     val snackbarHostState = remember { SnackbarHostState() }
     val isOffline by appState.isOffline.collectAsState()
+    val bottomBarVisibility = appState.bottomBarVisibility.collectAsState().value
 
     LaunchedEffect(isOffline) {
         if (isOffline) {
@@ -47,12 +48,14 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
 
     Scaffold(
         bottomBar = {
-            HappyStoreBottomNavigationBar(
-                currentDestination = appState.currentDestination,
-                onNavigationToDestination = appState::navigateToTopLevelDestination,
-                bottomNavItems = TopLevelDestination.entries,
-                inCartItemsCount,
-            )
+            if (bottomBarVisibility.isVisible()) {
+                HappyStoreBottomNavigationBar(
+                    currentDestination = appState.currentDestination,
+                    onNavigationToDestination = appState::navigateToTopLevelDestination,
+                    bottomNavItems = TopLevelDestination.entries,
+                    inCartItemsCount,
+                )
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
