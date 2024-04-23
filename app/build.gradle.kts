@@ -30,7 +30,7 @@ android {
             applicationIdSuffix = HappyStoreBuildType.RELEASE.appIdSuffix
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -39,6 +39,11 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(files(project.rootDir.resolve("config/detekt_custom_config.yml")))
     }
 }
 
@@ -52,6 +57,7 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.core.designsystem)
     implementation(projects.core.data)
+    implementation(projects.core.domain)
 
     implementation(projects.sync.work)
 
@@ -76,5 +82,4 @@ dependencies {
     testImplementation(kotlin("test"))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
-
 }

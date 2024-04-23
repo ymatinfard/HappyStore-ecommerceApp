@@ -16,16 +16,16 @@ enum class TopLevelDestination(
     Products(
         PRODUCTS_ROUTE,
         R.string.products,
-        HappyStoreIcons.List
+        HappyStoreIcons.List,
     ),
     Cart(
         CART_ROUTE,
         R.string.shopping_cart,
-        HappyStoreIcons.ShoppingCart
+        HappyStoreIcons.ShoppingCart,
     ),
     Profile(
         PROFILE_ROUTE,
         R.string.profile,
-        HappyStoreIcons.Profile
-    )
+        HappyStoreIcons.Profile,
+    ),
 }

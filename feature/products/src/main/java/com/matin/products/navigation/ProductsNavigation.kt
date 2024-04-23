@@ -5,8 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.matin.products.ProductsViewModel
 import com.matin.products.ProductsScreen
+import com.matin.products.ProductsViewModel
 
 const val PRODUCTS_ROUTE = "products_route"
 

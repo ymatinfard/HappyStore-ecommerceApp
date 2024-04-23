@@ -11,36 +11,40 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.model.Filter
-import com.matin.happystore.core.model.ui.ProductsAndFilters
+import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.happystore.core.ui.CategoryFilterChips
 import com.matin.happystore.core.ui.ProductItem
 import com.matin.happystore.core.ui.ShowProductListShimmerOrContent
-
+import com.matin.products.model.ProductsScreenUiState
 
 @Composable
-fun ProductsScreen(
-    viewModel: ProductsViewModel,
-) {
-
-    val productListUiState by viewModel.productListUiState.collectAsState()
+fun ProductsScreen(viewModel: ProductsViewModel) {
+    val uiProductsState = viewModel.productsScreenUiState.collectAsState().value
 
     Surface {
-        HandleProductScreen(uiProductState = productListUiState,
+        HandleProductScreen(
+            uiProductState = uiProductsState,
             onFavoriteClick = { productId ->
                 viewModel.updateFavoriteIds(productId)
-            }, onProductClick = { productId ->
+            },
+            onProductClick = { productId ->
                 viewModel.updateProductExpand(productId)
-            }, onFilterClick = { filter ->
+            },
+            onFilterClick = { filter ->
                 viewModel.updateFilterSelection(filter)
             },
             onAddToCartClick = { productId ->
-                viewModel.updateInCartItemIds(productId)
-            })
+                viewModel.addToCart(productId)
+            },
+            onRemoveFromCartClick = { productId ->
+                viewModel.removeFromCart(productId)
+            },
+        )
     }
 }
 
@@ -51,20 +55,21 @@ fun HandleProductScreen(
     onProductClick: (Int) -> Unit = {},
     onFilterClick: (Filter) -> Unit = {},
     onAddToCartClick: (Int) -> Unit = {},
+    onRemoveFromCartClick: (Int) -> Unit = {},
 ) {
-
     ShowProductListShimmerOrContent(
-        isLoading = (uiProductState !is ProductsScreenUiState.Success),
+        isLoading = (uiProductState.loadingState is DataLoadingState.Loading),
         contentAfterLoading = {
             ShowProductList(
-                productsAndFilters = (uiProductState as ProductsScreenUiState.Success).data,
+                productsAndFilters = uiProductState.uiProductsAndFilters,
                 onFavoriteClick = onFavoriteClick,
                 onProductClick = onProductClick,
                 onFilterClick = onFilterClick,
-                onAddToCartClick = onAddToCartClick
+                onAddToCartClick = onAddToCartClick,
+                onRemoveFromCartClick = onRemoveFromCartClick,
             )
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     )
 }
 
@@ -77,18 +82,25 @@ fun ShowLoading() {
 
 @Composable
 fun ShowProductList(
-    productsAndFilters: ProductsAndFilters,
+    productsAndFilters: UiProductsAndFilters,
     onFavoriteClick: (Int) -> Unit,
     onProductClick: (Int) -> Unit,
     onFilterClick: (Filter) -> Unit,
     onAddToCartClick: (Int) -> Unit,
+    onRemoveFromCartClick: (Int) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column {
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
             LazyColumn {
                 items(productsAndFilters.products) { product ->
-                    ProductItem(product, onFavoriteClick, onProductClick, onAddToCartClick)
+                    ProductItem(
+                        product,
+                        onFavoriteClick,
+                        onProductClick,
+                        onAddToCartClick,
+                        onRemoveFromCartClick,
+                    )
                 }
             }
         }

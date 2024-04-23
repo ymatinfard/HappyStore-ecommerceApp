@@ -1,22 +1,18 @@
-package com.matin.happystore.core.database.model.di
+package com.matin.happystore.core.database.model
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
-import com.matin.happystore.core.database.model.ProductEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductsDao {
-
     @Upsert
     fun upsertProducts(productList: List<ProductEntity>)
 
-    @Query("SELECT * FROM tbl_product")
+    @Query("SELECT * FROM TBL_PRODUCT")
     fun getProducts(): Flow<List<ProductEntity>>
 
-    @Query("DELETE FROM tbl_product WHERE id IN (:ids)")
+    @Query("DELETE FROM TBL_PRODUCT WHERE id IN (:ids)")
     fun deleteProducts(ids: List<Int>)
 }

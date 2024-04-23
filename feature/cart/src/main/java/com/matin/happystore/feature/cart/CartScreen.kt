@@ -1,4 +1,4 @@
-package com.matin.happystore.ui.screen
+package com.matin.happystore.feature.cart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,26 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.matin.happystore.core.model.ui.UiProduct
+import com.matin.happystore.core.common.DataLoadingState
+import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.ui.CartItem
 import com.matin.happystore.core.ui.TotalCartItemsPrice
-import com.matin.happystore.feature.cart.CartScreenUiState
-import com.matin.happystore.feature.cart.CartViewModel
-
 
 @Composable
 fun CartScreen(viewModel: CartViewModel) {
-
-    val inCartProductsState = viewModel.inCartProductsUiState.collectAsState()
+    val inCartProductsState = viewModel.cartScreenUiState.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-
         HandleCartScreen(inCartProductsState.value, onFavoriteClick = { favoriteItemId ->
             viewModel.updateFavoriteIds(favoriteItemId)
-        }, onDeleteClick = { deletedItemId ->
-            viewModel.updateInCartItemIds(deletedItemId)
-        }, onQuantityChange = { productId, newQuantity ->
-            viewModel.updateProductInCartQuantity(productId, newQuantity)
+        }, onDeleteClick = { inCartProduct ->
+            viewModel.removeItem(inCartProduct)
+        }, onQuantityChange = { inCartProduct ->
+            viewModel.onQuantityChanged(inCartProduct)
         })
     }
 }
@@ -41,33 +37,36 @@ fun CartScreen(viewModel: CartViewModel) {
 fun HandleCartScreen(
     inCartProductsState: CartScreenUiState,
     onFavoriteClick: (Int) -> Unit,
-    onDeleteClick: (Int) -> Unit,
-    onQuantityChange: (Int, Int) -> Unit,
+    onDeleteClick: (InCartProduct) -> Unit,
+    onQuantityChange: (InCartProduct) -> Unit,
 ) {
-    when (inCartProductsState) {
-        is CartScreenUiState.Data -> ShowCartItems(
-            inCartProductsState.data,
-            onFavoriteClick,
-            onDeleteClick,
-            onQuantityChange
-        )
+    when (inCartProductsState.loadingState) {
+        is DataLoadingState.Loaded ->
+            ShowCartItems(
+                inCartProductsState.inCartProducts,
+                onFavoriteClick,
+                onDeleteClick,
+                onQuantityChange,
+            )
 
-        is CartScreenUiState.Empty -> Text("No item in cart")
+        is DataLoadingState.Error -> Text("No item in cart")
+        DataLoadingState.Loading -> Text(text = "Loading...")
     }
 }
 
 @Composable
 fun ShowCartItems(
-    cartItems: List<UiProduct>,
+    cartItems: List<InCartProduct>,
     onFavoriteClick: (Int) -> Unit,
-    onDeleteClick: (Int) -> Unit,
-    onQuantityChange: (Int, Int) -> Unit,
+    onDeleteClick: (InCartProduct) -> Unit,
+    onQuantityChange: (InCartProduct) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .background(color = MaterialTheme.colorScheme.background)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 50.dp)
+                .background(color = MaterialTheme.colorScheme.background),
     ) {
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(cartItems) { item ->
@@ -75,7 +74,7 @@ fun ShowCartItems(
                     item = item,
                     onFavoriteClick = onFavoriteClick,
                     onDeleteClick = onDeleteClick,
-                    onQuantityChange = onQuantityChange
+                    onQuantityChange = onQuantityChange,
                 )
             }
         }

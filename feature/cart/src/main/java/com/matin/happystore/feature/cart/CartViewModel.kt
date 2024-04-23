@@ -2,68 +2,85 @@ package com.matin.happystore.feature.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matin.happystore.core.model.ui.UiProduct
-import com.matin.happystore.core.redux.ApplicationState
-import com.matin.happystore.core.redux.Store
-import com.matin.happystore.core.ui.ProductFavoriteUpdater
-import com.matin.happystore.core.ui.ProductInCartItemUpdater
-import com.matin.happystore.core.ui.ProductListReducer
+import com.matin.happystore.core.common.DataLoadingState
+import com.matin.happystore.core.common.Result
+import com.matin.happystore.core.common.asResource
+import com.matin.happystore.core.common.debounce
+import com.matin.happystore.core.domain.GetInCartProductFullDetailUseCase
+import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
+import com.matin.happystore.core.domain.UpdateInCartProductQuantityUseCase
+import com.matin.happystore.core.model.InCartProduct
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CartViewModel @Inject constructor(
-    private val productListReducer: ProductListReducer,
-    private val productInCartItemUpdater: ProductInCartItemUpdater,
-    private val productFavoriteUpdater: ProductFavoriteUpdater,
-    val store: Store<ApplicationState>,
-) : ViewModel() {
+class CartViewModel
+    @Inject
+    constructor(
+        private val getInCartProductFullDetailUseCase: GetInCartProductFullDetailUseCase,
+        private val removeProductFromCartUseCase: RemoveProductFromCartUseCase,
+        private val updateInCartProductQuantityUseCase: UpdateInCartProductQuantityUseCase,
+    ) : ViewModel() {
+        val cartScreenUiState = MutableStateFlow(CartScreenUiState())
+        val onInCartProductQuantityChange: (InCartProduct) -> Unit =
+            debounce(WAIT_TIME, viewModelScope, ::updateInCartProductQuantity)
 
-    val inCartProductsUiState = productListReducer.reduce().map { uiProducts ->
-        val inCartProducts = uiProducts.filter { it.isInCart }
-
-        if (inCartProducts.isNotEmpty()) {
-            CartScreenUiState.Data(inCartProducts)
-        } else {
-            CartScreenUiState.Empty
+        init {
+            collectInCartProducts()
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = CartScreenUiState.Empty
-    )
 
-    fun updateProductInCartQuantity(productId: Int, newQuantity: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                val currentQuantityMap = appState.inCartProductQuantity
-                appState.copy(inCartProductQuantity = currentQuantityMap + (productId to newQuantity))
+        private fun collectInCartProducts() {
+            viewModelScope.launch {
+                getInCartProductFullDetailUseCase().asResource().collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            cartScreenUiState.update { state ->
+                                state.copy(
+                                    inCartProducts = result.data,
+                                    loadingState = DataLoadingState.Loaded,
+                                )
+                            }
+                        }
+
+                        is Result.Error -> {
+                            // Todo()
+                        }
+                    }
+                }
             }
+        }
+
+        fun onQuantityChanged(inCartProduct: InCartProduct) {
+            onInCartProductQuantityChange(inCartProduct)
+        }
+
+        private fun updateInCartProductQuantity(inCartProduct: InCartProduct) {
+            viewModelScope.launch {
+                updateInCartProductQuantityUseCase(inCartProduct)
+            }
+        }
+
+        fun removeItem(inCartProduct: InCartProduct) {
+            viewModelScope.launch {
+                removeProductFromCartUseCase(inCartProduct)
+            }
+        }
+
+        fun updateFavoriteIds(id: Int) {
+            viewModelScope.launch {
+                // Todo()
+            }
+        }
+
+        companion object {
+            const val WAIT_TIME: Long = 500
         }
     }
 
-    fun updateInCartItemIds(id: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productInCartItemUpdater(id, appState)
-            }
-        }
-    }
-
-    fun updateFavoriteIds(id: Int) {
-        viewModelScope.launch {
-            store.update { appState ->
-                productFavoriteUpdater(id, appState)
-            }
-        }
-    }
-}
-
-interface CartScreenUiState {
-    data class Data(val data: List<UiProduct>) : CartScreenUiState
-    data object Empty : CartScreenUiState
-}
+data class CartScreenUiState(
+    val loadingState: DataLoadingState = DataLoadingState.Loading,
+    val inCartProducts: List<InCartProduct> = emptyList(),
+)

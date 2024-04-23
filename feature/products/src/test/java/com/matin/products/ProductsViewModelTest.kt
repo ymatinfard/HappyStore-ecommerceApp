@@ -1,69 +1,56 @@
 package com.matin.products
 
-
 import com.matin.data.HappyStoreRepository
+import com.matin.happystore.core.domain.AddProductToCartUseCase
+import com.matin.happystore.core.domain.GetInCartProductIdsUseCase
 import com.matin.happystore.core.domain.GetProductsUseCase
-import com.matin.happystore.core.domain.ProductCategoryFilterGeneratorUseCase
-import com.matin.happystore.core.model.Filter
+import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
 import com.matin.happystore.core.model.Product
-import com.matin.happystore.core.model.ui.ProductsAndFilters
-import com.matin.happystore.core.model.ui.UiFilter
 import com.matin.happystore.core.model.ui.UiProduct
-import com.matin.happystore.core.redux.ApplicationState
-import com.matin.happystore.core.redux.Store
+import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.happystore.core.testing.MainDispatcherRule
 import com.matin.happystore.core.testing.TestHappyStoreRepository
-import com.matin.happystore.core.ui.ProductFavoriteUpdater
-import com.matin.happystore.core.ui.ProductInCartItemUpdater
-import com.matin.happystore.core.ui.ProductListReducer
-import com.matin.products.stateupdater.ProductExpandUpdater
-import com.matin.products.stateupdater.ProductFilterSelectionUpdater
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import com.matin.products.helper.ProductListUiHelper
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import java.math.BigDecimal
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
+import kotlin.test.Test
 
 class ProductsViewModelTest {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    private val testScope = TestScope(UnconfinedTestDispatcher())
+
     private lateinit var viewModel: ProductsViewModel
     private val repository: HappyStoreRepository = TestHappyStoreRepository()
+    private val getProductsUseCase = GetProductsUseCase(repository)
+    private val getInCartProductIdsUseCase = GetInCartProductIdsUseCase(repository)
+    private val addProductToCartUseCase = AddProductToCartUseCase(repository)
+    private val removeProductFromCartUseCase = RemoveProductFromCartUseCase(repository)
+    private val productListUiHelper = ProductListUiHelper()
 
     @Before
     fun setUp() {
-
-        val appState = ApplicationState()
-        val store = Store(appState)
-        viewModel = ProductsViewModel(
-            store,
-            GetProductsUseCase(repository),
-            ProductCategoryFilterGeneratorUseCase(),
-            ProductListReducer(store),
-            ProductFavoriteUpdater(),
-            ProductExpandUpdater(),
-            ProductFilterSelectionUpdater(),
-            ProductInCartItemUpdater(),
-            ProductListUIStateGenerator()
-        )
+        viewModel =
+            ProductsViewModel(
+                getProductsUseCase,
+                getInCartProductIdsUseCase,
+                addProductToCartUseCase,
+                removeProductFromCartUseCase,
+                productListUiHelper,
+            )
     }
 
     @Test
-    fun productsAreLoadedWhileViewModelInitiated() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.store.state.map { it.products } }
-
-        viewModel.store.read { appState ->
-            assertEquals(
+    fun collectProducts_gets_all_products() =
+        testScope.runTest {
+            val products =
                 listOf(
                     Product(
                         123,
@@ -72,7 +59,7 @@ class ProductsViewModelTest {
                         "Jewerly",
                         "description1",
                         "http://example.png",
-                        Product.Rating(3.4f, 1000)
+                        Product.Rating(3.4f, 1000),
                     ),
                     Product(
                         124,
@@ -81,80 +68,47 @@ class ProductsViewModelTest {
                         "Jewerly",
                         "description2",
                         "http://example.png",
-                        Product.Rating(4.4f, 2000)
+                        Product.Rating(4.4f, 2000),
+                    ),
+                )
+
+            val uiProducts =
+                products.map {
+                    UiProduct(
+                        it,
+                        isFavorite = false,
+                        isExpended = false,
+                        // product with id = 123 is in cart in TestDouble
+                        isInCart = it.id == 123,
                     )
-                ), appState.products
-            )
+                }
+
+            val uiProductsAndFilters = UiProductsAndFilters(products = uiProducts)
+
+            val collectJob =
+                launch(UnconfinedTestDispatcher()) {
+                    viewModel.productsScreenUiState.collect { state ->
+                        assertEquals(
+                            uiProductsAndFilters.products,
+                            state.uiProductsAndFilters.products,
+                        )
+                    }
+                }
+
+            collectJob.cancel()
         }
 
-        collectJob.cancel()
-    }
-
     @Test
-    fun productFavoriteUpdatesAfterUserFavoriteProduct() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.store.state }
-        viewModel.updateFavoriteIds(124)
-        viewModel.store.read { appState ->
-            assertTrue(appState.favoriteProductId.contains(124))
+    fun addToCart_adds_product_to_cart() =
+        testScope.runTest {
+            viewModel.addToCart(124)
+            val collectJob =
+                launch(UnconfinedTestDispatcher()) {
+                    viewModel.productsScreenUiState.collect {
+                        assertEquals(2, it.uiProductsAndFilters.products.filter { it.isInCart }.size)
+                    }
+                }
+
+            collectJob.cancel()
         }
-        collectJob.cancel()
-    }
-
-    @Test
-    fun productDescriptionExpandUpdatesAfterUserExpandsItem() = runTest {
-        val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.store.state }
-        viewModel.updateProductExpand(123)
-        assertTrue(viewModel.store.state.value.expandedProductIds.contains(123))
-        collectJob.cancel()
-    }
-
-    @Test
-    fun productsUiStateIsInitiallyLoading() {
-        assertEquals(viewModel.productListUiState.value, ProductsScreenUiState.Loading)
-    }
-
-    @Test
-    fun productsUiStateLoaded() = runTest {
-        val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.productListUiState.collect() }
-        val products = listOf(
-            Product(
-                123,
-                "title1",
-                BigDecimal("23.3"),
-                "Jewerly",
-                "description1",
-                "http://example.png",
-                Product.Rating(3.4f, 1000)
-            ),
-            Product(
-                124,
-                "title2",
-                BigDecimal("24.4"),
-                "Jewerly",
-                "description2",
-                "http://example.png",
-                Product.Rating(4.4f, 2000)
-            )
-        )
-        val uiProducts = products.map { UiProduct(it, false, false, false, 1) }
-        val filters =
-            listOf(UiFilter(filter = Filter(value = "Jewerly", displayText = "Jewerly (2)"), false))
-        val productsAndFilters = ProductsAndFilters(uiProducts, filters)
-
-        assertEquals(
-            ProductsScreenUiState.Success(productsAndFilters),
-            viewModel.productListUiState.value
-        )
-
-        collectJob.cancel()
-    }
-
-    @Test
-    fun inCartProductsUpdateAfterAddingProductsToCart() = runTest {
-        viewModel.updateInCartItemIds(124)
-        viewModel.store.read { appState ->
-            assertTrue(appState.inCartProductIds.contains(124))
-        }
-    }
 }

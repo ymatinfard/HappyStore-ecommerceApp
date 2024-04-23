@@ -13,7 +13,7 @@ class TestHappyStoreApi : HappyStoreApi {
                 "Jewerly",
                 "description1",
                 "http://example.png",
-                NetworkProduct.Rating(3.4f, 1000)
+                NetworkProduct.Rating(3.4f, 1000),
             ),
             NetworkProduct(
                 124,
@@ -22,8 +22,8 @@ class TestHappyStoreApi : HappyStoreApi {
                 "Jewerly",
                 "description2",
                 "http://example.png",
-                NetworkProduct.Rating(4.4f, 2000)
-            )
+                NetworkProduct.Rating(4.4f, 2000),
+            ),
         )
     }
 

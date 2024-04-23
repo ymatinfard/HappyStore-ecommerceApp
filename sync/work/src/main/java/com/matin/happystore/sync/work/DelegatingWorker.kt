@@ -45,7 +45,6 @@ class DelegatingWorker(
     appContext: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(appContext, workerParams) {
-
     private val workerClassName =
         workerParams.inputData.getString(WORKER_CLASS_NAME) ?: ""
 
@@ -56,9 +55,7 @@ class DelegatingWorker(
             as? CoroutineWorker
             ?: throw IllegalArgumentException("Unable to find appropriate worker")
 
-    override suspend fun getForegroundInfo(): ForegroundInfo =
-        delegateWorker.getForegroundInfo()
+    override suspend fun getForegroundInfo(): ForegroundInfo = delegateWorker.getForegroundInfo()
 
-    override suspend fun doWork(): Result =
-        delegateWorker.doWork()
+    override suspend fun doWork(): Result = delegateWorker.doWork()
 }

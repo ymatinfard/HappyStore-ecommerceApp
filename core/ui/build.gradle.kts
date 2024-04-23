@@ -15,6 +15,5 @@ dependencies {
 
     api(projects.core.designsystem)
     api(projects.core.model)
-    implementation(projects.core.redux)
     implementation(libs.javax.inject)
 }

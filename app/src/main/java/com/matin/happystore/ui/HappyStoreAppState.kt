@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+const val STOP_TIMEOUT = 5_000L
 
 @Composable
 fun rememberHappyStoreAppState(
@@ -34,7 +35,7 @@ fun rememberHappyStoreAppState(
         HappyStoreAppState(
             navController,
             networkMonitor,
-            coroutineScope
+            coroutineScope,
         )
     }
 }
@@ -45,36 +46,36 @@ class HappyStoreAppState(
     networkMonitor: NetworkMonitor,
     coroutineScope: CoroutineScope,
 ) {
-
     val currentDestination: NavDestination?
         @Composable
         get() = navController.currentBackStackEntryAsState().value?.destination
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable
-        get() = when (currentDestination?.route) {
-            PRODUCTS_ROUTE -> TopLevelDestination.Products
-            CART_ROUTE -> TopLevelDestination.Cart
-            PROFILE_ROUTE -> TopLevelDestination.Profile
-            else -> null
-        }
-
-    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-
-        val topNavOptions = navOptions {
-            // Pop up to the start destination of the graph to
-            // avoid building up a large stack of destinations
-            // on the back stack as users select items
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+        get() =
+            when (currentDestination?.route) {
+                PRODUCTS_ROUTE -> TopLevelDestination.Products
+                CART_ROUTE -> TopLevelDestination.Cart
+                PROFILE_ROUTE -> TopLevelDestination.Profile
+                else -> null
             }
 
-            // Avoid multiple copies of the same destination when
-            // reselecting the same item
-            launchSingleTop = true
-            // Restore state when reselecting a previously selected item
-            restoreState = true
-        }
+    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
+        val topNavOptions =
+            navOptions {
+                // Pop up to the start destination of the graph to
+                // avoid building up a large stack of destinations
+                // on the back stack as users select items
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
 
         when (topLevelDestination) {
             TopLevelDestination.Products -> navController.navigateToProducts(topNavOptions)
@@ -83,9 +84,10 @@ class HappyStoreAppState(
         }
     }
 
-    val isOffline = networkMonitor.isOnline.map(Boolean::not).stateIn(
-        scope = coroutineScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = false
-    )
+    val isOffline =
+        networkMonitor.isOnline.map(Boolean::not).stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT),
+            initialValue = false,
+        )
 }

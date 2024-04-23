@@ -37,6 +37,8 @@ androidxLifecycle = "2.7.0"
 androidxWork = "2.9.0"
 hiltExt = "1.2.0"
 turbine = "1.0.0"
+ktlint = "12.1.0"
+detekt = "1.23.5"
 
 
 [libraries]
@@ -96,6 +98,8 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -105,6 +109,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 room = { id = "androidx.room", version.ref = "room" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 happystore-android-application = { id = "happystore.android.application", version = "unspecified" }
 happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
@@ -114,5 +120,6 @@ happystore-android-application-compose = { id = "happystore.android.application.
 happystore-android-library-compose = { id = "happystore.android.library.compose", version = "unspecified" }
 happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified" }
 happystore-android-room = { id = "happystore.android.room", version = "unspecified" }
+happystore-detekt = { id = "happystore.detekt", version = "unspecified" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
 

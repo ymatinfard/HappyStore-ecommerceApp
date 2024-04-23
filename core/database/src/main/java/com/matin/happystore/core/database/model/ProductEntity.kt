@@ -18,8 +18,8 @@ data class ProductEntity(
     val rating: Rating,
 ) {
     @Entity("rating_tbl")
-    data class Rating (
+    data class Rating(
         val rate: Float,
-        val count: Int
+        val count: Int,
     )
 }

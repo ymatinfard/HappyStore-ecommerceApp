@@ -5,10 +5,11 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface HappyStoreApi {
-
     @GET("products")
     suspend fun getAllProducts(): List<NetworkProduct>
 
     @GET("products/{id}")
-    suspend fun getSingleProduct(@Path("id") id: Int): NetworkProduct
+    suspend fun getSingleProduct(
+        @Path("id") id: Int,
+    ): NetworkProduct
 }

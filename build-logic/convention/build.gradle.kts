@@ -26,6 +26,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
     implementation(libs.truth)
 }
 
@@ -62,6 +63,10 @@ gradlePlugin {
         register("androidRoom") {
             id = "happystore.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
+        }
+        register("detekt") {
+            id = "happystore.detekt"
+            implementationClass = "DetektConventionPlugin"
         }
     }
 }

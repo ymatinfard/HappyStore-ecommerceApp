@@ -14,5 +14,4 @@ dependencies {
     implementation(projects.core.testing)
     implementation(projects.core.common)
     ksp(libs.hilt.ext.compiler)
-
 }
