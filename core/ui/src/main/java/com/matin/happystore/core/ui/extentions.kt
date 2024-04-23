@@ -17,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 
-fun String.clipIfLengthy() = if (this.length > 20) this.take(20).plus("...") else this
+const val TITLE_MAX_LEN = 20
+
+fun String.clipIfLengthy() = if (this.length > TITLE_MAX_LEN) this.take(TITLE_MAX_LEN).plus("...") else this
 
 fun Modifier.shimmerEffect(): Modifier =
     composed {
