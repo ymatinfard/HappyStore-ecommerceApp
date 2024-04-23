@@ -39,6 +39,7 @@ hiltExt = "1.2.0"
 turbine = "1.0.0"
 ktlint = "12.1.0"
 detekt = "1.23.5"
+googleMap = "4.3.3"
 
 
 [libraries]
@@ -83,6 +84,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
+google-map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMap"}
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
