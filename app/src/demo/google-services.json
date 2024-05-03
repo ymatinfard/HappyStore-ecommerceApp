@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "127907847460",
+    "project_id": "happystore-9e4eb",
+    "storage_bucket": "happystore-9e4eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127907847460:android:236862c8f33e0f5aaf27b1",
+        "android_client_info": {
+          "package_name": "com.matin.happystore.demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWImBHYjNGL3NFPzm5ZP_E9C436RmtHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
