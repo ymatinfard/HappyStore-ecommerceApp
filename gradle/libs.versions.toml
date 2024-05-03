@@ -121,5 +121,6 @@ happystore-android-library-compose = { id = "happystore.android.library.compose"
 happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified" }
 happystore-android-room = { id = "happystore.android.room", version = "unspecified" }
 happystore-detekt = { id = "happystore.detekt", version = "unspecified" }
+happystore-android-application-flavor = { id = "happystore.flavor", version = "unspecified"}
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
 

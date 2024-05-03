@@ -68,5 +68,9 @@ gradlePlugin {
             id = "happystore.detekt"
             implementationClass = "DetektConventionPlugin"
         }
+        register("androidFlavor") {
+            id = "happystore.flavor"
+            implementationClass = "AndroidApplicationFlavorConventionPlugin"
+        }
     }
 }
