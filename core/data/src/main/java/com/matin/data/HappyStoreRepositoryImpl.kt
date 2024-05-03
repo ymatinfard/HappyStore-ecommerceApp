@@ -8,7 +8,7 @@ import com.matin.happystore.core.database.model.ProductEntity
 import com.matin.happystore.core.database.model.ProductsDao
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
-import com.matin.happystore.core.network.HappyStoreApi
+import com.matin.happystore.core.network.HappyStoreDataSource
 import com.matin.happystore.core.network.model.NetworkProduct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class HappyStoreRepositoryImpl
     @Inject
     constructor(
-        private val api: HappyStoreApi,
+        private val api: HappyStoreDataSource,
         private val productsDao: ProductsDao,
         private val cartDao: CartDao,
     ) : HappyStoreRepository {
