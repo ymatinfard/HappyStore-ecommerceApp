@@ -10,4 +10,5 @@ android {
 dependencies {
     implementation(libs.google.map.compose)
     implementation(projects.core.common)
+    implementation(libs.play.services.location)
 }
