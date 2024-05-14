@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.happystore.android.application.compose)
     alias(libs.plugins.happystore.android.hilt)
     alias(libs.plugins.firebase)
+    alias(libs.plugins.happystore.android.application.flavor)
 }
 
 android {

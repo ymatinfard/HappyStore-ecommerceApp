@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.happystore.android.library)
     alias(libs.plugins.happystore.android.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -18,4 +19,5 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.kotlinx.serialization.json)
 }

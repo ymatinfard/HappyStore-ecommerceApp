@@ -39,7 +39,7 @@ hiltExt = "1.2.0"
 turbine = "1.0.0"
 ktlint = "12.1.0"
 detekt = "1.23.5"
-googleMap = "4.3.3"
+kotlinxSerializationJson = "1.6.3"
 
 
 [libraries]
@@ -84,7 +84,8 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
-google-map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMap"}
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -113,6 +114,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 room = { id = "androidx.room", version.ref = "room" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 happystore-android-application = { id = "happystore.android.application", version = "unspecified" }
 happystore-android-feature = { id = "happystore.android.feature", version = "unspecified" }
@@ -123,5 +125,6 @@ happystore-android-library-compose = { id = "happystore.android.library.compose"
 happystore-jvm-library = { id = "happystore.jvm.library", version = "unspecified" }
 happystore-android-room = { id = "happystore.android.room", version = "unspecified" }
 happystore-detekt = { id = "happystore.detekt", version = "unspecified" }
+happystore-android-application-flavor = { id = "happystore.flavor", version = "unspecified"}
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
 
