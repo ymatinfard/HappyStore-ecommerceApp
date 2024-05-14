@@ -13,6 +13,7 @@ This Android application serves as a sample project showcasing best practices in
 - **Select multiple products and add to shopping cart**: Enable users to select multiple products and add them to their shopping cart for purchase.
 - **Change shopping cart products quantity**: Allow users to adjust the quantity of products in their shopping cart.
 - **Show product list while in offline mode**: Ensure that users can still view their product list even when they are offline, using locally cached data.
+- Show stores on Map: Allow users to select store and see the related photos on Google map.
 
 ## Technologies Used
 
