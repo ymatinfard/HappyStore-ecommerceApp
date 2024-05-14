@@ -1,4 +1,5 @@
 import com.matin.happystore.HappyStoreBuildType
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.happystore.android.application)
@@ -20,6 +21,15 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildFeatures {
+            buildConfig = true
+        }
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        manifestPlaceholders ["MAPS_API_KEY"] = properties.getProperty("MAPS_API_KEY")
+        buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
     }
 
     buildTypes {
@@ -53,6 +63,7 @@ dependencies {
     implementation(projects.feature.products)
     implementation(projects.feature.cart)
     implementation(projects.feature.profile)
+    implementation(projects.feature.map)
 
     implementation(projects.core.ui)
     implementation(projects.core.common)

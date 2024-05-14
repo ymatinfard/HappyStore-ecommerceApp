@@ -11,6 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.matin.data.util.NetworkMonitor
+import com.matin.happystore.core.common.BottomBarVisibility
 import com.matin.happystore.feature.cart.navigation.CART_ROUTE
 import com.matin.happystore.feature.cart.navigation.navigateToCart
 import com.matin.happystore.feature.profile.navigation.PROFILE_ROUTE
@@ -19,6 +20,7 @@ import com.matin.happystore.navigation.TopLevelDestination
 import com.matin.products.navigation.PRODUCTS_ROUTE
 import com.matin.products.navigation.navigateToProducts
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -60,6 +62,8 @@ class HappyStoreAppState(
                 else -> null
             }
 
+    val bottomBarVisibility = MutableStateFlow(BottomBarVisibility.VISIBLE)
+
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val topNavOptions =
             navOptions {
@@ -90,4 +94,8 @@ class HappyStoreAppState(
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT),
             initialValue = false,
         )
+
+    fun setBottomBarVisibility(visibility: BottomBarVisibility) {
+        bottomBarVisibility.value = visibility
+    }
 }

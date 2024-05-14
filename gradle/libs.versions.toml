@@ -40,7 +40,8 @@ turbine = "1.0.0"
 ktlint = "12.1.0"
 detekt = "1.23.5"
 kotlinxSerializationJson = "1.6.3"
-
+googleMap = "4.3.3"
+playServicesLocation = "21.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -85,6 +86,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+google-map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMap"}
 
 
 # Dependencies of the included build-logic
@@ -103,6 +105,7 @@ androidx-compose-foundation-layout = { group = "androidx.compose.foundation", na
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
