@@ -34,12 +34,14 @@ class MapScreenViewModel @Inject constructor() : ViewModel() {
         const val MAP_ZOOM = 14F
         val fakeStores = listOf(
             StoreLocations(
-                title = "First Store",
+                id = 123,
+                title = "Maddy Store",
                 lat = 38.208944757256624,
                 lng = 15.557370297498132
             ),
             StoreLocations(
-                title = "Second store",
+                id = 124,
+                title = "Ani Store",
                 lat = 38.19346658305723,
                 lng = 15.553883918360398
             )

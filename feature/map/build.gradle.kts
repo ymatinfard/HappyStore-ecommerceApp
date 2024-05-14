@@ -11,4 +11,5 @@ dependencies {
     implementation(libs.google.map.compose)
     implementation(projects.core.common)
     implementation(libs.play.services.location)
+    implementation(projects.core.ui)
 }
