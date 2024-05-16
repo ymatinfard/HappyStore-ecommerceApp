@@ -48,5 +48,6 @@ This project is under development :)
 
 
 
-<img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happy_store_screen_shot2.png" alt="Happy Store Screenshot" width="400" height="800">
+<img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_main_screenshot.png" alt="Happy Store Screenshot" width="400" height="800">
+<img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_map_screenshot.png" alt="Happy Store Screenshot" width="400" height="800">
 
