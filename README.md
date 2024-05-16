@@ -24,6 +24,7 @@ This Android application serves as a sample project showcasing best practices in
 - **Room Persistence Library**: Android's native SQLite database library for local data storage.
 - **Hilt**: Dependency injection library for Android, built on top of Dagger.
 - **Work Manager**: Android's recommended solution for deferrable background tasks.
+- **Google Maps**: Map to show near by stores 
 - **Unit Testing**: Writing tests to ensure code quality and reliability.
 - **GitHub Actions**: Automating CI/CD pipelines for continuous integration.
 
@@ -47,7 +48,9 @@ GitHub Actions is set up for continuous integration. Every push to the repositor
 This project is under development :)
 
 
+<p float="left">
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_main_screenshot.png" alt="Happy Store Main Screenshot" width="400" height="800" />
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/happystore_map_screenshot.jpg" alt="Happy Store Map Screenshot" width="400" height="800" /> 
+</p>
 
-<img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_main_screenshot.png" alt="Happy Store Screenshot" width="400" height="800">
-<img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_map_screenshot.png" alt="Happy Store Screenshot" width="400" height="800">
 
