@@ -44,6 +44,10 @@ The project includes unit tests for testing business logic.
 
 GitHub Actions is set up for continuous integration. Every push to the repository triggers a build process that runs unit tests and checks the code quality.
 
+## Architecture
+
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/happystore_architecture_screenshot.png" alt="Happy Store Map Screenshot" width="500" height="700" /> 
+
 ## Note
 This project is under development :)
 
