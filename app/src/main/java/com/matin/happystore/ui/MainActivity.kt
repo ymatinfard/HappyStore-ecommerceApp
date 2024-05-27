@@ -3,8 +3,8 @@ package com.matin.happystore.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.compose.HappyStoreTheme
 import com.matin.data.util.NetworkMonitor
-import com.matin.happystore.core.designsystem.theme.HappyStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -88,13 +88,6 @@ fun HandleProductScreen(
     )
 }
 
-@Composable
-fun ShowLoading() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(modifier = Modifier.size(60.dp))
-    }
-}
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ShowProductList(

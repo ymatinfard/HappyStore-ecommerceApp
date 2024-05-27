@@ -120,10 +120,10 @@ fun ProductItem(
                                     .clip(
                                         CircleShape,
                                     )
-                                    .background(color = MaterialTheme.colorScheme.secondary)
+                                    .background(color = MaterialTheme.colorScheme.outline)
                                     .padding(3.dp)
                                     .clickable { onFavoriteClick(item.product.id) },
-                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.LightGray),
+                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.White),
                         )
                     }
                 }
