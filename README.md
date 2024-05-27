@@ -46,15 +46,15 @@ GitHub Actions is set up for continuous integration. Every push to the repositor
 
 ## Architecture
 
-  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/happystore_architecture_screenshot.png" alt="Happy Store Map Screenshot" width="500" height="700" /> 
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_architecture_screenshot.png" alt="Happy Store Map Screenshot" width="500" height="700" /> 
 
 ## Note
 This project is under development :)
 
 
 <p float="left">
-  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/assets/16016916/ab248c09-dfc3-4172-8dd0-7242d3727665/happystore_main_screenshot.png" alt="Happy Store Main Screenshot" width="400" height="800" />
-  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/happystore_map_screenshot.jpg" alt="Happy Store Map Screenshot" width="400" height="800" /> 
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_main_screenshot.png" alt="Happy Store Main Screenshot" width="400" height="800" />
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_map_screenshot.jpg" alt="Happy Store Map Screenshot" width="400" height="800" /> 
 </p>
 
 
