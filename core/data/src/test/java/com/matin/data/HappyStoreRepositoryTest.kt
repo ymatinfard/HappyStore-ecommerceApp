@@ -3,7 +3,7 @@ package com.matin.data
 import com.matin.data.model.toDomain
 import com.matin.data.model.toEntity
 import com.matin.data.testdouble.TestCartDao
-import com.matin.data.testdouble.TestHappyStoreApi
+import com.matin.data.testdouble.TestHappyStoreDataSource
 import com.matin.data.testdouble.TestProductsDao
 import com.matin.happystore.core.database.model.ProductEntity
 import com.matin.happystore.core.model.InCartProduct
@@ -21,14 +21,14 @@ import kotlin.test.assertEquals
 class HappyStoreRepositoryTest {
     private val testScope = TestScope(UnconfinedTestDispatcher())
     private val productsDao = TestProductsDao()
-    private val happyStoreApi = TestHappyStoreApi()
+    private val happyStoreDataSource = TestHappyStoreDataSource()
     private val cartDao = TestCartDao()
 
     private lateinit var repository: HappyStoreRepository
 
     @Before
     fun setup() {
-        repository = HappyStoreRepositoryImpl(happyStoreApi, productsDao, cartDao)
+        repository = HappyStoreRepositoryImpl(happyStoreDataSource, productsDao, cartDao)
     }
 
     @Test
@@ -41,7 +41,7 @@ class HappyStoreRepositoryTest {
     @Test
     fun cached_products_synced_with_network_products() =
         testScope.runTest {
-            val networkProductList = happyStoreApi.getAllProducts()
+            val networkProductList = happyStoreDataSource.getAllProducts()
 
             repository.sync()
 
