@@ -76,7 +76,7 @@ class CartViewModel
         }
 
         companion object {
-            const val WAIT_TIME: Long = 500
+            const val WAIT_TIME: Long = 300
         }
     }
 

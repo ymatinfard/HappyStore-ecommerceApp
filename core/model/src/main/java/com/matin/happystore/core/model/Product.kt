@@ -17,11 +17,20 @@ data class Product(
     )
 }
 
-fun List<Product>.generateCategory() = this.groupBy { it.category }.map { entry ->
-    Filter(entry.key, "${entry.key} (${entry.value.size})")
-}.toSet()
+fun List<Product>.generateCategory(): Set<Filter> {
+    val filters = this.groupingBy { it.category }
+        .eachCount()
+        .mapTo(mutableSetOf()) { (category, count) ->
+            Filter(category, "$category ($count)")
+        }.toMutableList()
+
+    filters.add(0, Filter(SHOW_ALL, SHOW_ALL))
+    return filters.toSet()
+}
 
 data class InCartProduct(
     val product: Product,
     val quantity: Int = 1
 )
+
+const val SHOW_ALL = "All"
