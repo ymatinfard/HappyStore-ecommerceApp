@@ -14,7 +14,7 @@ class ProductKtTest {
             ProductEntity(
                 123,
                 "title1",
-                BigDecimal("23.3"),
+                BigDecimal("23.30"),
                 "Jewerly",
                 "description1",
                 "http://example.png",
@@ -25,7 +25,7 @@ class ProductKtTest {
             Product(
                 123,
                 "title1",
-                BigDecimal("23.3"),
+                BigDecimal("23.30"),
                 "Jewerly",
                 "description1",
                 "http://example.png",
@@ -52,11 +52,11 @@ class ProductKtTest {
             ProductEntity(
                 123,
                 "title1",
-                BigDecimal("23.3"),
+                BigDecimal("23.30"),
                 "Jewerly",
                 "description1",
                 "http://example.png",
-                com.matin.happystore.core.database.model.ProductEntity.Rating(3.4f, 1000),
+                ProductEntity.Rating(3.4f, 1000),
             )
 
         assertEquals(productEntity, mappedToEntity)

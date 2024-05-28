@@ -1,9 +1,9 @@
 package com.matin.data.testdouble
 
-import com.matin.happystore.core.network.HappyStoreApi
+import com.matin.happystore.core.network.HappyStoreDataSource
 import com.matin.happystore.core.network.model.NetworkProduct
 
-class TestHappyStoreApi : HappyStoreApi {
+class TestHappyStoreDataSource: HappyStoreDataSource {
     override suspend fun getAllProducts(): List<NetworkProduct> {
         return listOf(
             NetworkProduct(
