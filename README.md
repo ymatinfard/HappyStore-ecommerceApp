@@ -54,7 +54,7 @@ This project is under development :)
 
 <p float="left">
   <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_main_screenshot.png" alt="Happy Store Main Screenshot" width="400" height="800" />
-  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_map_screenshot.jpg" alt="Happy Store Map Screenshot" width="400" height="800" /> 
+  <img src="https://github.com/ymatinfard/HappyStore-ecommerceApp/blob/develop/screenshots/happystore_map_screenshot.png" alt="Happy Store Map Screenshot" width="400" height="800" /> 
 </p>
 
 
