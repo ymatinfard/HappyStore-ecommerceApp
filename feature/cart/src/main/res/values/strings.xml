@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_cart_no_item_in_cart">No item in cart</string>
+    <string name="feature_cart_loading">Loading...</string>
+</resources>

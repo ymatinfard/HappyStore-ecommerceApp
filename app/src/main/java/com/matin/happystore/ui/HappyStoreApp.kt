@@ -19,10 +19,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.matin.happystore.R
 import com.matin.happystore.navigation.HappyStoreNavHost
 import com.matin.happystore.navigation.TopLevelDestination
 import kotlinx.coroutines.flow.map
@@ -36,11 +38,12 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
     val snackbarHostState = remember { SnackbarHostState() }
     val isOffline by appState.isOffline.collectAsState()
     val bottomBarVisibility = appState.bottomBarVisibility.collectAsState().value
+    val context = LocalContext.current
 
     LaunchedEffect(isOffline) {
         if (isOffline) {
             snackbarHostState.showSnackbar(
-                message = "No internet connection",
+                message = context.getString(R.string.no_internet_connection),
                 duration = SnackbarDuration.Indefinite,
             )
         }
@@ -72,9 +75,9 @@ fun HappyStoreBottomNavigationBar(
 ) {
     NavigationBar(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(50.dp),
+        Modifier
+            .fillMaxWidth()
+            .height(50.dp),
     ) {
         bottomNavItems.forEach { destination ->
             NavigationBarItem(

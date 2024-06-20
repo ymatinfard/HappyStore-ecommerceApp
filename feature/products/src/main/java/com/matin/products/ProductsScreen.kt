@@ -1,16 +1,20 @@
 package com.matin.products
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -18,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.core.common.BottomBarVisibility
 import com.matin.happystore.core.common.DataLoadingState
@@ -26,6 +32,7 @@ import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.happystore.core.ui.CategoryFilterChips
 import com.matin.happystore.core.ui.ProductItem
 import com.matin.happystore.core.ui.ShowProductListShimmerOrContent
+import com.matin.happystore.feature.products.R
 import com.matin.products.model.ProductsScreenUiState
 
 @Composable
@@ -40,19 +47,19 @@ fun ProductsScreen(
         HandleProductScreen(
             uiProductState = uiProductsState,
             onFavoriteClick = { productId ->
-                viewModel.updateFavoriteIds(productId)
+                viewModel.intentToAction(ProductsIntent.UpdateProductFavorite(productId))
             },
             onProductClick = { productId ->
-                viewModel.updateProductExpand(productId)
+                viewModel.intentToAction(ProductsIntent.UpdateProductExpansion(productId))
             },
             onFilterClick = { filter ->
-                viewModel.updateFilterSelection(filter)
+                viewModel.intentToAction(ProductsIntent.UpdateFilter(filter))
             },
             onAddToCartClick = { productId ->
-                viewModel.addToCart(productId)
+                viewModel.intentToAction(ProductsIntent.AddToCard(productId))
             },
             onRemoveFromCartClick = { productId ->
-                viewModel.removeFromCart(productId)
+                viewModel.intentToAction(ProductsIntent.RemoveFromCard(productId))
             },
             onMapClick = {
                 onMapClick()
@@ -88,13 +95,6 @@ fun HandleProductScreen(
     )
 }
 
-@Composable
-fun ShowLoading() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(modifier = Modifier.size(60.dp))
-    }
-}
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ShowProductList(
@@ -114,7 +114,7 @@ fun ShowProductList(
                 modifier = Modifier.padding(bottom = 40.dp),
                 onClick = { onMapClick() },
             ) {
-                androidx.compose.material3.Icon(
+                Icon(
                     imageVector = androidx.compose.material.icons.Icons.Default.LocationOn,
                     contentDescription = "nearby stores button",
                 )
@@ -122,11 +122,16 @@ fun ShowProductList(
         },
     ) {
         Column {
+            HappyStoreLogo()
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
-            LazyColumn {
-                items(productsAndFilters.products) { product ->
+            val lazyListState = rememberLazyListState()
+            LazyColumn(modifier = Modifier.padding(bottom = 50.dp), state = lazyListState) {
+                items(productsAndFilters.products, key = {
+                    it.product.id
+                }) { product ->
                     ProductItem(
                         product,
+                        state = lazyListState,
                         onFavoriteClick,
                         onProductClick,
                         onAddToCartClick,
@@ -135,5 +140,23 @@ fun ShowProductList(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun HappyStoreLogo() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 7.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_logo),
+            contentDescription = null,
+            modifier = Modifier.size(width = 200.dp, height = 100.dp)
+        )
     }
 }
