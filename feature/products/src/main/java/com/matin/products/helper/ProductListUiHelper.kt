@@ -2,6 +2,7 @@ package com.matin.products.helper
 
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.Product
+import com.matin.happystore.core.model.SHOW_ALL
 import com.matin.happystore.core.model.generateCategory
 import com.matin.happystore.core.model.ui.UiFilter
 import com.matin.happystore.core.model.ui.UiProduct
@@ -50,14 +51,14 @@ class ProductListUiHelper
             )
         }
 
-        private fun mapToUiProductsAndFilters(
-            products: List<UiProduct>,
-            filterInfo: ProductFilterInfo,
-        ): UiProductsAndFilters {
-            val uiProducts =
-                products.filter { uiProduct ->
-                    filterInfo.selectedFilter == null || uiProduct.product.category == filterInfo.selectedFilter.value
-                }
+    private fun mapToUiProductsAndFilters(
+        products: List<UiProduct>,
+        filterInfo: ProductFilterInfo,
+    ): UiProductsAndFilters {
+        val uiProducts =
+            products.filter { uiProduct ->
+                filterInfo.selectedFilter == null || filterInfo.selectedFilter.value == SHOW_ALL || uiProduct.product.category == filterInfo.selectedFilter.value
+            }
 
             val uiFilters = mapToUiFilters(filterInfo)
 

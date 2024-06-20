@@ -28,8 +28,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -56,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
+import com.matin.happystore.core.designsystem.theme.AppTypography
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.ui.UiFilter
@@ -71,21 +70,21 @@ fun ProductItem(
 ) {
     Column(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
     ) {
         ElevatedCard(
             modifier =
-                Modifier
-                    .height(170.dp)
-                    .clickable {
-                        onProductClicked(item.product.id)
-                    },
+            Modifier
+                .height(170.dp)
+                .clickable {
+                    onProductClicked(item.product.id)
+                },
             elevation =
-                CardDefaults.cardElevation(
-                    defaultElevation = 6.dp,
-                ),
+            CardDefaults.cardElevation(
+                defaultElevation = 1.dp,
+            ),
             colors =
                 CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -96,9 +95,9 @@ fun ProductItem(
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     modifier =
-                        Modifier
-                            .padding(8.dp)
-                            .size(160.dp),
+                    Modifier
+                        .padding(8.dp)
+                        .size(160.dp),
                 ) {
                     AsyncImage(
                         model = item.product.image,
@@ -107,24 +106,12 @@ fun ProductItem(
                     )
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(6.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        Image(
-                            imageVector = if (item.isFavorite) HappyStoreIcons.Favorites else HappyStoreIcons.FavoriteBorder,
-                            contentDescription = null,
-                            modifier =
-                                Modifier
-                                    .clip(
-                                        CircleShape,
-                                    )
-                                    .background(color = MaterialTheme.colorScheme.secondary)
-                                    .padding(3.dp)
-                                    .clickable { onFavoriteClick(item.product.id) },
-                            colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.LightGray),
-                        )
+                        FavoriteIcon(id = item.product.id, item.isFavorite, onFavoriteClick)
                     }
                 }
                 Column(
@@ -134,25 +121,24 @@ fun ProductItem(
                     Column(modifier = Modifier.padding(top = 12.dp)) {
                         Text(
                             text = item.product.title.clipIfLengthy(),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                            style = AppTypography.bodyLarge,
                         )
-                        Text(text = item.product.category)
+                        Text(text = item.product.category, style = AppTypography.bodySmall)
                     }
 
                     RatingIndicator(
                         modifier =
-                            Modifier
-                                .padding(start = 6.dp)
-                                .size(32.dp),
+                        Modifier
+                            .padding(start = 6.dp)
+                            .size(32.dp),
                         item.product.rating.rate,
                     )
 
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -165,7 +151,7 @@ fun ProductItem(
                                     onAddToCartClick(item.product.id)
                                 }
                             },
-                            badgeIsVisible = item.isInCart,
+                            isBadgeVisible = item.isInCart,
                         )
                     }
                 }
@@ -173,6 +159,27 @@ fun ProductItem(
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
     }
+}
+
+@Composable
+private fun FavoriteIcon(
+    id: Int,
+    isFavorite: Boolean,
+    onFavoriteClick: (Int) -> Unit,
+) {
+    Image(
+        imageVector = if (isFavorite) HappyStoreIcons.Favorites else HappyStoreIcons.FavoriteBorder,
+        contentDescription = null,
+        modifier =
+        Modifier
+            .clip(
+                CircleShape,
+            )
+            .background(color = MaterialTheme.colorScheme.outline)
+            .padding(3.dp)
+            .clickable { onFavoriteClick(id) },
+        colorFilter = ColorFilter.tint(if (isFavorite) Color.Red else Color.White),
+    )
 }
 
 @Composable
@@ -195,9 +202,9 @@ fun DescriptionText(
     AnimatedVisibility(
         visible = visible,
         enter =
-            slideInVertically {
-                with(density) { -40.dp.roundToPx() }
-            } +
+        slideInVertically {
+            with(density) { -40.dp.roundToPx() }
+        } +
                 expandVertically(
                     expandFrom = Alignment.Top,
                 ) +
@@ -225,17 +232,17 @@ fun CategoryFilterChips(
                 },
                 selected = item.isSelected,
                 leadingIcon =
-                    if (item.isSelected) {
-                        {
-                            Icon(
-                                imageVector = Icons.Filled.Done,
-                                contentDescription = "Filter icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize),
-                            )
-                        }
-                    } else {
-                        null
-                    },
+                if (item.isSelected) {
+                    {
+                        Icon(
+                            imageVector = HappyStoreIcons.Done,
+                            contentDescription = "Filter icon",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
             )
         }
     }
@@ -244,7 +251,7 @@ fun CategoryFilterChips(
 @Composable
 fun ShoppingButton(
     onClick: () -> Unit,
-    badgeIsVisible: Boolean = false,
+    isBadgeVisible: Boolean = false,
 ) {
     Box(contentAlignment = Alignment.CenterStart) {
         Button(
@@ -258,15 +265,15 @@ fun ShoppingButton(
                 contentDescription = null,
             )
         }
-        if (badgeIsVisible) {
+        AnimatedVisibility(visible = isBadgeVisible, enter = fadeIn(), exit = fadeOut()) {
             Icon(
                 imageVector = HappyStoreIcons.Check,
                 modifier =
-                    Modifier
-                        .size(18.dp)
-                        .clip(CircleShape)
-                        .background(color = Color.White),
-                tint = Color.Green,
+                Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(color = Color.White),
+                tint = MaterialTheme.colorScheme.inversePrimary,
                 contentDescription = null,
             )
         }
@@ -287,49 +294,28 @@ fun CartItem(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
     ) {
         Column(
             modifier =
-                Modifier
-                    .height(170.dp),
+            Modifier
+                .height(170.dp),
         ) {
             Row {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     modifier =
-                        Modifier
-                            .padding(8.dp)
-                            .size(170.dp),
+                    Modifier
+                        .padding(8.dp)
+                        .size(170.dp),
                 ) {
                     AsyncImage(
                         model = item.product.image,
                         contentScale = ContentScale.FillBounds,
                         contentDescription = null,
                     )
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(6.dp),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        Image(
-                            imageVector = HappyStoreIcons.Favorites,
-                            contentDescription = null,
-                            modifier =
-                                Modifier
-                                    .clip(
-                                        CircleShape,
-                                    )
-                                    .background(color = Color.LightGray)
-                                    .padding(2.dp)
-                                    .clickable { onFavoriteClick(item.product.id) },
-                            //   colorFilter = ColorFilter.tint(if (item.isFavorite) Color.Red else Color.DarkGray)
-                        )
-                    }
                 }
                 Column(
                     modifier = Modifier.fillMaxHeight(),
@@ -345,9 +331,9 @@ fun CartItem(
 
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(end = 10.dp, bottom = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = 10.dp, bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Bottom,
                     ) {
@@ -366,18 +352,18 @@ fun CartItem(
                             contentDescription = null,
                             tint = Color.Red,
                             modifier =
-                                Modifier.clickable {
-                                    onDeleteClick(item)
-                                },
+                            Modifier.clickable {
+                                onDeleteClick(item)
+                            },
                         )
                     }
                 }
             }
             HorizontalDivider(
                 modifier =
-                    Modifier
-                        .height(3.dp)
-                        .padding(start = 8.dp, end = 8.dp),
+                Modifier
+                    .height(3.dp)
+                    .padding(start = 8.dp, end = 8.dp),
                 color = Color.Gray,
             )
         }
@@ -398,27 +384,26 @@ fun CartItemQuantity(
                 imageVector = HappyStoreIcons.ArrowUp,
                 contentDescription = null,
                 modifier =
-                    Modifier.clickable {
-                        val newQuantity = inCartProduct.quantity + 1
-                        onQuantityChange(inCartProduct.copy(quantity = newQuantity))
-                    },
+                Modifier.clickable {
+                    val newQuantity = inCartProduct.quantity + 1
+                    onQuantityChange(inCartProduct.copy(quantity = newQuantity))
+                },
             )
             Text(
                 text = inCartProduct.quantity.toString(),
                 modifier =
-                    Modifier
-                        .padding(start = 4.dp, end = 4.dp),
-                color = MaterialTheme.colorScheme.onSecondary,
+                Modifier
+                    .padding(start = 4.dp, end = 4.dp),
                 fontSize = 16.sp,
             )
             Icon(
                 imageVector = HappyStoreIcons.ArrowDown,
                 modifier =
-                    Modifier.clickable {
-                        if (inCartProduct.quantity == 1) return@clickable
-                        val newQuality = inCartProduct.quantity - 1
-                        onQuantityChange(inCartProduct.copy(quantity = newQuality))
-                    },
+                Modifier.clickable {
+                    if (inCartProduct.quantity == 1) return@clickable
+                    val newQuality = inCartProduct.quantity - 1
+                    onQuantityChange(inCartProduct.copy(quantity = newQuality))
+                },
                 contentDescription = null,
             )
         }
@@ -431,10 +416,10 @@ fun TotalCartItemsPrice(cartItems: List<InCartProduct> = emptyList()) {
 
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                .padding(10.dp),
+        Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -475,15 +460,15 @@ fun ShowProductListShimmerOrContent(
 private fun ProductShimmerItem(modifier: Modifier = Modifier) {
     Row(
         modifier =
-            modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                .height(140.dp),
+        modifier
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            .height(140.dp),
     ) {
         Box(
             modifier =
-                Modifier
-                    .size(140.dp)
-                    .shimmerEffect(),
+            Modifier
+                .size(140.dp)
+                .shimmerEffect(),
         )
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -491,19 +476,19 @@ private fun ProductShimmerItem(modifier: Modifier = Modifier) {
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .height(26.dp)
-                        .padding(start = 6.dp)
-                        .fillMaxWidth()
-                        .shimmerEffect(),
+                Modifier
+                    .height(26.dp)
+                    .padding(start = 6.dp)
+                    .fillMaxWidth()
+                    .shimmerEffect(),
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box(
                     modifier =
-                        Modifier
-                            .width(52.dp)
-                            .height(32.dp)
-                            .shimmerEffect(),
+                    Modifier
+                        .width(52.dp)
+                        .height(32.dp)
+                        .shimmerEffect(),
                 )
             }
         }

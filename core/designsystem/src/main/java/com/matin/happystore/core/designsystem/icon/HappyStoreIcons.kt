@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -21,4 +22,5 @@ object HappyStoreIcons {
     val ArrowDown = Icons.Default.KeyboardArrowDown
     val List = Icons.AutoMirrored.Filled.List
     val FavoriteBorder = Icons.Default.FavoriteBorder
+    val Done = Icons.Filled.Done
 }
