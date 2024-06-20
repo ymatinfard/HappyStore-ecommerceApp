@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -46,19 +47,19 @@ fun ProductsScreen(
         HandleProductScreen(
             uiProductState = uiProductsState,
             onFavoriteClick = { productId ->
-                viewModel.updateFavoriteIds(productId)
+                viewModel.intentToAction(ProductsIntent.UpdateProductFavorite(productId))
             },
             onProductClick = { productId ->
-                viewModel.updateProductExpand(productId)
+                viewModel.intentToAction(ProductsIntent.UpdateProductExpansion(productId))
             },
             onFilterClick = { filter ->
-                viewModel.updateFilterSelection(filter)
+                viewModel.intentToAction(ProductsIntent.UpdateFilter(filter))
             },
             onAddToCartClick = { productId ->
-                viewModel.addToCart(productId)
+                viewModel.intentToAction(ProductsIntent.AddToCard(productId))
             },
             onRemoveFromCartClick = { productId ->
-                viewModel.removeFromCart(productId)
+                viewModel.intentToAction(ProductsIntent.RemoveFromCard(productId))
             },
             onMapClick = {
                 onMapClick()
@@ -123,10 +124,14 @@ fun ShowProductList(
         Column {
             HappyStoreLogo()
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
-            LazyColumn(modifier = Modifier.padding(bottom = 50.dp)) {
-                items(productsAndFilters.products) { product ->
+            val lazyListState = rememberLazyListState()
+            LazyColumn(modifier = Modifier.padding(bottom = 50.dp), state = lazyListState) {
+                items(productsAndFilters.products, key = {
+                    it.product.id
+                }) { product ->
                     ProductItem(
                         product,
+                        state = lazyListState,
                         onFavoriteClick,
                         onProductClick,
                         onAddToCartClick,

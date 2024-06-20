@@ -53,34 +53,40 @@ class CartViewModel
             }
         }
 
-        fun onQuantityChanged(inCartProduct: InCartProduct) {
-            onInCartProductQuantityChange(inCartProduct)
-        }
+    fun quantityChanged(inCartProduct: InCartProduct) {
+        onInCartProductQuantityChange(inCartProduct)
+    }
 
-        private fun updateInCartProductQuantity(inCartProduct: InCartProduct) {
-            viewModelScope.launch {
-                updateInCartProductQuantityUseCase(inCartProduct)
-            }
-        }
-
-        fun removeItem(inCartProduct: InCartProduct) {
-            viewModelScope.launch {
-                removeProductFromCartUseCase(inCartProduct)
-            }
-        }
-
-        fun updateFavoriteIds(id: Int) {
-            viewModelScope.launch {
-                // Todo()
-            }
-        }
-
-        companion object {
-            const val WAIT_TIME: Long = 300
+    private fun updateInCartProductQuantity(inCartProduct: InCartProduct) {
+        viewModelScope.launch {
+            updateInCartProductQuantityUseCase(inCartProduct)
         }
     }
+
+    fun removeProduct(inCartProduct: InCartProduct) {
+        viewModelScope.launch {
+            removeProductFromCartUseCase(inCartProduct)
+        }
+    }
+
+    fun intentToAction(intent: CartIntent) {
+        when (intent) {
+            is CartIntent.QuantityChanged -> quantityChanged(intent.product)
+            is CartIntent.DeleteProduct -> removeProduct(intent.product)
+        }
+    }
+
+    companion object {
+        const val WAIT_TIME: Long = 200
+    }
+}
 
 data class CartScreenUiState(
     val loadingState: DataLoadingState = DataLoadingState.Loading,
     val inCartProducts: List<InCartProduct> = emptyList(),
 )
+
+sealed interface CartIntent {
+    data class QuantityChanged(val product: InCartProduct) : CartIntent
+    data class DeleteProduct(val product: InCartProduct) : CartIntent
+}
