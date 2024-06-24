@@ -124,14 +124,12 @@ fun ShowProductList(
         Column {
             HappyStoreLogo()
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
-            val lazyListState = rememberLazyListState()
-            LazyColumn(modifier = Modifier.padding(bottom = 50.dp), state = lazyListState) {
+            LazyColumn(modifier = Modifier.padding(bottom = 50.dp)) {
                 items(productsAndFilters.products, key = {
                     it.product.id
                 }) { product ->
                     ProductItem(
                         product,
-                        state = lazyListState,
                         onFavoriteClick,
                         onProductClick,
                         onAddToCartClick,
