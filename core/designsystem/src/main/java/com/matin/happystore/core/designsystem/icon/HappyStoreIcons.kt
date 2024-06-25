@@ -1,6 +1,7 @@
 package com.matin.happystore.core.designsystem.icon
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
@@ -25,4 +26,5 @@ object HappyStoreIcons {
     val FavoriteBorder = Icons.Default.FavoriteBorder
     val Done = Icons.Filled.Done
     val Search = Icons.Default.Search
+    val Back = Icons.AutoMirrored.Filled.ArrowBack
 }

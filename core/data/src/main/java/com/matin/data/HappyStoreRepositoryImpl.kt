@@ -18,48 +18,52 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HappyStoreRepositoryImpl
-    @Inject
-    constructor(
-        private val api: HappyStoreDataSource,
-        private val productsDao: ProductsDao,
-        private val cartDao: CartDao,
-    ) : HappyStoreRepository {
-        override suspend fun getProducts(): Flow<List<Product>> =
-            productsDao.getProducts().map {
-                it.map(
-                    ProductEntity::toDomain,
-                )
-            }
-
-        override suspend fun sync() =
-            withContext(Dispatchers.IO) {
-                val serverProducts = api.getAllProducts().map(NetworkProduct::toEntity)
-                val cachedProducts = productsDao.getProducts().first()
-
-                val deletedProductsFromServer = cachedProducts - serverProducts.toSet()
-
-                productsDao.deleteProducts(deletedProductsFromServer.map(ProductEntity::id))
-                productsDao.upsertProducts(serverProducts)
-            }
-
-        override suspend fun getSingleProduct(id: Int): Result<Product> = TODO()
-
-        override suspend fun getInCartProductIds(): Flow<List<Int>> = cartDao.getInCartProductIds()
-
-        override suspend fun addToCart(inCartProduct: InCartProduct) {
-            cartDao.addToCart(inCartProduct.toEntity())
+@Inject
+constructor(
+    private val api: HappyStoreDataSource,
+    private val productsDao: ProductsDao,
+    private val cartDao: CartDao,
+) : HappyStoreRepository {
+    override fun getProducts(): Flow<List<Product>> =
+        productsDao.getProducts().map {
+            it.map(
+                ProductEntity::toDomain,
+            )
         }
 
-        override suspend fun removeFromCart(inCartProduct: InCartProduct) {
-            cartDao.removeFromCart(inCartProduct.toEntity())
+    override suspend fun sync() =
+        withContext(Dispatchers.IO) {
+            val serverProducts = api.getAllProducts().map(NetworkProduct::toEntity)
+            val cachedProducts = productsDao.getProducts().first()
+
+            val deletedProductsFromServer = cachedProducts - serverProducts.toSet()
+
+            productsDao.deleteProducts(deletedProductsFromServer.map(ProductEntity::id))
+            productsDao.upsertProducts(serverProducts)
         }
 
-        override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> =
-            cartDao.getInCartProductsFullDetail().map { inCartProductFullList ->
-                inCartProductFullList.map { it.toDomain() }
-            }
+    override suspend fun getSingleProduct(id: Int): Result<Product> = TODO()
 
-        override suspend fun updateProductQuantity(inCartProduct: InCartProduct) {
-            cartDao.updateQuantity(inCartProduct.toEntity())
-        }
+    override fun getInCartProductIds(): Flow<List<Int>> = cartDao.getInCartProductIds()
+
+    override suspend fun addToCart(inCartProduct: InCartProduct) {
+        cartDao.addToCart(inCartProduct.toEntity())
     }
+
+    override suspend fun removeFromCart(inCartProduct: InCartProduct) {
+        cartDao.removeFromCart(inCartProduct.toEntity())
+    }
+
+    override fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> =
+        cartDao.getInCartProductsFullDetail().map { inCartProductFullList ->
+            inCartProductFullList.map { it.toDomain() }
+        }
+
+    override suspend fun updateProductQuantity(inCartProduct: InCartProduct) {
+        cartDao.updateQuantity(inCartProduct.toEntity())
+    }
+
+    override fun getSearchSuggestion(query: String): Flow<List<String>> =
+        productsDao.getSearchSuggestion(query)
+
+}

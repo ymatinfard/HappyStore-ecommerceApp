@@ -15,4 +15,7 @@ interface ProductsDao {
 
     @Query("DELETE FROM TBL_PRODUCT WHERE id IN (:ids)")
     fun deleteProducts(ids: List<Int>)
+
+    @Query("SELECT title FROM TBL_PRODUCT where title LIKE '%' || :query || '%'" )
+    fun getSearchSuggestion(query: String): Flow<List<String>>
 }

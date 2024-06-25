@@ -53,7 +53,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
 
     private val productStateFlow = MutableStateFlow(productList)
 
-    override suspend fun getProducts() = productStateFlow
+    override fun getProducts() = productStateFlow
 
     override suspend fun sync() {
         // TODO("Not yet implemented")
@@ -63,7 +63,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getInCartProductIds(): Flow<List<Int>> =
+    override fun getInCartProductIds(): Flow<List<Int>> =
         inCartProductsStateFlow.map { inCartProducts ->
             inCartProducts.map { it.product.id }
         }
@@ -80,7 +80,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
         }
     }
 
-    override suspend fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> = inCartProductsStateFlow
+    override  fun getInCartProductsFullDetail(): Flow<List<InCartProduct>> = inCartProductsStateFlow
 
     override suspend fun updateProductQuantity(inCartProduct: InCartProduct) {
         inCartProductsStateFlow.update {
@@ -91,5 +91,9 @@ class TestHappyStoreRepository : HappyStoreRepository {
             }
             mutableList
         }
+    }
+
+    override fun getSearchSuggestion(query: String): Flow<List<String>> {
+        TODO("Not yet implemented")
     }
 }
