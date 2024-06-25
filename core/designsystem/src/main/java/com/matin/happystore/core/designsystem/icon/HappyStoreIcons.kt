@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 
 object HappyStoreIcons {
@@ -23,4 +24,5 @@ object HappyStoreIcons {
     val List = Icons.AutoMirrored.Filled.List
     val FavoriteBorder = Icons.Default.FavoriteBorder
     val Done = Icons.Filled.Done
+    val Search = Icons.Default.Search
 }
