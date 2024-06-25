@@ -64,6 +64,7 @@ dependencies {
     implementation(projects.feature.cart)
     implementation(projects.feature.profile)
     implementation(projects.feature.map)
+    implementation(projects.feature.search)
 
     implementation(projects.core.ui)
     implementation(projects.core.common)

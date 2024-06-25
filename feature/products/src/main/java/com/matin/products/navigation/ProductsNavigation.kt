@@ -15,10 +15,11 @@ fun NavController.navigateToProducts(navOptions: NavOptions) = navigate(PRODUCTS
 
 fun NavGraphBuilder.productsScreen(
     onMapClick: () -> Unit,
+    onSearchClick: () -> Unit,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit,
 ) {
     return composable(PRODUCTS_ROUTE) {
         val viewModel = hiltViewModel<ProductsViewModel>()
-        ProductsScreen(viewModel, onMapClick, setBottomBarVisibility)
+        ProductsScreen(viewModel, onMapClick, onSearchClick, setBottomBarVisibility)
     }
 }

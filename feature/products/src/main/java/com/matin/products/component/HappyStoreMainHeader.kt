@@ -1,6 +1,7 @@
 package com.matin.products.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,15 +19,16 @@ import androidx.compose.ui.unit.dp
 import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
 import com.matin.happystore.feature.products.R
 
-@Preview
 @Composable
-fun HappyStoreMainHeader() {
-    Icon(
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp),
-        imageVector = HappyStoreIcons.Search,
-        contentDescription = "Search Icon"
-    )
-    HappyStoreLogo()
+fun HappyStoreMainHeader(onSearchClick: () -> Unit) {
+    Box{
+        Icon(
+            modifier = Modifier.padding(top = 16.dp, start = 10.dp).clickable { onSearchClick() },
+            imageVector = HappyStoreIcons.Search,
+            contentDescription = "Search Icon"
+        )
+        HappyStoreLogo()
+    }
 }
 
 @Composable
@@ -34,7 +36,7 @@ private fun HappyStoreLogo() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp),
+            .padding(top = 16.dp, bottom = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
         Image(
