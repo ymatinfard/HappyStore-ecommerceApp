@@ -29,22 +29,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
+import com.matin.happystore.feature.search.BackClickListener
+
+typealias QueryListener = (String) -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HappyStoreSearchBar(
-    onSearch: (String) -> Unit,
-    onQueryChange: (String) -> Unit,
-    onBackClick: () -> Unit,
+    onSearch: QueryListener,
+    onQueryChange: QueryListener,
+    onBackClick: BackClickListener,
     suggestions: List<String>
 ) {
     var query by rememberSaveable { mutableStateOf("") }
 
-    Column {
+    Column(modifier = Modifier.padding(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(
                 onClick = { onBackClick() }, modifier = Modifier
-                    .padding(start = 10.dp, end = 16.dp)
+                    .padding(end = 16.dp)
             ) {
                 Icon(
                     imageVector = HappyStoreIcons.Back,
@@ -82,12 +85,12 @@ fun HappyStoreSearchBar(
 }
 
 @Composable
-fun SearchSuggestion(suggestions: List<String>, selectedSuggestion: (String) -> Unit) {
+fun SearchSuggestion(suggestions: List<String>, selectedSuggestion: QueryListener) {
     Column {
         Text(
             text = "Suggestions:",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 16.dp, top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn {

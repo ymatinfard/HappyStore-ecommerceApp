@@ -7,11 +7,13 @@ import androidx.compose.ui.Alignment
 import com.matin.happystore.core.common.BottomBarVisibility
 import com.matin.happystore.feature.search.component.HappyStoreSearchBar
 
+typealias BackClickListener = () -> Unit
+
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: BackClickListener
 ) {
     setBottomBarVisibility(BottomBarVisibility.HIDDEN)
     val uiState = viewModel.uiState.collectAsState()
