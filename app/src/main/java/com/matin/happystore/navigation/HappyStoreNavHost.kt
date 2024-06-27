@@ -26,6 +26,6 @@ fun HappyStoreNavHost(appState: HappyStoreAppState) {
         cartScreen()
         profileScreen()
         mapScreen(appState::setBottomBarVisibility)
-        searchScreen(appState::setBottomBarVisibility)
+        searchScreen(appState::setBottomBarVisibility, appState.navController::popBackStack)
     }
 }

@@ -32,7 +32,6 @@ fun ProductList(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(bottom = 40.dp),

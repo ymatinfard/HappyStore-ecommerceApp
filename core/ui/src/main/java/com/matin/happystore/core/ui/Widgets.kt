@@ -81,10 +81,6 @@ fun ProductItem(
                 .clickable {
                     onProductClicked(item.product.id)
                 },
-            elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = 1.dp,
-            ),
             colors =
                 CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
