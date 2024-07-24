@@ -20,12 +20,6 @@ import com.matin.happystore.feature.products.R
 @Composable
 fun HappyStoreMainHeader(onSearchClick: () -> Unit) {
     Box {
-        Image(
-            modifier = Modifier.height(140.dp),
-            painter = painterResource(id = R.drawable.header_background),
-            contentDescription = null,
-            contentScale = FixedScale(0.5f),
-        )
         IconButton(
             onClick = { onSearchClick() }, modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp)

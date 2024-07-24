@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -45,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -54,129 +50,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.matin.happystore.core.designsystem.icon.HappyStoreIcons
-import com.matin.happystore.core.designsystem.theme.AppTypography
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.ui.UiFilter
-import com.matin.happystore.core.model.ui.UiProduct
-
-@Composable
-fun ProductItem(
-    item: UiProduct,
-    onFavoriteClick: (Int) -> Unit,
-    onProductClicked: (Int) -> Unit,
-    onAddToCartClick: (Int) -> Unit,
-    onRemoveFromCartClick: (Int) -> Unit,
-) {
-    Column(
-        modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
-    ) {
-        ElevatedCard(
-            modifier =
-            Modifier
-                .height(170.dp)
-                .clickable {
-                    onProductClicked(item.product.id)
-                },
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-        ) {
-            Row {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    modifier =
-                    Modifier
-                        .padding(8.dp)
-                        .size(160.dp),
-                ) {
-                    AsyncImage(
-                        model = item.product.image,
-                        contentScale = ContentScale.FillBounds,
-                        contentDescription = null,
-                    )
-                    Row(
-                        modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        FavoriteIcon(id = item.product.id, item.isFavorite, onFavoriteClick)
-                    }
-                }
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Column(modifier = Modifier.padding(top = 12.dp)) {
-                        Text(
-                            text = item.product.title.clipIfLengthy(),
-                            style = AppTypography.bodyLarge,
-                        )
-                        Text(text = item.product.category, style = AppTypography.bodySmall)
-                    }
-
-                    RatingIndicator(
-                        modifier =
-                        Modifier
-                            .padding(start = 6.dp)
-                            .size(32.dp),
-                        item.product.rating.rate,
-                    )
-
-                    Row(
-                        modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text("${item.product.price}$", fontSize = 16.sp)
-                        ShoppingButton(
-                            onClick = {
-                                if (item.isInCart) {
-                                    onRemoveFromCartClick(item.product.id)
-                                } else {
-                                    onAddToCartClick(item.product.id)
-                                }
-                            },
-                            isBadgeVisible = item.isInCart,
-                        )
-                    }
-                }
-            }
-        }
-        DescriptionText(description = item.product.description, visible = item.isExpended)
-    }
-}
-
-@Composable
-private fun FavoriteIcon(
-    id: Int,
-    isFavorite: Boolean,
-    onFavoriteClick: (Int) -> Unit,
-) {
-    Image(
-        imageVector = if (isFavorite) HappyStoreIcons.Favorites else HappyStoreIcons.FavoriteBorder,
-        contentDescription = null,
-        modifier =
-        Modifier
-            .clip(
-                CircleShape,
-            )
-            .background(color = MaterialTheme.colorScheme.outline)
-            .padding(3.dp)
-            .clickable { onFavoriteClick(id) },
-        colorFilter = ColorFilter.tint(if (isFavorite) Color.Red else Color.White),
-    )
-}
 
 @Composable
 fun RatingIndicator(
@@ -436,7 +312,7 @@ fun TotalCartItemsPrice(cartItems: List<InCartProduct> = emptyList()) {
 
 @Preview
 @Composable
-fun ShowProductListShimmerOrContent(
+fun LoadingOrContent(
     isLoading: Boolean = true,
     contentAfterLoading: @Composable () -> Unit = {},
     modifier: Modifier = Modifier,
