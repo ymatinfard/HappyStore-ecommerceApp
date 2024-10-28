@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -112,21 +113,27 @@ fun ProductItem(
                 modifier = Modifier
                     .padding(start = 12.dp, bottom = 12.dp)
                     .size(160.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
                 elevation = CardDefaults.cardElevation(6.dp)
             ) {
-                AsyncImage(
-                    model = item.product.image,
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = null,
-                )
-                Row(
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    FavoriteIcon(id = item.product.id, item.isFavorite, onFavoriteClick)
+                Box {
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(6.dp),
+                        model = item.product.image,
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = null,
+                    )
+                    Row(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        FavoriteIcon(id = item.product.id, item.isFavorite, onFavoriteClick)
+                    }
                 }
             }
         }

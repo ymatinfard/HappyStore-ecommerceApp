@@ -2,18 +2,19 @@ package com.matin.products
 
 import ProductItem
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.core.common.BottomBarVisibility
@@ -104,23 +105,10 @@ fun ProductList(
     onRemoveFromCartClick: (Int) -> Unit,
     onMapClick: () -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.padding(bottom = 40.dp),
-                onClick = { onMapClick() },
-            ) {
-                Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.LocationOn,
-                    contentDescription = "nearby stores button",
-                )
-            }
-        },
-    ) {
-        Column {
+    Box {
+        Column (modifier = Modifier.fillMaxSize()) {
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
-            LazyColumn(modifier = Modifier.padding(bottom = 50.dp)) {
+            LazyColumn {
                 items(productsAndFilters.products, key = {
                     it.product.id
                 }) { product ->
@@ -132,6 +120,21 @@ fun ProductList(
                         onRemoveFromCartClick,
                     )
                 }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                onClick = { onMapClick() },
+            ) {
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.LocationOn,
+                    contentDescription = "nearby stores button",
+                )
             }
         }
     }
