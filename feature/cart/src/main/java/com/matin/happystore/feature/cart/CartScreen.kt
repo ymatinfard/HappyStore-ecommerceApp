@@ -65,7 +65,6 @@ fun ShowCartItems(
         modifier =
         Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         LazyColumn(modifier = Modifier.weight(1f)) {

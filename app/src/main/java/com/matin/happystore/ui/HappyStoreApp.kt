@@ -1,6 +1,7 @@
 package com.matin.happystore.ui
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -10,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.matin.happystore.R
@@ -18,7 +20,6 @@ import com.matin.happystore.navigation.TopLevelDestination
 import com.matin.happystore.ui.component.HappyStoreBottomNavigationBar
 import kotlinx.coroutines.flow.map
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HappyStoreApp(appState: HappyStoreAppState) {
     val viewModel = hiltViewModel<MainActivityViewModel>()
@@ -50,7 +51,9 @@ fun HappyStoreApp(appState: HappyStoreAppState) {
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) {
-        HappyStoreNavHost(appState)
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding)) {
+            HappyStoreNavHost(appState)
+        }
     }
 }
