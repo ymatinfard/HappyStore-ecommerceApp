@@ -17,13 +17,20 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import com.matin.happystore.core.designsystem.component.LoadingWheel
 import com.matin.happystore.core.designsystem.theme.AppTypography
 import com.matin.happystore.core.model.Product
 import com.matin.happystore.core.model.ui.UiProduct
@@ -61,6 +68,7 @@ fun ProductItem(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
+                shape = RoundedCornerShape(4.dp)
             ) {
                 Row {
                     Spacer(modifier = Modifier.width(190.dp))
@@ -108,38 +116,78 @@ fun ProductItem(
                 }
             }
 
-            ElevatedCard(
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .padding(start = 12.dp, bottom = 12.dp)
-                    .size(160.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-                elevation = CardDefaults.cardElevation(6.dp)
-            ) {
-                Box {
-                    AsyncImage(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(6.dp),
-                        model = item.product.image,
-                        contentScale = ContentScale.FillBounds,
-                        contentDescription = null,
-                    )
-                    Row(
-                        modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        FavoriteIcon(id = item.product.id, item.isFavorite, onFavoriteClick)
-                    }
-                }
-            }
+            ProductCard(item = item, onFavoriteClick = onFavoriteClick)
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
     }
 }
+
+@Composable
+fun ProductCard(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
+    var showLoading by remember { mutableStateOf(false) }
+    val padding = 6.dp
+    val cardModifier = Modifier
+        .padding(start = 12.dp, bottom = 12.dp)
+        .size(160.dp)
+
+    ElevatedCard(
+        shape = RoundedCornerShape(16.dp),
+        modifier = cardModifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+        Box {
+            AsyncImage(
+                model = item.product.image,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentScale = ContentScale.FillBounds,
+                onState = { state -> showLoading = state is AsyncImagePainter.State.Loading }
+            )
+
+            if (showLoading) {
+                LoadingOverlay()
+            }
+
+            FavoriteRow(
+                isFavorite = item.isFavorite,
+                productId = item.product.id,
+                onFavoriteClick = onFavoriteClick,
+                padding = padding
+            )
+        }
+    }
+}
+
+@Composable
+fun LoadingOverlay() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        LoadingWheel(contentDesc = "loading photo")
+    }
+}
+
+@Composable
+fun FavoriteRow(
+    isFavorite: Boolean,
+    productId: Int,
+    onFavoriteClick: (Int) -> Unit,
+    padding: Dp
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding),
+        horizontalArrangement = Arrangement.End
+    ) {
+        FavoriteIcon(id = productId, isFavorite = isFavorite, onFavoriteClick = onFavoriteClick)
+    }
+}
+
 
 @Preview
 @Composable

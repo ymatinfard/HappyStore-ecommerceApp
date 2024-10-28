@@ -2,12 +2,15 @@ package com.matin.products
 
 import ProductItem
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -106,12 +109,19 @@ fun ProductList(
     onMapClick: () -> Unit,
 ) {
     Box {
-        Column (modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
-            LazyColumn {
-                items(productsAndFilters.products, key = {
-                    it.product.id
-                }) { product ->
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(300.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalItemSpacing = 24.dp,
+            ) {
+                items(
+                    items = productsAndFilters.products,
+                    key = {
+                        it.product.id
+                    }) { product ->
                     ProductItem(
                         product,
                         onFavoriteClick,
