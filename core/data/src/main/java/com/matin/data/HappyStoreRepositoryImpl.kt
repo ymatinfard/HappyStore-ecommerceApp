@@ -1,5 +1,8 @@
 package com.matin.data
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresExtension
 import com.matin.data.model.toDomain
 import com.matin.data.model.toEntity
 import com.matin.happystore.core.common.Result
@@ -31,18 +34,30 @@ constructor(
             )
         }
 
-    override suspend fun sync() =
+    override suspend fun sync(): Unit =
         withContext(Dispatchers.IO) {
-            val serverProducts = api.getAllProducts().map(NetworkProduct::toEntity)
-            val cachedProducts = productsDao.getProducts().first()
+            try {
+                val serverProducts = api.getAllProducts().map(NetworkProduct::toEntity)
+                val cachedProducts = productsDao.getProducts().first()
 
-            val deletedProductsFromServer = cachedProducts - serverProducts.toSet()
+                val deletedProductsFromServer = cachedProducts - serverProducts.toSet()
 
-            productsDao.deleteProducts(deletedProductsFromServer.map(ProductEntity::id))
-            productsDao.upsertProducts(serverProducts)
+                productsDao.deleteProducts(deletedProductsFromServer.map(ProductEntity::id))
+                productsDao.upsertProducts(serverProducts)
+            } catch (e: Exception) {
+                Log.e("Error", e.stackTrace.toString())
+            }
         }
 
-    override suspend fun getSingleProduct(id: Int): Result<Product> = TODO()
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+    override suspend fun getSingleProduct(id: Int): Result<Product> {
+        return try {
+            val product = api.getSingleProduct(id)
+            Result.Success(product.toDomain())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
 
     override fun getInCartProductIds(): Flow<List<Int>> = cartDao.getInCartProductIds()
 
