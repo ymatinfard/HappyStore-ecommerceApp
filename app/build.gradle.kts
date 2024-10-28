@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.androidx.compose.material3.adaptive.layout)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(kotlin("test"))
     androidTestImplementation(platform(libs.androidx.compose.bom))
