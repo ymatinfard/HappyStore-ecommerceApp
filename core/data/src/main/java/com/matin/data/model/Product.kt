@@ -36,6 +36,19 @@ fun NetworkProduct.toEntity() =
         ProductEntity.Rating(rating?.rate.orZero(), rating?.count.orZero()),
     )
 
+fun NetworkProduct.toDomain() =
+    Product(
+        id,
+        title.orEmpty(),
+        BigDecimal(price ?: 0.0).setScale(2, RoundingMode.HALF_UP) ?: BigDecimal.ZERO,
+        category.orEmpty().replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase() else it.toString()
+        },
+        description.orEmpty(),
+        image.orEmpty(),
+        Product.Rating(rating?.rate.orZero(), rating?.count.orZero()),
+    )
+
 fun InCartProductFullEntity.toDomain(): InCartProduct =
     InCartProduct(
         product = product.toDomain(),
