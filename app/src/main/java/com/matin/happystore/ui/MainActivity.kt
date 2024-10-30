@@ -3,6 +3,7 @@ package com.matin.happystore.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import com.example.compose.HappyStoreTheme
 import com.matin.data.util.NetworkMonitor
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +15,7 @@ class MainActivity : ComponentActivity() {
     lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             val appState = rememberHappyStoreAppState(networkMonitor = networkMonitor)
