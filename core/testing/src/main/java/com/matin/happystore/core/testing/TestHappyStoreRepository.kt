@@ -59,7 +59,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
         // TODO("Not yet implemented")
     }
 
-    override suspend fun getSingleProduct(id: Int): Result<Product> {
+    override fun getSingleProduct(id: Int): Flow<Product> {
         TODO("Not yet implemented")
     }
 

@@ -1,6 +1,7 @@
 package com.matin.data
 
 import com.matin.happystore.core.common.Result
+import com.matin.happystore.core.database.model.InCartProductFullEntity
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ interface HappyStoreRepository {
 
     suspend fun sync()
 
-    suspend fun getSingleProduct(id: Int): Result<Product>
+    fun getSingleProduct(id: Int): Flow<Product>
 
     fun getInCartProductIds(): Flow<List<Int>>
 

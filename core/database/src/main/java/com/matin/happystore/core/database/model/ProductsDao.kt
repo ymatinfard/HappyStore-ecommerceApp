@@ -13,6 +13,9 @@ interface ProductsDao {
     @Query("SELECT * FROM TBL_PRODUCT")
     fun getProducts(): Flow<List<ProductEntity>>
 
+    @Query("SELECT * FROM TBL_PRODUCT WHERE id = :id")
+    fun getSingleProduct(id: Int): Flow<ProductEntity>
+
     @Query("DELETE FROM TBL_PRODUCT WHERE id IN (:ids)")
     fun deleteProducts(ids: List<Int>)
 

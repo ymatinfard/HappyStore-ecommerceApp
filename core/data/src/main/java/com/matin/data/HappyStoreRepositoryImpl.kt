@@ -49,15 +49,8 @@ constructor(
             }
         }
 
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-    override suspend fun getSingleProduct(id: Int): Result<Product> {
-        return try {
-            val product = api.getSingleProduct(id)
-            Result.Success(product.toDomain())
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
-    }
+    override fun getSingleProduct(id: Int): Flow<Product> =
+        productsDao.getSingleProduct(id).map { it.toDomain() }
 
     override fun getInCartProductIds(): Flow<List<Int>> = cartDao.getInCartProductIds()
 
