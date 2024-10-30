@@ -92,6 +92,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.navigationSuite)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(kotlin("test"))
     androidTestImplementation(platform(libs.androidx.compose.bom))

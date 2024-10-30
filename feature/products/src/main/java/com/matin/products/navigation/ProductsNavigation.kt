@@ -1,5 +1,6 @@
 package com.matin.products.navigation
 
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -17,9 +18,10 @@ fun NavGraphBuilder.productsScreen(
     onMapClick: () -> Unit,
     onSearchClick: () -> Unit,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     return composable(PRODUCTS_ROUTE) {
         val viewModel = hiltViewModel<ProductsViewModel>()
-        ProductsScreen(viewModel, onMapClick, onSearchClick, setBottomBarVisibility)
+        ProductsScreen(viewModel, onMapClick, onSearchClick, setBottomBarVisibility, windowAdaptiveInfo)
     }
 }

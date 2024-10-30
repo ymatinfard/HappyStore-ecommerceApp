@@ -18,5 +18,6 @@ dependencies {
     api(libs.androidx.compose.foundation.layout)
     api(libs.androidx.compose.material3)
     api(libs.coil.kt.compose)
+    api(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.ui.text.google.fonts)
 }

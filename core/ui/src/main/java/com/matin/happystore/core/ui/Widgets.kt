@@ -313,9 +313,9 @@ fun TotalCartItemsPrice(cartItems: List<InCartProduct> = emptyList()) {
 @Preview
 @Composable
 fun LoadingOrContent(
+    modifier: Modifier = Modifier,
     isLoading: Boolean = true,
     contentAfterLoading: @Composable () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     if (isLoading) {
         LazyColumn {

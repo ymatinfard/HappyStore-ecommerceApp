@@ -1,5 +1,7 @@
 package com.matin.happystore.navigation
 
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.matin.happystore.feature.cart.navigation.cartScreen
@@ -13,7 +15,7 @@ import com.matin.products.navigation.PRODUCTS_ROUTE
 import com.matin.products.navigation.productsScreen
 
 @Composable
-fun HappyStoreNavHost(appState: HappyStoreAppState) {
+fun HappyStoreNavHost(appState: HappyStoreAppState, windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
     NavHost(
         navController = appState.navController,
         startDestination = PRODUCTS_ROUTE,
@@ -22,6 +24,7 @@ fun HappyStoreNavHost(appState: HappyStoreAppState) {
             onMapClick = appState.navController::navigateToMap,
             onSearchClick = appState.navController::navigateToSearch,
             appState::setBottomBarVisibility,
+            windowAdaptiveInfo = windowAdaptiveInfo,
         )
         cartScreen()
         profileScreen()
