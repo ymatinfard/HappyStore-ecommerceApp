@@ -13,8 +13,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -35,6 +38,7 @@ fun ProductsScreen(
     onMapClick: () -> Unit,
     onSearchClick: () -> Unit,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     val uiProductsState = viewModel.productsScreenUiState.collectAsState().value
     setBottomBarVisibility(BottomBarVisibility.VISIBLE)
@@ -139,6 +143,7 @@ fun ProductList(
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                 onClick = { onMapClick() },
             ) {
                 Icon(
