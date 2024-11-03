@@ -11,17 +11,27 @@ import com.matin.products.ProductsScreen
 import com.matin.products.ProductsViewModel
 
 const val PRODUCTS_ROUTE = "products_route"
+const val PRODUCT_DETAIL_ROUTE = "product_detail/{product_id}"
 
 fun NavController.navigateToProducts(navOptions: NavOptions) = navigate(PRODUCTS_ROUTE, navOptions)
+fun NavController.navigateToProductDetail(productId: Int) = navigate("product_detail/$productId")
 
 fun NavGraphBuilder.productsScreen(
     onMapClick: () -> Unit,
     onSearchClick: () -> Unit,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit,
     windowAdaptiveInfo: WindowAdaptiveInfo,
+    onImageClick: (Int) -> Unit,
 ) {
     return composable(PRODUCTS_ROUTE) {
         val viewModel = hiltViewModel<ProductsViewModel>()
-        ProductsScreen(viewModel, onMapClick, onSearchClick, setBottomBarVisibility, windowAdaptiveInfo)
+        ProductsScreen(
+            viewModel,
+            onMapClick,
+            onSearchClick,
+            setBottomBarVisibility,
+            windowAdaptiveInfo,
+            onImageClick,
+        )
     }
 }

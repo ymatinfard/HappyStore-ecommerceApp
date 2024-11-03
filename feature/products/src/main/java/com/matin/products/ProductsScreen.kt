@@ -39,6 +39,7 @@ fun ProductsScreen(
     onSearchClick: () -> Unit,
     setBottomBarVisibility: (BottomBarVisibility) -> Unit,
     windowAdaptiveInfo: WindowAdaptiveInfo,
+    onImageClick: (Int) -> Unit,
 ) {
     val uiProductsState = viewModel.productsScreenUiState.collectAsState().value
     setBottomBarVisibility(BottomBarVisibility.VISIBLE)
@@ -65,6 +66,9 @@ fun ProductsScreen(
             },
             onSearchClick = {
                 onSearchClick()
+            },
+            onImageClick = {
+                onImageClick(it)
             }
         )
     }
@@ -80,6 +84,7 @@ fun ProductScreenContent(
     onRemoveFromCartClick: (Int) -> Unit = {},
     onMapClick: () -> Unit,
     onSearchClick: () -> Unit,
+    onImageClick: (Int) -> Unit,
 ) {
     LoadingOrContent(
         isLoading = (uiProductState.loadingState is DataLoadingState.Loading),
@@ -94,6 +99,7 @@ fun ProductScreenContent(
                     onAddToCartClick = onAddToCartClick,
                     onRemoveFromCartClick = onRemoveFromCartClick,
                     onMapClick = onMapClick,
+                    onImageClick = onImageClick,
                 )
             }
         },
@@ -111,6 +117,7 @@ fun ProductList(
     onAddToCartClick: (Int) -> Unit,
     onRemoveFromCartClick: (Int) -> Unit,
     onMapClick: () -> Unit,
+    onImageClick: (Int) -> Unit,
 ) {
     Box {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -132,6 +139,7 @@ fun ProductList(
                         onProductClick,
                         onAddToCartClick,
                         onRemoveFromCartClick,
+                        onImageClick,
                     )
                 }
             }

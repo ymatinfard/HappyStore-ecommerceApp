@@ -46,6 +46,7 @@ fun ProductItem(
     onProductClicked: (Int) -> Unit = {},
     onAddToCartClick: (Int) -> Unit = {},
     onRemoveFromCartClick: (Int) -> Unit = {},
+    onImageClick: (Int) -> Unit = {},
 ) {
     Column {
         Box(
@@ -115,14 +116,14 @@ fun ProductItem(
                 }
             }
 
-            ProductCard(item = item, onFavoriteClick = onFavoriteClick)
+            ProductCard(item = item, onFavoriteClick = onFavoriteClick, onImageClick)
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
     }
 }
 
 @Composable
-fun ProductCard(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
+fun ProductCard(item: UiProduct, onFavoriteClick: (Int) -> Unit, onImageClick: (Int) -> Unit) {
     var showLoading by remember { mutableStateOf(false) }
     val padding = 6.dp
     val cardModifier = Modifier
@@ -139,7 +140,10 @@ fun ProductCard(item: UiProduct, onFavoriteClick: (Int) -> Unit) {
             DynamicAsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding), imageUrl = item.product.image, contentDescription = "image"
+                    .padding(padding)
+                    .clickable {
+                        onImageClick(item.product.id)
+                    }, imageUrl = item.product.image, contentDescription = "image"
             )
 
             if (showLoading) {
