@@ -10,7 +10,7 @@ activityCompose = "1.8.2"
 composeBom = "2024.03.00"
 hilt = "2.50"
 ksp = "1.9.22-1.0.17"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.3"
 retrofit = "2.9.0"
 kotlinxCoroutinesAndroid = "1.7.3"
 lifecycle-runtime-ktx = "2.7.0"
@@ -44,7 +44,9 @@ googleMap = "4.3.3"
 playServicesLocation = "21.2.0"
 uiTextGoogleFonts = "1.6.7"
 androidxComposeMaterial3Adaptive = "1.0.0"
-androidxComposeMaterial3AdaptiveNavigationSuite = "1.3.0"
+androidxComposeMaterial3AdaptiveNavigationSuite = "1.3.1"
+composeAnimation = "1.7.0-alpha07"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -93,6 +95,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 google-map-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMap"}
 androidx-compose-material3-adaptive-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "androidxComposeMaterial3Adaptive" }
 androidx-compose-material3-adaptive-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "androidxComposeMaterial3Adaptive" }
+accompanist-navigation-animation = { module = "androidx.compose.animation:animation", version.ref = "composeAnimation" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
