@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.common.Result
-import com.matin.happystore.core.common.asResource
+import com.matin.happystore.core.common.asResult
 import com.matin.happystore.core.common.debounce
 import com.matin.happystore.core.domain.GetInCartProductFullDetailUseCase
 import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
@@ -34,7 +34,7 @@ class CartViewModel
 
         private fun collectInCartProducts() {
             viewModelScope.launch {
-                getInCartProductFullDetailUseCase().asResource().collect { result ->
+                getInCartProductFullDetailUseCase().asResult().collect { result ->
                     when (result) {
                         is Result.Success -> {
                             cartScreenUiState.update { state ->
@@ -47,6 +47,12 @@ class CartViewModel
 
                         is Result.Error -> {
                             // Todo()
+                        }
+
+                        is Result.Loading -> {
+                            cartScreenUiState.update { state ->
+                                state.copy(loadingState = DataLoadingState.Loading)
+                            }
                         }
                     }
                 }

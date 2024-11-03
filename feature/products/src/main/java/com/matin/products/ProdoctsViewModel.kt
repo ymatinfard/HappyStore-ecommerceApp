@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.common.Result
-import com.matin.happystore.core.common.asResource
+import com.matin.happystore.core.common.asResult
 import com.matin.happystore.core.domain.AddProductToCartUseCase
 import com.matin.happystore.core.domain.GetInCartProductIdsUseCase
 import com.matin.happystore.core.domain.GetProductsUseCase
@@ -54,7 +54,7 @@ constructor(
                     inCartProductIds,
                     selectedFilter,
                 )
-            }.asResource().collect { uiStateResult ->
+            }.asResult().collect { uiStateResult ->
                 val newUiState =
                     when (uiStateResult) {
                         is Result.Success -> {
@@ -67,6 +67,12 @@ constructor(
                         is Result.Error -> {
                             productsScreenUiState.value.copy(
                                 loadingState = DataLoadingState.Error(uiStateResult.exception),
+                            )
+                        }
+
+                        is Result.Loading -> {
+                            productsScreenUiState.value.copy(
+                                loadingState = DataLoadingState.Loading
                             )
                         }
                     }
