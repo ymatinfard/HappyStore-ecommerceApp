@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -36,10 +37,12 @@ private fun HappyStoreLogo() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = 20.dp),
         contentAlignment = Alignment.Center,
     ) {
         Image(
+            modifier = Modifier
+                .size(width = 200.dp, height = 120.dp),
             painter = painterResource(id = R.drawable.happystore_logo),
             contentDescription = null,
             contentScale = ContentScale.FillBounds
