@@ -7,4 +7,8 @@ data class UiProduct (
     val isFavorite: Boolean,
     val isExpended: Boolean,
     val isInCart: Boolean,
-)
+) {
+    companion object {
+        fun empty() = UiProduct(Product(), false, false, false)
+    }
+}
