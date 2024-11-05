@@ -47,7 +47,7 @@ fun DynamicAsyncImage(
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .size(80.dp),
+                    .size(40.dp),
                 color = MaterialTheme.colorScheme.tertiary,
             )
         }
