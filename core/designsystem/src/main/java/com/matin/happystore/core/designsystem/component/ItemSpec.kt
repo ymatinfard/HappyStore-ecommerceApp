@@ -13,6 +13,7 @@ import com.matin.happystore.core.model.ui.UiProduct
 fun ItemSpec(item: UiProduct, currency: String = "Euro") {
     Text(text = item.product.title, style = MaterialTheme.typography.titleLarge)
     Text(
+        maxLines = DESCRIPTION_MAX_LINES,
         text = item.product.description,
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.tertiary
@@ -24,3 +25,5 @@ fun ItemSpec(item: UiProduct, currency: String = "Euro") {
         color = MaterialTheme.colorScheme.tertiary
     )
 }
+
+const val DESCRIPTION_MAX_LINES = 5
