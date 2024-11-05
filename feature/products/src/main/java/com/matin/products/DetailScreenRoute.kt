@@ -1,16 +1,18 @@
 package com.matin.products
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -31,17 +33,16 @@ import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
 import com.matin.happystore.core.designsystem.component.ItemSpec
 import com.matin.happystore.core.designsystem.component.TopAppBar
 import com.matin.happystore.core.model.ui.UiProduct
+import com.matin.happystore.core.ui.LocalAnimatedVisibilityScope
+import com.matin.happystore.core.ui.LocalSharedTransitionScope
 import com.matin.happystore.core.ui.clipIfLengthy
 import com.matin.happystore.feature.products.R
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DetailScreenRoute(
     viewModel: DetailScreenViewModel,
     productId: Int,
-    onBackClick: () -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
+    onBackClick: () -> Unit
 ) {
     LaunchedEffect(productId) {
         viewModel.getItem(id = productId)
@@ -49,87 +50,73 @@ fun DetailScreenRoute(
 
     DetailScreenContent(
         viewmodel = viewModel,
-        onBackClick = onBackClick,
-        sharedTransitionScope = sharedTransitionScope,
-        animatedContentScope = animatedContentScope
+        onBackClick = onBackClick
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreenContent(
     viewmodel: DetailScreenViewModel,
-    onBackClick: () -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
+    onBackClick: () -> Unit
 ) {
     val uiState = viewmodel.detailScreenUiState.collectAsStateWithLifecycle()
 
     uiState.value.let { uiProduct ->
         Column(
             modifier = Modifier
-                .fillMaxHeight()
+                .fillMaxSize()
         ) {
-            uiProduct.product?.wishlistIcon()?.let {
-                TopAppBar(
-                    title = uiProduct.product.product.title.clipIfLengthy(),
-                    navigationIcon = Icons.Default.ArrowBack,
-                    navigationIconContentDescription = "back",
-                    actionIcon = it,
-                    actionIconContentDescription = "add to wishlist",
-                    onActionClick = {
-                        //   viewmodel.selectItem(item.copy(isInWishlist = item.isInWishlist.not()))
-                    },
-                    onNavigationClick = {
-                        onBackClick()
-                    }
-                )
-            }
-            uiProduct.product?.let {
-                DetailScreenMainContent(
-                    item = it, onAddToCartClick = {
-                        //                    viewmodel.onAddToCartClick(item)
-                    },
-                    sharedTransitionScope,
-                    animatedContentScope
-                )
-            }
+            TopAppBar(
+                title = uiProduct.product.product.title.clipIfLengthy(),
+                navigationIcon = Icons.Default.ArrowBack,
+                navigationIconContentDescription = "back",
+                actionIcon = uiProduct.product.wishlistIcon(),
+                actionIconContentDescription = "add to wishlist",
+                onActionClick = {},
+                onNavigationClick = {
+                    onBackClick()
+                }
+            )
+            DetailScreenMainContent(
+                item = uiProduct.product, onAddToCartClick = {
+                    //viewmodel.onAddToCartClick(item)
+                }
+            )
         }
     }
 }
-
-fun UiProduct.wishlistIcon() =
-    if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DetailScreenMainContent(
     item: UiProduct,
     onAddToCartClick: (UiProduct) -> Unit = {},
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalArgumentException("No shared transition scope provided")
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalArgumentException("No animated visibility scope provided")
+
     with(sharedTransitionScope) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
-                DynamicAsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(260.dp)
-                        .padding(10.dp)
-                        .sharedElement(
-                            state = rememberSharedContentState(key = item.product.id),
-                            animatedVisibilityScope = animatedContentScope,
-                        ),
-                    imageUrl = item.product.image,
-                    contentDescription = null,
-                )
-            }
+            DynamicAsyncImage(
+                modifier = Modifier
+                    .size(360.dp)
+                    .padding(10.dp)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = item.product.id),
+                        animatedVisibilityScope = animatedContentScope,
+                    ),
+                imageUrl = item.product.image,
+                contentDescription = null,
+            )
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 ItemSpec(item)
@@ -152,3 +139,6 @@ fun DetailScreenMainContent(
         }
     }
 }
+
+fun UiProduct.wishlistIcon() =
+    if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder

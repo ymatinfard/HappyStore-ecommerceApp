@@ -1,3 +1,4 @@
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,17 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
 import com.matin.happystore.core.designsystem.component.LoadingWheel
 import com.matin.happystore.core.designsystem.theme.AppTypography
-import com.matin.happystore.core.model.Product
 import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.core.ui.DescriptionText
+import com.matin.happystore.core.ui.LocalAnimatedVisibilityScope
+import com.matin.happystore.core.ui.LocalSharedTransitionScope
 import com.matin.happystore.core.ui.RatingIndicator
 import com.matin.happystore.core.ui.ShoppingButton
 import com.matin.happystore.core.ui.clipIfLengthy
@@ -116,46 +116,65 @@ fun ProductItem(
                 }
             }
 
-            ProductCard(item = item, onFavoriteClick = onFavoriteClick, onImageClick)
+            ProductCard(
+                item = item,
+                onFavoriteClick = onFavoriteClick,
+                onImageClick,
+            )
         }
         DescriptionText(description = item.product.description, visible = item.isExpended)
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ProductCard(item: UiProduct, onFavoriteClick: (Int) -> Unit, onImageClick: (Int) -> Unit) {
+fun ProductCard(
+    item: UiProduct,
+    onFavoriteClick: (Int) -> Unit,
+    onImageClick: (Int) -> Unit,
+) {
     var showLoading by remember { mutableStateOf(false) }
-    val padding = 6.dp
     val cardModifier = Modifier
-        .padding(start = 12.dp, bottom = 12.dp)
         .size(160.dp)
 
-    ElevatedCard(
-        shape = RoundedCornerShape(16.dp),
-        modifier = cardModifier,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
-        elevation = CardDefaults.cardElevation(6.dp)
-    ) {
-        Box {
-            DynamicAsyncImage(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .clickable {
-                        onImageClick(item.product.id)
-                    }, imageUrl = item.product.image, contentDescription = "image"
-            )
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+        ?: throw IllegalArgumentException("LocalSharedTransitionScope not provided")
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalArgumentException("LocalAnimatedVisibilityScope not provided")
 
-            if (showLoading) {
-                LoadingOverlay()
+    with(sharedTransitionScope) {
+        ElevatedCard(
+            shape = RoundedCornerShape(16.dp),
+            modifier = cardModifier,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+            elevation = CardDefaults.cardElevation(6.dp)
+        ) {
+            Box {
+                DynamicAsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .clickable {
+                            onImageClick(item.product.id)
+                        }
+                        .sharedElement(
+                            state = rememberSharedContentState(key = item.product.id),
+                            animatedVisibilityScope = animatedContentScope
+                        ),
+                    imageUrl = item.product.image, contentDescription = "image",
+                )
+
+                if (showLoading) {
+                    LoadingOverlay()
+                }
+
+                FavoriteRow(
+                    isFavorite = item.isFavorite,
+                    productId = item.product.id,
+                    onFavoriteClick = onFavoriteClick,
+                    padding = 8.dp
+                )
             }
-
-            FavoriteRow(
-                isFavorite = item.isFavorite,
-                productId = item.product.id,
-                onFavoriteClick = onFavoriteClick,
-                padding = padding
-            )
         }
     }
 }
@@ -185,11 +204,4 @@ fun FavoriteRow(
     ) {
         FavoriteIcon(id = productId, isFavorite = isFavorite, onFavoriteClick = onFavoriteClick)
     }
-}
-
-
-@Preview
-@Composable
-fun ProductItemPreview() {
-    ProductItem(item = UiProduct(product = Product(), false, false, false))
 }
