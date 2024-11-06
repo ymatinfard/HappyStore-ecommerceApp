@@ -1,4 +1,4 @@
-package com.matin.happystore.core.ui
+package com.matin.happystore.core.designsystem
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

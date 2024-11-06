@@ -1,4 +1,4 @@
-package com.matin.happystore.core.ui.components
+package com.matin.happystore.core.designsystem.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
