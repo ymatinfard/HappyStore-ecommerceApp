@@ -2,6 +2,10 @@ package com.matin.products
 
 import ProductItem
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,16 +25,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.matin.happystore.core.common.BottomBarVisibility
 import com.matin.happystore.core.common.DataLoadingState
+import com.matin.happystore.core.designsystem.component.CategoryFilterRow
+import com.matin.happystore.core.designsystem.component.LoadingOrContent
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.ui.UiProductsAndFilters
-import com.matin.happystore.core.ui.CategoryFilterChips
-import com.matin.happystore.core.ui.LoadingOrContent
 import com.matin.products.component.HappyStoreMainHeader
 import com.matin.products.model.ProductsScreenUiState
 
@@ -119,10 +129,25 @@ fun ProductList(
     onMapClick: () -> Unit,
     onImageClick: (Int) -> Unit,
 ) {
+    val listState = rememberLazyStaggeredGridState()
+    val previousIndex = remember { mutableFloatStateOf(0f) }
+    val showButton = remember { mutableStateOf(false) }
+
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        val currentIndex = listState.firstVisibleItemIndex
+        showButton.value = if (currentIndex > previousIndex.floatValue) false else true
+        previousIndex.floatValue = currentIndex.toFloat()
+    }
+
     Box {
-        Column(modifier = Modifier.fillMaxSize()) {
-            CategoryFilterChips(filters = productsAndFilters.filters, onFilterClick)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp)
+        ) {
+            CategoryFilterRow(filters = productsAndFilters.filters, onFilterClick)
             LazyVerticalStaggeredGrid(
+                state = listState,
                 columns = StaggeredGridCells.Adaptive(300.dp),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -144,21 +169,37 @@ fun ProductList(
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.BottomCenter
+
+        AnimatedVisibility(
+            visible = showButton.value,
+            enter = fadeIn(animationSpec = tween(500)),
+            exit = fadeOut(animationSpec = tween(300)),
         ) {
-            Button(
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                onClick = { onMapClick() },
-            ) {
-                Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.LocationOn,
-                    contentDescription = "nearby stores button",
+            MapButton(onMapClick)
+        }
+    }
+}
+
+@Composable
+private fun MapButton(onMapClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary.copy(
+                    alpha = .5f
                 )
-            }
+            ),
+            onClick = { onMapClick() },
+        ) {
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "nearby stores button",
+            )
         }
     }
 }
