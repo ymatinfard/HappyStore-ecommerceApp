@@ -3,15 +3,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -27,18 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.matin.happystore.core.designsystem.LocalAnimatedVisibilityScope
+import com.matin.happystore.core.designsystem.LocalSharedTransitionScope
+import com.matin.happystore.core.designsystem.clipIfLengthy
+import com.matin.happystore.core.designsystem.component.ButtonShop
+import com.matin.happystore.core.designsystem.component.Description
 import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
+import com.matin.happystore.core.designsystem.component.FavoriteIcon
 import com.matin.happystore.core.designsystem.component.LoadingWheel
+import com.matin.happystore.core.designsystem.component.RatingIndicator
 import com.matin.happystore.core.designsystem.theme.AppTypography
 import com.matin.happystore.core.model.ui.UiProduct
-import com.matin.happystore.core.ui.DescriptionText
-import com.matin.happystore.core.ui.LocalAnimatedVisibilityScope
-import com.matin.happystore.core.ui.LocalSharedTransitionScope
-import com.matin.happystore.core.ui.RatingIndicator
-import com.matin.happystore.core.ui.ShoppingButton
-import com.matin.happystore.core.ui.clipIfLengthy
-import com.matin.happystore.core.ui.components.FavoriteIcon
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ProductItem(
     item: UiProduct,
@@ -50,15 +54,12 @@ fun ProductItem(
 ) {
     Column {
         Box(
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             ElevatedCard(
                 modifier =
                 Modifier
-                    .height(170.dp)
+                    .defaultMinSize(minHeight = 180.dp)
                     .padding(top = 30.dp)
                     .clickable {
                         onProductClicked(item.product.id)
@@ -71,7 +72,7 @@ fun ProductItem(
                 shape = RoundedCornerShape(4.dp)
             ) {
                 Row {
-                    Spacer(modifier = Modifier.width(190.dp))
+                    Spacer(modifier = Modifier.width((PRODUCT_IMG_SIZE + 10).dp))
                     Column(
                         modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween,
@@ -92,16 +93,22 @@ fun ProductItem(
                             item.product.rating.rate,
                         )
 
-                        Row(
+                        FlowRow(
                             modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 8.dp),
+                                .wrapContentHeight()
+                                .padding(bottom = 8.dp, end = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalArrangement = Arrangement.Center,
                         ) {
-                            Text("${item.product.price}$", fontSize = 16.sp)
-                            ShoppingButton(
+                            Row(
+                                modifier = Modifier.fillMaxRowHeight(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("${item.product.price}$", fontSize = 16.sp)
+                            }
+                            ButtonShop(
                                 onClick = {
                                     if (item.isInCart) {
                                         onRemoveFromCartClick(item.product.id)
@@ -116,26 +123,26 @@ fun ProductItem(
                 }
             }
 
-            ProductCard(
+            ProductImage(
+                modifier = Modifier.padding(start = 4.dp).size(PRODUCT_IMG_SIZE.dp),
                 item = item,
                 onFavoriteClick = onFavoriteClick,
                 onImageClick,
             )
         }
-        DescriptionText(description = item.product.description, visible = item.isExpended)
+        Description(description = item.product.description, visible = item.isExpended)
     }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ProductCard(
+fun ProductImage(
+    modifier: Modifier,
     item: UiProduct,
     onFavoriteClick: (Int) -> Unit,
     onImageClick: (Int) -> Unit,
 ) {
     var showLoading by remember { mutableStateOf(false) }
-    val cardModifier = Modifier
-        .size(160.dp)
 
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalArgumentException("LocalSharedTransitionScope not provided")
@@ -145,7 +152,7 @@ fun ProductCard(
     with(sharedTransitionScope) {
         ElevatedCard(
             shape = RoundedCornerShape(16.dp),
-            modifier = cardModifier,
+            modifier = modifier.size(160.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
             elevation = CardDefaults.cardElevation(6.dp)
         ) {
@@ -205,3 +212,5 @@ fun FavoriteRow(
         FavoriteIcon(id = productId, isFavorite = isFavorite, onFavoriteClick = onFavoriteClick)
     }
 }
+
+const val PRODUCT_IMG_SIZE = 160
