@@ -1,5 +1,6 @@
 package com.matin.happystore.feature.cart
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -109,7 +110,12 @@ fun TotalCartItemsPrice(cartItems: List<InCartProduct> = emptyList()) {
     ) {
         Column {
             Text(text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = "${cartItems.size} Items for $$totalPrice")
+            Crossfade(
+                targetState = totalPrice,
+                label = "",
+            ) {
+                Text(text = "${cartItems.size} Items for $$it")
+            }
         }
 
         Button(

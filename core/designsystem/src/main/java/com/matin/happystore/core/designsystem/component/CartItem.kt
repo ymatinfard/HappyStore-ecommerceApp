@@ -1,5 +1,6 @@
 package com.matin.happystore.core.designsystem.component
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -88,7 +89,12 @@ fun CartItem(
                     ) {
                         val price = item.product.price.times(item.quantity.toBigDecimal())
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = "$$price")
+                            Crossfade(
+                                targetState = price,
+                                label = "price",
+                            ) {
+                                Text(text = "$$it")
+                            }
                             Spacer(modifier = Modifier.height(6.dp))
                             ItemQuantity(
                                 item,
