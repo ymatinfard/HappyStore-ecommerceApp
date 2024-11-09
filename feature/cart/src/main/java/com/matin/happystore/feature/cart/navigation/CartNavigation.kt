@@ -12,9 +12,9 @@ const val CART_ROUTE = "cart_route"
 
 fun NavController.navigateToCart(navOptions: NavOptions) = navigate(CART_ROUTE, navOptions)
 
-fun NavGraphBuilder.cartScreen() {
+fun NavGraphBuilder.cartScreen(onItemSelected: (Int) -> Unit) {
     return composable(CART_ROUTE) {
         val viewModel = hiltViewModel<CartViewModel>()
-        CartScreen(viewModel = viewModel)
+        CartScreen(viewModel = viewModel, onItemSelected = onItemSelected)
     }
 }
