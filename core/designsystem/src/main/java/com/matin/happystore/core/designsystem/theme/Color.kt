@@ -1,4 +1,4 @@
-package com.example.compose
+package com.matin.happystore.core.designsystem.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF218CC4)
@@ -217,7 +217,12 @@ val surfaceContainerDarkHighContrast = Color(0xFF1D2024)
 val surfaceContainerHighDarkHighContrast = Color(0xFF272A2F)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF32353A)
 
+val Ocean3 = Color(0xff86f7fa)
+val Shadow3 = Color(0xff9b86fa)
+val textLight = Color(0xde000000)
+val textDark = Color(0xffffffff)
 
+val gradient2_2 = listOf(Ocean3, Shadow3)
 
 
 

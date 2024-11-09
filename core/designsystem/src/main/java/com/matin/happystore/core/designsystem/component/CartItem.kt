@@ -43,7 +43,7 @@ fun CartItem(
         modifier =
         Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
         Column(
             modifier =
