@@ -44,7 +44,7 @@ fun CartItem(
         modifier =
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 16.dp)
     ) {
         Column(
             modifier =
@@ -57,7 +57,7 @@ fun CartItem(
                     modifier =
                     Modifier
                         .padding(8.dp)
-                        .size(170.dp),
+                        .size(150.dp),
                 ) {
                     DynamicAsyncImage(
                         modifier = Modifier.clickable {

@@ -39,6 +39,7 @@ import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
 import com.matin.happystore.core.designsystem.component.FavoriteIcon
 import com.matin.happystore.core.designsystem.component.LoadingWheel
 import com.matin.happystore.core.designsystem.component.RatingIndicator
+import com.matin.happystore.core.designsystem.happyStoreBoundsTransform
 import com.matin.happystore.core.designsystem.theme.AppTypography
 import com.matin.happystore.core.model.ui.UiProduct
 
@@ -164,9 +165,10 @@ fun ProductImage(
                         .clickable {
                             onImageClick(item.product.id)
                         }
-                        .sharedElement(
-                            state = rememberSharedContentState(key = item.product.id),
-                            animatedVisibilityScope = animatedContentScope
+                        .sharedBounds(
+                            rememberSharedContentState(key = item.product.id),
+                            animatedVisibilityScope = animatedContentScope,
+                            boundsTransform = happyStoreBoundsTransform,
                         ),
                     imageUrl = item.product.image, contentDescription = "image",
                 )

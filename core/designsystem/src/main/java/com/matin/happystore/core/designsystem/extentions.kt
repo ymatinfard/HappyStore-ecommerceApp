@@ -1,8 +1,11 @@
 package com.matin.happystore.core.designsystem
 
+import androidx.compose.animation.BoundsTransform
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.runtime.getValue
@@ -55,3 +58,18 @@ fun Modifier.shimmerEffect(): Modifier =
             size = it.size
         }
     }
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+val happyStoreBoundsTransform = BoundsTransform { _, _ ->
+    spatialExpressiveSpring()
+}
+
+fun <T> spatialExpressiveSpring() = spring<T>(
+    dampingRatio = 0.8f,
+    stiffness = 380f
+)
+
+fun <T> nonSpatialExpressiveSpring() = spring<T>(
+    dampingRatio = 1f,
+    stiffness = 1600f
+)
