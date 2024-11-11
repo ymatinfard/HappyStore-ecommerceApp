@@ -1,6 +1,8 @@
 package com.matin.products
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,15 +34,17 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
-import com.matin.happystore.core.designsystem.component.ItemSpec
-import com.matin.happystore.core.designsystem.component.TopAppBar
-import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.core.designsystem.LocalAnimatedVisibilityScope
 import com.matin.happystore.core.designsystem.LocalSharedTransitionScope
 import com.matin.happystore.core.designsystem.clipIfLengthy
+import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
+import com.matin.happystore.core.designsystem.component.ItemSpec
+import com.matin.happystore.core.designsystem.component.TopAppBar
+import com.matin.happystore.core.designsystem.happyStoreBoundsTransform
+import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.feature.products.R
 import kotlin.math.roundToInt
+
 
 @Composable
 fun DetailScreenRoute(
@@ -118,9 +122,14 @@ fun DetailScreenMainContent(
                 modifier = Modifier
                     .size(360.dp)
                     .padding(10.dp)
-                    .sharedElement(
-                        state = rememberSharedContentState(key = item.product.id),
+                    .sharedBounds(
+                        rememberSharedContentState(
+                            key = item.product.id
+                        ),
+                        enter = fadeIn(),
+                        exit = fadeOut(),
                         animatedVisibilityScope = animatedContentScope,
+                        boundsTransform = happyStoreBoundsTransform
                     ),
                 imageUrl = item.product.image,
                 contentDescription = null,
