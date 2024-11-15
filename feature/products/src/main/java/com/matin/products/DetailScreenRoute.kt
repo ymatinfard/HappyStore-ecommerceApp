@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -25,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,25 +73,42 @@ fun DetailScreenContent(
     val uiState = viewmodel.detailScreenUiState.collectAsStateWithLifecycle()
 
     uiState.value.let { uiProduct ->
-        Column(
+        Scaffold(
             modifier = Modifier
-                .padding(WindowInsets.navigationBars.asPaddingValues())
-        ) {
-            TopAppBar(
-                title = uiProduct.product.product.title.clipIfLengthy(),
-                navigationIcon = Icons.Default.ArrowBack,
-                navigationIconContentDescription = "back",
-                actionIcon = uiProduct.product.wishlistIcon(),
-                actionIconContentDescription = "add to wishlist",
-                onActionClick = {},
-                onNavigationClick = {
-                    onBackClick()
+                .fillMaxSize()
+                .padding(WindowInsets.navigationBars.asPaddingValues()),
+            topBar = {
+                TopAppBar(
+                    title = uiProduct.product.product.title.clipIfLengthy(),
+                    navigationIcon = Icons.Default.ArrowBack,
+                    navigationIconContentDescription = "back",
+                    actionIcon = uiProduct.product.wishlistIcon(),
+                    actionIconContentDescription = "add to wishlist",
+                    onActionClick = {},
+                    onNavigationClick = {
+                        onBackClick()
+                    })
+            },
+            bottomBar = {
+                Button(
+                    onClick = {
+                        //  onAddToCartClick(item)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(0),
+                    enabled = uiProduct.product.isInCart.not()
+                ) {
+                    Text(
+                        text = stringResource(R.string.feature_products_add_to_cart),
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
-            )
+            },
+        ) { padding ->
             DetailScreenMainContent(
-                item = uiProduct.product, onAddToCartClick = {
-                    //viewmodel.onAddToCartClick(item)
-                }
+                modifier = Modifier.padding(padding),
+                item = uiProduct.product
             )
         }
     }
@@ -98,8 +117,8 @@ fun DetailScreenContent(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DetailScreenMainContent(
+    modifier: Modifier,
     item: UiProduct,
-    onAddToCartClick: (UiProduct) -> Unit = {},
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalArgumentException("No shared transition scope provided")
@@ -111,9 +130,9 @@ fun DetailScreenMainContent(
 
     with(sharedTransitionScope) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxHeight()
-                .padding(vertical = 16.dp, horizontal = screenHorizontalPadding)
+                .padding(horizontal = screenHorizontalPadding)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -135,24 +154,8 @@ fun DetailScreenMainContent(
                 contentDescription = null,
             )
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                ItemSpec(item)
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = {
-                        onAddToCartClick(item)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                    shape = RoundedCornerShape(0),
-                    enabled = item.isInCart.not()
-                ) {
-                    Text(
-                        text = stringResource(R.string.feature_products_add_to_cart),
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-            }
+            ItemSpec(item)
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
