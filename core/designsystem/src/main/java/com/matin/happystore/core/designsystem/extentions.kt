@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 
 const val TITLE_MAX_LEN = 20
@@ -73,3 +74,6 @@ fun <T> nonSpatialExpressiveSpring() = spring<T>(
     dampingRatio = 1f,
     stiffness = 1600f
 )
+
+fun Modifier.baselineHeight(heightFromBaseline: Dp): Modifier =
+    this.then(BaselineHeightModifier(heightFromBaseline))
