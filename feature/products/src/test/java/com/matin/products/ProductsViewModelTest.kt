@@ -86,7 +86,7 @@ class ProductsViewModelTest {
             val uiProductsAndFilters = UiProductsAndFilters(products = uiProducts)
 
             val collectJob =
-                launch(UnconfinedTestDispatcher()) {
+                launch {
                     viewModel.productsScreenUiState.collect { state ->
                         assertEquals(
                             uiProductsAndFilters.products,
@@ -101,7 +101,7 @@ class ProductsViewModelTest {
     @Test
     fun addToCart_adds_product_to_cart() =
         testScope.runTest {
-            viewModel.addToCart(124)
+            viewModel.intentToAction(intent = ProductsIntent.AddToCard(124))
             val collectJob =
                 launch(UnconfinedTestDispatcher()) {
                     viewModel.productsScreenUiState.collect {
