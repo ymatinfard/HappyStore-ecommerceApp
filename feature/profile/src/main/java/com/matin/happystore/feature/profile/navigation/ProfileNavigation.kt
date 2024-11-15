@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.matin.happystore.feature.profile.ProfileScreen
 
 const val PROFILE_ROUTE = "product_route"
 
@@ -11,6 +12,6 @@ fun NavController.navigateToProfile(navOptions: NavOptions) = navigate(PROFILE_R
 
 fun NavGraphBuilder.profileScreen() {
     return composable(PROFILE_ROUTE) {
-        profileScreen()
+        ProfileScreen()
     }
 }
