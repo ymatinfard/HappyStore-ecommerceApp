@@ -76,7 +76,7 @@ class TestHappyStoreRepository : HappyStoreRepository {
 
     override suspend fun removeFromCart(inCartProduct: InCartProduct) {
         inCartProductsStateFlow.update { inCartProducts ->
-            inCartProducts.toMutableList().apply { remove(inCartProduct) }
+            inCartProducts.toMutableList().apply { removeIf { it.product.id == inCartProduct.product.id } }
         }
     }
 
