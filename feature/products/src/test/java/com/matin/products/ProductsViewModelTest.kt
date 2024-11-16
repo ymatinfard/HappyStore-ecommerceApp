@@ -11,6 +11,7 @@ import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.happystore.core.testing.MainDispatcherRule
 import com.matin.happystore.core.testing.TestHappyStoreRepository
 import com.matin.products.helper.ProductListUiHelper
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -102,13 +103,39 @@ class ProductsViewModelTest {
     fun addToCart_adds_product_to_cart() =
         testScope.runTest {
             viewModel.intentToAction(intent = ProductsIntent.AddToCard(124))
-            val collectJob =
-                launch(UnconfinedTestDispatcher()) {
-                    viewModel.productsScreenUiState.collect {
-                        assertEquals(2, it.uiProductsAndFilters.products.filter { it.isInCart }.size)
-                    }
-                }
+            val collectJob = launch(UnconfinedTestDispatcher()) {
+                viewModel.productsScreenUiState.collect()
+            }
 
+            assertEquals(
+                2,
+                viewModel.productsScreenUiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
+            )
+
+            collectJob.cancel()
+        }
+
+    @Test
+    fun removeFromCart_removes_product_from_cart() = runTest {
+        // There is only one item in Testdouble cart with id: 123
+        viewModel.intentToAction(intent = ProductsIntent.RemoveFromCard(123))
+        val collectJob =
+            launch(UnconfinedTestDispatcher()) { viewModel.productsScreenUiState.collect() }
+        assertEquals(
+            0,
+            viewModel.productsScreenUiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
+        )
+        collectJob.cancel()
+    }
+
+    @Test
+    fun updateFavorite_if_product_is_favorite_then_remove_it_from_favorite_else_add_it_to_favorite() = runTest {
+            viewModel.intentToAction(intent = ProductsIntent.UpdateProductFavorite(123))
+            val collectJob = launch(UnconfinedTestDispatcher()) {
+                viewModel.productsScreenUiState.collect {
+                    assertEquals(1, it.uiProductsAndFilters.products.filter { it.isFavorite }.size)
+                }
+            }
             collectJob.cancel()
         }
 }

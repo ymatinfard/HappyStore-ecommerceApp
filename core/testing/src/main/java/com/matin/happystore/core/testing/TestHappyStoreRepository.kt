@@ -70,7 +70,8 @@ class TestHappyStoreRepository : HappyStoreRepository {
 
     override suspend fun addToCart(inCartProduct: InCartProduct) {
         inCartProductsStateFlow.update { inCartProducts ->
-            inCartProducts.toMutableList().apply { add(inCartProduct) }.toList()
+           val res =  inCartProducts.toMutableList().apply { add(inCartProduct) }.toList()
+            res
         }
     }
 
