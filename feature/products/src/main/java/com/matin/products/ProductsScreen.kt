@@ -131,11 +131,11 @@ fun ProductList(
 ) {
     val listState = rememberLazyStaggeredGridState()
     val previousIndex = remember { mutableFloatStateOf(0f) }
-    val showButton = remember { mutableStateOf(false) }
+    val showMapButton = remember { mutableStateOf(false) }
 
     LaunchedEffect(listState.firstVisibleItemIndex) {
         val currentIndex = listState.firstVisibleItemIndex
-        showButton.value = if (currentIndex > previousIndex.floatValue) false else true
+        showMapButton.value = currentIndex <= previousIndex.floatValue
         previousIndex.floatValue = currentIndex.toFloat()
     }
 
@@ -171,7 +171,7 @@ fun ProductList(
         }
 
         AnimatedVisibility(
-            visible = showButton.value,
+            visible = showMapButton.value,
             enter = fadeIn(animationSpec = tween(500)),
             exit = fadeOut(animationSpec = tween(300)),
         ) {
