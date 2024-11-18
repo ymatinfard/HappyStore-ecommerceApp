@@ -25,10 +25,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.matin.happystore.core.designsystem.baselineHeight
 import com.matin.happystore.core.designsystem.theme.HappyStoreTheme
 
@@ -108,7 +108,7 @@ fun HeaderSection(scrollState: ScrollState, containerHeight: Dp) {
             .clip(CircleShape),
 
         contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.profile_photo),
+        painter = rememberAsyncImagePainter(R.drawable.profile_photo),
         contentDescription = "profile photo",
     )
 }
