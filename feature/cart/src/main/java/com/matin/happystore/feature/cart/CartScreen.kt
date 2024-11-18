@@ -1,10 +1,7 @@
 package com.matin.happystore.feature.cart
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,23 +23,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.designsystem.component.CartItem
 import com.matin.happystore.core.designsystem.component.DestinationBar
+import com.matin.happystore.core.designsystem.component.SwipeToDismiss
+import com.matin.happystore.core.designsystem.component.SwipeToDismissBackground
+import com.matin.happystore.core.designsystem.nonSpatialExpressiveSpring
+import com.matin.happystore.core.designsystem.spatialExpressiveSpring
 import com.matin.happystore.core.model.InCartProduct
-import kotlinx.coroutines.delay
 
 @Composable
 fun CartScreen(viewModel: CartViewModel, onItemSelected: (Int) -> Unit) {
@@ -82,7 +78,6 @@ fun CartScreenContent(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CartItems(
     cartItems: List<InCartProduct>,
@@ -97,6 +92,10 @@ fun CartItems(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
+
+        val itemAnimationSpecFade = nonSpatialExpressiveSpring<Float>()
+        val itemPlacementSpec = spatialExpressiveSpring<IntOffset>()
+
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -110,23 +109,19 @@ fun CartItems(
                 )
             }
             items(cartItems, key = { it.product.id }) { item ->
-                var isVisible by remember { mutableStateOf(true) }
-
-                LaunchedEffect(isVisible) {
-                    if (!isVisible) {
-                        delay(400)
-                        onDeleteClick(item)
-                    }
-                }
-                AnimatedVisibility(
-                    visible = isVisible,
-                    exit = shrinkVertically()
+                SwipeToDismiss(
+                    modifier = Modifier.animateItem(
+                        fadeInSpec = itemAnimationSpecFade,
+                        fadeOutSpec = itemAnimationSpecFade,
+                        placementSpec = itemPlacementSpec
+                    ),
+                    background = { progress -> SwipeToDismissBackground(progress) }
                 ) {
                     CartItem(
                         item = item,
                         onFavoriteClick = onFavoriteClick,
                         onDeleteClick = {
-                            isVisible = false
+                            onDeleteClick(item)
                         },
                         onQuantityChange = onQuantityChange,
                         onItemSelected,
@@ -134,7 +129,6 @@ fun CartItems(
                 }
             }
         }
-
         TotalCartItemsPrice(cartItems)
     }
 }
