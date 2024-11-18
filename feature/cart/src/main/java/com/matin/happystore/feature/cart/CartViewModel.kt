@@ -69,7 +69,7 @@ class CartViewModel
         }
     }
 
-    fun removeProduct(inCartProduct: InCartProduct) {
+    private fun removeProduct(inCartProduct: InCartProduct) {
         viewModelScope.launch {
             removeProductFromCartUseCase(inCartProduct)
         }

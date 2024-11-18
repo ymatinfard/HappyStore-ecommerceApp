@@ -1,6 +1,10 @@
 package com.matin.happystore.feature.cart
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +26,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +42,7 @@ import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.designsystem.component.CartItem
 import com.matin.happystore.core.designsystem.component.DestinationBar
 import com.matin.happystore.core.model.InCartProduct
+import kotlinx.coroutines.delay
 
 @Composable
 fun CartScreen(viewModel: CartViewModel, onItemSelected: (Int) -> Unit) {
@@ -72,6 +82,7 @@ fun CartScreenContent(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CartItems(
     cartItems: List<InCartProduct>,
@@ -86,7 +97,11 @@ fun CartItems(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .animateContentSize()
+        ) {
             item {
                 Spacer(
                     Modifier.windowInsetsTopHeight(
@@ -94,14 +109,29 @@ fun CartItems(
                     )
                 )
             }
-            items(cartItems) { item ->
-                CartItem(
-                    item = item,
-                    onFavoriteClick = onFavoriteClick,
-                    onDeleteClick = onDeleteClick,
-                    onQuantityChange = onQuantityChange,
-                    onItemSelected,
-                )
+            items(cartItems, key = { it.product.id }) { item ->
+                var isVisible by remember { mutableStateOf(true) }
+
+                LaunchedEffect(isVisible) {
+                    if (!isVisible) {
+                        delay(400)
+                        onDeleteClick(item)
+                    }
+                }
+                AnimatedVisibility(
+                    visible = isVisible,
+                    exit = shrinkVertically()
+                ) {
+                    CartItem(
+                        item = item,
+                        onFavoriteClick = onFavoriteClick,
+                        onDeleteClick = {
+                            isVisible = false
+                        },
+                        onQuantityChange = onQuantityChange,
+                        onItemSelected,
+                    )
+                }
             }
         }
 
