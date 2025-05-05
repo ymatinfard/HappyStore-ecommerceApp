@@ -49,7 +49,7 @@ class ProductsViewModelTest {
     }
 
     @Test
-    fun collectProducts_gets_all_products() =
+    fun fetchProducts_gets_all_products() =
         testScope.runTest {
             val products =
                 listOf(
@@ -88,7 +88,7 @@ class ProductsViewModelTest {
 
             val collectJob =
                 launch {
-                    viewModel.productsScreenUiState.collect { state ->
+                    viewModel.uiState.collect { state ->
                         assertEquals(
                             uiProductsAndFilters.products,
                             state.uiProductsAndFilters.products,
@@ -104,12 +104,12 @@ class ProductsViewModelTest {
         testScope.runTest {
             viewModel.intentToAction(intent = ProductsIntent.AddToCard(124))
             val collectJob = launch(UnconfinedTestDispatcher()) {
-                viewModel.productsScreenUiState.collect()
+                viewModel.uiState.collect()
             }
 
             assertEquals(
                 2,
-                viewModel.productsScreenUiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
+                viewModel.uiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
             )
 
             collectJob.cancel()
@@ -120,10 +120,10 @@ class ProductsViewModelTest {
         // There is only one item in Testdouble cart with id: 123
         viewModel.intentToAction(intent = ProductsIntent.RemoveFromCard(123))
         val collectJob =
-            launch(UnconfinedTestDispatcher()) { viewModel.productsScreenUiState.collect() }
+            launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
         assertEquals(
             0,
-            viewModel.productsScreenUiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
+            viewModel.uiState.value.uiProductsAndFilters.products.filter { it.isInCart }.size
         )
         collectJob.cancel()
     }
@@ -132,7 +132,7 @@ class ProductsViewModelTest {
     fun updateFavorite_if_product_is_favorite_then_remove_it_from_favorite_else_add_it_to_favorite() = runTest {
             viewModel.intentToAction(intent = ProductsIntent.UpdateProductFavorite(123))
             val collectJob = launch(UnconfinedTestDispatcher()) {
-                viewModel.productsScreenUiState.collect {
+                viewModel.uiState.collect {
                     assertEquals(1, it.uiProductsAndFilters.products.filter { it.isFavorite }.size)
                 }
             }

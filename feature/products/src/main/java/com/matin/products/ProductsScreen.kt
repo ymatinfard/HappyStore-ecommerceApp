@@ -26,13 +26,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.matin.happystore.core.common.BottomBarVisibility
 import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.designsystem.component.CategoryFilterRow
@@ -51,7 +52,7 @@ fun ProductsScreen(
     windowAdaptiveInfo: WindowAdaptiveInfo,
     onImageClick: (Int) -> Unit,
 ) {
-    val uiProductsState = viewModel.productsScreenUiState.collectAsState().value
+    val uiProductsState by viewModel.uiState.collectAsStateWithLifecycle()
     setBottomBarVisibility(BottomBarVisibility.VISIBLE)
     Surface {
         ProductScreenContent(

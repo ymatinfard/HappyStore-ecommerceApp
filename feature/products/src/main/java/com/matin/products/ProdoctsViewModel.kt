@@ -12,10 +12,12 @@ import com.matin.happystore.core.domain.RemoveProductFromCartUseCase
 import com.matin.happystore.core.model.Filter
 import com.matin.happystore.core.model.InCartProduct
 import com.matin.happystore.core.model.Product
+import com.matin.happystore.core.model.ui.UiProductsAndFilters
 import com.matin.products.helper.ProductListUiHelper
 import com.matin.products.model.ProductsScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -32,59 +34,64 @@ constructor(
     private val removeProductFromCartUseCase: RemoveProductFromCartUseCase,
     private val productsUiStateHelper: ProductListUiHelper,
 ) : ViewModel() {
-    val productsScreenUiState = MutableStateFlow(ProductsScreenUiState())
+    private val _uiState = MutableStateFlow(ProductsScreenUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-        collectProducts()
+        fetchProducts()
     }
 
-    private fun collectProducts() {
+    private fun fetchProducts() {
         viewModelScope.launch {
-            productsScreenUiState.update { it.copy(loadingState = DataLoadingState.Loading) }
+            _uiState.update { it.copy(loadingState = DataLoadingState.Loading) }
 
             combine(
                 getProductsUseCase(),
                 getInCartProductIdsUseCase(),
-                productsScreenUiState.map { it.selectedFilter },
+                _uiState.map { it.selectedFilter },
             ) { allProducts, inCartProductIds, selectedFilter ->
 
                 productsUiStateHelper.generateUiProductsAndFilters(
                     allProducts,
-                    productsScreenUiState.value,
+                    _uiState.value,
                     inCartProductIds,
                     selectedFilter,
                 )
             }.asResult().collect { uiStateResult ->
-                val newUiState =
-                    when (uiStateResult) {
-                        is Result.Success -> {
-                            productsScreenUiState.value.copy(
-                                uiProductsAndFilters = uiStateResult.data,
-                                loadingState = DataLoadingState.Loaded,
-                            )
-                        }
-
-                        is Result.Error -> {
-                            productsScreenUiState.value.copy(
-                                loadingState = DataLoadingState.Error(uiStateResult.exception),
-                            )
-                        }
-
-                        is Result.Loading -> {
-                            productsScreenUiState.value.copy(
-                                loadingState = DataLoadingState.Loading
-                            )
-                        }
-                    }
-
-                productsScreenUiState.update { newUiState }
+                processProductsResult(uiStateResult)
             }
         }
     }
 
+    private fun processProductsResult(uiStateResult: Result<UiProductsAndFilters>) {
+        val newUiState =
+            when (uiStateResult) {
+                is Result.Success -> {
+                    _uiState.value.copy(
+                        uiProductsAndFilters = uiStateResult.data,
+                        loadingState = DataLoadingState.Loaded,
+                    )
+                }
+
+                is Result.Error -> {
+                    _uiState.value.copy(
+                        loadingState = DataLoadingState.Error(uiStateResult.exception),
+                    )
+                }
+
+                is Result.Loading -> {
+                    _uiState.value.copy(
+                        loadingState = DataLoadingState.Loading
+                    )
+                }
+            }
+
+        _uiState.update { newUiState }
+    }
+
     private fun updateFavoriteIds(id: Int) {
         viewModelScope.launch {
-            productsScreenUiState.update { state ->
+            _uiState.update { state ->
                 productsUiStateHelper.updateProductFavoriteState(id, state)
             }
         }
@@ -92,7 +99,7 @@ constructor(
 
     private fun updateProductExpand(id: Int) {
         viewModelScope.launch {
-            productsScreenUiState.update { state ->
+            _uiState.update { state ->
                 productsUiStateHelper.updateProductExpansionState(id, state)
             }
         }
@@ -100,7 +107,7 @@ constructor(
 
     private fun updateFilterSelection(filter: Filter) {
         viewModelScope.launch {
-            productsScreenUiState.update { state ->
+            _uiState.update { state ->
                 state.copy(selectedFilter = filter)
             }
         }
