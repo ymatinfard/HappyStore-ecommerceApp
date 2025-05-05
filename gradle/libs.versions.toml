@@ -10,6 +10,7 @@ activityCompose = "1.8.2"
 composeBom = "2024.11.00"
 hilt = "2.50"
 ksp = "1.9.22-1.0.17"
+mockk = "1.13.10"
 navigationCompose = "2.8.3"
 retrofit = "2.9.0"
 kotlinxCoroutinesAndroid = "1.7.3"
@@ -78,6 +79,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdk" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
