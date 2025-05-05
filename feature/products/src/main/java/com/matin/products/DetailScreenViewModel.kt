@@ -32,7 +32,6 @@ class DetailScreenViewModel @Inject constructor(
 
     private fun loadProductById(id: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
             getSingleProductUseCase(id).asResult().collect { item ->
                 when (item) {
                     is Result.Error -> {
