@@ -1,8 +1,13 @@
 package com.matin.products
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -41,8 +46,9 @@ import com.matin.happystore.core.designsystem.LocalSharedTransitionScope
 import com.matin.happystore.core.designsystem.clipIfLengthy
 import com.matin.happystore.core.designsystem.component.DynamicAsyncImage
 import com.matin.happystore.core.designsystem.component.ItemSpec
-import com.matin.happystore.core.designsystem.component.TopAppBar
+import com.matin.happystore.core.designsystem.component.HappyStoreTopAppBar
 import com.matin.happystore.core.designsystem.happyStoreBoundsTransform
+import com.matin.happystore.core.designsystem.isTablet
 import com.matin.happystore.core.model.ui.UiProduct
 import com.matin.happystore.feature.products.R
 import kotlin.math.roundToInt
@@ -51,15 +57,12 @@ import kotlin.math.roundToInt
 @Composable
 fun DetailScreenRoute(
     viewModel: DetailScreenViewModel,
-    productId: Int,
     onBackClick: () -> Unit
 ) {
-    LaunchedEffect(productId) {
-        viewModel.getItem(id = productId)
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DetailScreenContent(
-        viewmodel = viewModel,
+        uiState = uiState,
         onBackClick = onBackClick
     )
 }
@@ -67,56 +70,57 @@ fun DetailScreenRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreenContent(
-    viewmodel: DetailScreenViewModel,
+    uiState: DetailScreenUiState,
     onBackClick: () -> Unit
 ) {
-    val uiState = viewmodel.detailScreenUiState.collectAsStateWithLifecycle()
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(WindowInsets.navigationBars.asPaddingValues()),
+        topBar = {
+            HappyStoreTopAppBar(
+                title = uiState.product.product.title.clipIfLengthy(),
+                navigationIcon = Icons.Default.ArrowBack,
+                navigationIconContentDescription = stringResource(R.string.feature_products_back),
+                actionIcon = uiState.product.wishlistIcon(),
+                actionIconContentDescription = stringResource(R.string.feature_products_add_to_wishlist),
+                onActionClick = {},
+                onNavigationClick = {
+                    onBackClick()
+                })
+        },
+        bottomBar = {
+            AddToCartButton(uiState)
+        },
+    ) { padding ->
+        ProductDetailContent(
+            modifier = Modifier.padding(padding),
+            item = uiState.product
+        )
+    }
+}
 
-    uiState.value.let { uiProduct ->
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(WindowInsets.navigationBars.asPaddingValues()),
-            topBar = {
-                TopAppBar(
-                    title = uiProduct.product.product.title.clipIfLengthy(),
-                    navigationIcon = Icons.Default.ArrowBack,
-                    navigationIconContentDescription = "back",
-                    actionIcon = uiProduct.product.wishlistIcon(),
-                    actionIconContentDescription = "add to wishlist",
-                    onActionClick = {},
-                    onNavigationClick = {
-                        onBackClick()
-                    })
-            },
-            bottomBar = {
-                Button(
-                    onClick = {
-                        //  onAddToCartClick(item)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                    shape = RoundedCornerShape(0),
-                    enabled = uiProduct.product.isInCart.not()
-                ) {
-                    Text(
-                        text = stringResource(R.string.feature_products_add_to_cart),
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-            },
-        ) { padding ->
-            DetailScreenMainContent(
-                modifier = Modifier.padding(padding),
-                item = uiProduct.product
-            )
-        }
+@Composable
+private fun AddToCartButton(uiState: DetailScreenUiState) {
+    Button(
+        onClick = {
+            //  onAddToCartClick(item)
+        },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+        shape = RoundedCornerShape(0),
+        enabled = uiState.product.isInCart.not()
+    ) {
+        Text(
+            text = stringResource(R.string.feature_products_add_to_cart),
+            modifier = Modifier.padding(8.dp)
+        )
     }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailScreenMainContent(
+fun ProductDetailContent(
     modifier: Modifier,
     item: UiProduct,
 ) {
@@ -124,9 +128,10 @@ fun DetailScreenMainContent(
         ?: throw IllegalArgumentException("No shared transition scope provided")
     val animatedContentScope = LocalAnimatedVisibilityScope.current
         ?: throw IllegalArgumentException("No animated visibility scope provided")
+
     val configuration = LocalConfiguration.current
     val screenHorizontalPadding =
-        if (isTablet()) (configuration.screenWidthDp * 0.2).roundToInt().dp else 16.dp
+        if (isTablet(configuration)) (configuration.screenWidthDp * 0.2).roundToInt().dp else 16.dp
 
     with(sharedTransitionScope) {
         Column(
@@ -137,35 +142,37 @@ fun DetailScreenMainContent(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            DynamicAsyncImage(
-                modifier = Modifier
-                    .size(360.dp)
-                    .padding(10.dp)
-                    .sharedBounds(
-                        rememberSharedContentState(
-                            key = item.product.id
-                        ),
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                        animatedVisibilityScope = animatedContentScope,
-                        boundsTransform = happyStoreBoundsTransform
-                    ),
-                imageUrl = item.product.image,
-                contentDescription = null,
-            )
-
+            ProductImage(item, animatedContentScope, happyStoreBoundsTransform)
             ItemSpec(item)
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun SharedTransitionScope.ProductImage(
+    item: UiProduct,
+    animatedContentScope: AnimatedVisibilityScope,
+    happyStoreBoundsTransform: BoundsTransform
+) {
+    val sharedContentState = rememberSharedContentState(key = item.product.id)
+    DynamicAsyncImage(
+        modifier = Modifier
+            .size(360.dp)
+            .padding(10.dp)
+            .sharedBounds(
+                sharedContentState,
+                enter = fadeIn() + scaleIn(initialScale = 0.8f),
+                exit = fadeOut() + scaleOut(targetScale = 0.8f),
+                animatedVisibilityScope = animatedContentScope,
+                boundsTransform = happyStoreBoundsTransform
+            ),
+        imageUrl = item.product.image,
+        contentDescription = null,
+    )
 }
 
 fun UiProduct.wishlistIcon() =
     if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
 
-@Composable
-fun isTablet(): Boolean {
-    val configuration = LocalConfiguration.current
-    val screenWidthDp = configuration.screenWidthDp.dp
-    return screenWidthDp >= 600.dp
-}

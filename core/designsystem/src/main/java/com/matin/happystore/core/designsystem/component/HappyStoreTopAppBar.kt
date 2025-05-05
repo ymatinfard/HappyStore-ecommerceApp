@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(
+fun HappyStoreTopAppBar(
     title: String,
     navigationIcon: ImageVector?,
     navigationIconContentDescription: String,

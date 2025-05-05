@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.matin.happystore.R
+import com.matin.happystore.core.common.Constants
 import com.matin.happystore.core.designsystem.LocalAnimatedVisibilityScope
 import com.matin.happystore.core.designsystem.LocalSharedTransitionScope
 import com.matin.happystore.feature.cart.navigation.cartScreen
@@ -72,14 +73,12 @@ fun HappyStoreApp(
                         onItemSelected = { navController.navigate("${MainDestination.DETAIL_ROUTE}/$it") })
                 }
                 composableWithLocalComposition(
-                    route = "${MainDestination.DETAIL_ROUTE}/{${MainDestination.PRODUCT_ID}}",
-                    arguments = listOf(navArgument(MainDestination.PRODUCT_ID) { type = NavType.IntType }),
-                ) { backStack ->
+                    route = "${MainDestination.DETAIL_ROUTE}/{${Constants.PRODUCT_ID}}",
+                    arguments = listOf(navArgument(Constants.PRODUCT_ID) { type = NavType.IntType }),
+                ) {
                     val viewModel = hiltViewModel<DetailScreenViewModel>()
-                    val productId = backStack.arguments?.getInt(MainDestination.PRODUCT_ID) ?: 0
                     DetailScreenRoute(
                         viewModel = viewModel,
-                        productId = productId,
                         onBackClick = navController::popBackStack,
                     )
                 }
@@ -232,5 +231,4 @@ fun NavGraphBuilder.composableWithLocalComposition(
 object MainDestination {
     const val HOME_ROUTE = "home"
     const val DETAIL_ROUTE = "detail"
-    const val PRODUCT_ID = "product_id"
 }
