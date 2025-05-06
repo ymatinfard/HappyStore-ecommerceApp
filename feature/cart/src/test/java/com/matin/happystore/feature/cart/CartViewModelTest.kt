@@ -44,7 +44,7 @@ class CartViewModelTest {
         runTest {
             val collectJob =
                 launch(UnconfinedTestDispatcher()) {
-                    viewModel.cartScreenUiState.collect { result ->
+                    viewModel.uiState.collect { result ->
                         assertEquals(
                             CartScreenUiState(
                                 loadingState = DataLoadingState.Loaded,
@@ -89,13 +89,13 @@ class CartViewModelTest {
                     quantity = 3,
                 )
 
-            viewModel.onQuantityChanged(inCartProduct)
+            viewModel.intentToAction(CartIntent.QuantityChanged(inCartProduct))
 
             advanceTimeBy(debounceWaitTime)
 
             val collectJob =
                 launch(UnconfinedTestDispatcher()) {
-                    viewModel.cartScreenUiState.collect { products ->
+                    viewModel.uiState.collect { products ->
                         assertEquals(3, products.inCartProducts.first { it.product.id == 123 }.quantity)
                     }
                 }
@@ -119,11 +119,11 @@ class CartViewModelTest {
                     ),
                     quantity = 1,
                 )
-            viewModel.removeItem(removedProduct)
+            viewModel.intentToAction(CartIntent.DeleteProduct(removedProduct))
 
             val collectJob =
                 launch(UnconfinedTestDispatcher()) {
-                    viewModel.cartScreenUiState.collect {
+                    viewModel.uiState.collect {
                         assertEquals(true, it.inCartProducts.isEmpty())
                     }
                 }

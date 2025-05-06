@@ -12,6 +12,7 @@ import com.matin.happystore.core.domain.UpdateInCartProductQuantityUseCase
 import com.matin.happystore.core.model.InCartProduct
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,8 +25,10 @@ class CartViewModel
         private val removeProductFromCartUseCase: RemoveProductFromCartUseCase,
         private val updateInCartProductQuantityUseCase: UpdateInCartProductQuantityUseCase,
     ) : ViewModel() {
-        val cartScreenUiState = MutableStateFlow(CartScreenUiState())
-        val onInCartProductQuantityChange: (InCartProduct) -> Unit =
+        private val _uiState = MutableStateFlow(CartScreenUiState())
+        val uiState = _uiState.asStateFlow()
+
+        private val onInCartProductQuantityChange: (InCartProduct) -> Unit =
             debounce(WAIT_TIME, viewModelScope, ::updateInCartProductQuantity)
 
         init {
@@ -37,7 +40,7 @@ class CartViewModel
                 getInCartProductFullDetailUseCase().asResult().collect { result ->
                     when (result) {
                         is Result.Success -> {
-                            cartScreenUiState.update { state ->
+                            _uiState.update { state ->
                                 state.copy(
                                     inCartProducts = result.data,
                                     loadingState = DataLoadingState.Loaded,
@@ -50,7 +53,7 @@ class CartViewModel
                         }
 
                         is Result.Loading -> {
-                            cartScreenUiState.update { state ->
+                            _uiState.update { state ->
                                 state.copy(loadingState = DataLoadingState.Loading)
                             }
                         }
@@ -59,7 +62,7 @@ class CartViewModel
             }
         }
 
-    fun quantityChanged(inCartProduct: InCartProduct) {
+    private fun quantityChanged(inCartProduct: InCartProduct) {
         onInCartProductQuantityChange(inCartProduct)
     }
 

@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.matin.happystore.core.common.DataLoadingState
 import com.matin.happystore.core.designsystem.component.CartItem
 import com.matin.happystore.core.designsystem.component.DestinationBar
@@ -42,10 +42,10 @@ import com.matin.happystore.core.model.InCartProduct
 
 @Composable
 fun CartScreen(viewModel: CartViewModel, onItemSelected: (Int) -> Unit) {
-    val inCartProductsState = viewModel.cartScreenUiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        CartScreenContent(inCartProductsState.value, onFavoriteClick = {
+        CartScreenContent(uiState.value, onFavoriteClick = {
         }, onDeleteClick = { inCartProduct ->
             viewModel.intentToAction(CartIntent.DeleteProduct(inCartProduct))
         }, onQuantityChange = { inCartProduct ->
@@ -92,7 +92,6 @@ fun CartItems(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-
         val itemAnimationSpecFade = nonSpatialExpressiveSpring<Float>()
         val itemPlacementSpec = spatialExpressiveSpring<IntOffset>()
 
